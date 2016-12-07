@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <title>製造課生產條件記錄表</title>
+    <link rel="shortcut icon" type="image/png" href="http://localhost:9004/public/image/upgiLogo.png" />
+    <script src="public/js/generateForm.js"></script>
+</head>
+
+<body>
+    <form id="isProdDataForm" name="isProdDataForm" action="" method="post" enctype="multipart/form-data">
+        <div class="container">
+            <div class="row text-center">
+                <h2 id="title">統義玻璃工業股份有限公司</h2>
+                <h4 id="subtitle">製造課生產條件記錄表</h4>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-12">
+                    <span>製令單號&nbsp;</span>
+                    <select id="glassRun" name="glassRun"></select>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-3">
+                    <div>
+                        <span>瓶號&nbsp;</span>
+                        <input id="prodReference" name="prodReference" type="text" size="10" readonly />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div>
+                        <span>重量&nbsp;</span>
+                        <input id="productionWeight" name="productionWeight" type="number" name="weight" min="1" step="0.05" maxlength="7" style="width:80px;" placeholder="生產重量*" />
+                        <span>&nbsp;g</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <span>生產線&nbsp;</span>
+                    <input id="glassProdLineID" name="glassProdLineID" type="text" size="10" readonly />
+                </div>
+                <div class="col-md-3">
+                    <span>記錄日期&nbsp;</span>
+                    <input id="recordDate" name="recordDate" type="date" style="width:130px;" />
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="text-center">機械設備</div>
+                    <br>
+                    <div>
+                        <span style="display:inline-block;width:120px;">初模抱具</span>
+                        <select id="bmHolder" name="bmHolder"></select>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">成模抱具</span>
+                        <select id="fmHolder" name="fmHolder"></select>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">口模臂</span>
+                        <select id="nrArm" name="nrArm"></select>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">漏斗臂</span>
+                        <select id="fuArm" name="fuArm"></select>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">套筒</span>
+                        <select id="thimble" name="thimble"></select>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">心棒機構配件</span>
+                        <select id="plPositioner" name="plPositioner"></select>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">心棒間隔物</span>
+                        <input id="spacer" name="spacer" type="number" min="1" step="0.5" style="width:60px;" />
+                        <span>&nbsp;mm</span>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">承受螺絲</span>
+                        <input id="stopScrew" name="stopScrew" type="number" min="1" step="0.5" style="width:60px;" />
+                        <span>&nbsp;mm</span>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">接收槽</span>
+                        <select id="scoop" name="scoop"></select>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">直槽</span>
+                        <select id="trough" name="trough"></select>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">彎槽</span>
+                        <select id="deflector" name="deflector"></select>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">心棒上壓力</span>
+                        <input id="plUpPressure" name="plUpPressure" type="number" min="0" step="0.1" style="width:60px;" />
+                        <span>&nbsp;kg</span>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">定頭吹風壓力</span>
+                        <input id="settleBlowPressure" name="settleBlowPressure" type="number" min="0" step="0.1" style="width:60px;" />
+                        <span>&nbsp;kg</span>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">心棒冷卻壓力</span>
+                        <input id="plCoolingPressure" name="plCoolingPressure" type="number" min="0" step="0.1" style="width:60px;" />
+                        <span>&nbsp;kg</span>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">初成形吹風壓力</span>
+                        <input id="counterBlowPressure" name="counterBlowPressure" type="number" min="0" step="0.1" style="width:60px;" />
+                        <span>&nbsp;kg</span>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">成形吹風壓力</span>
+                        <input id="finalBlowPressure" name="finalBlowPressure" type="number" min="0" step="0.1" style="width:60px;" />
+                        <span>&nbsp;kg</span>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">主空氣壓｜高壓</span>
+                        <input id="highPressure" name="highPressure" type="number" min="0" step="0.1" style="width:60px;" />
+                        <span>&nbsp;kg</span>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">徐冷窯｜網速</span>
+                        <input id="annealSpeed" name="annealSpeed" type="number" min="0" step="0.001" style="width:100px;" />
+                        <span>&nbsp;Hz</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-center">供給器</div>
+                    <br>
+                    <div>
+                        <span style="display:inline-block;width:120px;">型式</span>
+                        <input id="feeder" name="feeder" type="text" size="10" value="CIH-1" readonly />
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">盆磚</span>
+                        <input id="spout" name="spout" type="text" size="10" value='144-704-6"-5"' readonly/>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">磚管速度</span>
+                        <input id="tubeRevSetting" name="tubeRevSetting" type="number" min="0" step="0.001" style="width:100px;" />
+                        <span>&nbsp;Hz</span>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">出口杯規格</span>
+                        <select id="orificeRing" name="orificeRing"></select>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">剪刀凸輪</span>
+                        <select id="shearCam" name="shearCam"></select>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">剪刀規格</span>
+                        <select id="shear" name="shear"></select>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">磚棒凸輪</span>
+                        <select id="plungerCam" name="plungerCam"></select>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">磚棒規格</span>
+                        <select id="plunger" name="plunger"></select>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">機速</span>
+                        <input id="machineSpeed" name="machineSpeed" type="number" min="1" step="0.01" maxlength="7" style="width:40px;" />
+                        <span>&nbsp;/分</span>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">製瓶間隔</span>
+                        <input id="bottleSpacing" name="bottleSpacing" type="text" size="10" />
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">口模規</span>
+                        <input id="nrGauge" name="nrGauge" type="text" size="10" />
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">初模模具溫度</span>
+                        <input id="bmTemp" name="bmTemp" type="number" min="0" step="1" style="width:60px;" />
+                        <span>&nbsp;°C</span>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">成模模具溫度</span>
+                        <input id="fmTemp" name="fmTemp" type="number" min="0" step="1" style="width:60px;" />
+                        <span>&nbsp;°C</span>
+                    </div>
+                    <div id="conveyorHeating">
+                        <span style="display:inline-block;width:120px;">輸送帶點火</span>
+                    </div>
+                    <div id="crossBridgeHeating">
+                        <span style="display:inline-block;width:120px;">過橋板點火</span>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">冷卻風壓力</span>
+                        <input id="coolingPressure" name="coolingPressure" type="text" size="10" />
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">主空氣壓｜低壓</span>
+                        <input id="lowPressure" name="lowPressure" type="number" min="0" step="0.1" style="width:60px;" />
+                        <span>&nbsp;kg</span>
+                    </div>
+                    <div>
+                        <span style="display:inline-block;width:120px;">徐冷窯｜溫度</span>
+                        <input id="annealFirstTemp" name="annealFirstTemp" type="number" min="0" step="1" style="width:50px;" />
+                        <span>&nbsp;°C</span>
+                        <input id="annealSecondTemp" name="annealSecondTemp" type="number" min="0" step="1" style="width:50px;" />
+                        <span>&nbsp;°C</span>
+                        <input id="annealThirdTemp" name="annealThirdTemp" type="number" min="0" step="1" style="width:50px;" />
+                        <span>&nbsp;°C</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <span style="display:inline-block;width:120px;">前爐溫度｜冷卻段</span>
+                    <input id="fhCoolingTemp" name="fhCoolingTemp" type="number" min="0" step="5" style="width:70px;" />
+                    <span>&nbsp;°C</span>
+                </div>
+                <div class="col-md-4">
+                    <span style="display:inline-block;width:120px;">前爐溫度｜調溫段</span>
+                    <input id="fhAdjustTemp" name="fhAdjustTemp" type="number" min="0" step="5" style="width:70px;" />
+                    <span>&nbsp;°C</span>
+                </div>
+                <div class="col-md-4">
+                    <span style="display:inline-block;width:120px;">GOB溫度</span>
+                    <input id="gobTemp" name="gobTemp" type="number" min="0" step="1" style="width:70px;" />
+                    <span>&nbsp;°C</span>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-12">生產狀況記錄</div>
+                <div class="col-md-12">
+                    <textarea id="note" name="note" rows="8" cols="120"></textarea>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-4">
+                    <div>初模冷卻風箱</div><br>
+                    <input id="bmCoolingStack" name="bmCoolingStack" type="file" />
+                </div>
+                <div class="col-md-4">
+                    <div>成模冷卻風箱</div><br>
+                    <input id="fmCoolingStack" name="fmCoolingStack" type="file" />
+                </div>
+                <div class="col-md-4">
+                    <div>GOB形狀</div><br>
+                    <input id="gobShape" name="gobShape" type="file" />
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-3">副總經理</div>
+                <div class="col-md-3">生產部主管</div>
+                <div class="col-md-3">製造課長</div>
+                <div class="col-md-3">填表</div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-12">
+                    <input type="submit" value="送出記錄" />
+                    <input type="reset" value="重置表單" />
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+
+</html>

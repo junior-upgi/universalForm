@@ -1,0 +1,53 @@
+{
+    "name": "univeral-form",
+    "version": "1.0.0",
+    "description": "",
+    "main": "formServer.js",
+    "scripts": {
+        "start:frontend": "webpack-dev-server --inline",
+        "start:backend": "nodemon formServer.js",
+        "start": "npm-run-all --parallel start:frontend start:backend"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/junior-upgi/univeralForm.git"
+    },
+    "author": "Chia-Yu Tsai",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/junior-upgi/univeralForm/issues"
+    },
+    "homepage": "https://github.com/junior-upgi/univeralForm#readme",
+    "dependencies": {
+        "body-parser": "^1.15.2",
+        "bootstrap": "^3.3.7",
+        "cors": "^2.8.1",
+        "ejs": "^2.5.3",
+        "express": "^4.14.0",
+        "jquery": "^3.1.1",
+        "moment-timezone": "^0.5.10",
+        "morgan": "^1.7.0",
+        "mssql": "^3.3.0",
+        "multer": "^1.2.0",
+        "numeral": "^2.0.0"
+    },
+    "devDependencies": {
+        "autoprefixer-loader": "^3.2.0",
+        "babel-core": "^6.18.2",
+        "babel-loader": "^6.2.8",
+        "babel-preset-latest": "^6.16.0",
+        "css-loader": "^0.26.1",
+        "eslint": "^3.11.1",
+        "eslint-loader": "^1.6.1",
+        "eslint-plugin-import": "^2.2.0",
+        "file-loader": "^0.9.0",
+        "json-loader": "^0.5.4",
+        "node-libs-browser": "^2.0.0",
+        "npm-run-all": "^3.1.2",
+        "raw-loader": "^0.5.1",
+        "style-loader": "^0.13.1",
+        "url-loader": "^0.5.7",
+        "webpack": "^1.13.3",
+        "webpack-dev-middleware": "^1.8.4"
+    }
+}
