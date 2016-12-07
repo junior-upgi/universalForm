@@ -22,6 +22,23 @@ app.use(bodyParser.json()); // parse application/json
 
 app.use("/public/image", express.static("./public/image")); // serve favicon
 
+// at start up, make sure that the file structure to hold image exists and starts image server
+var fileStructureValidated = false;
+var imageDirectoryList = [{
+    id: "isProdDataForm",
+    path: "image/isProdDataForm",
+    upload: multer({ dest: "image/isProdDataForm" + "/" })
+}];
+if (fileStructureValidated !== true) {
+    imageDirectoryList.forEach(function(imageDirectory) {
+        if (!fs.existsSync(imageDirectory.path)) {
+            fs.mkdirSync(imageDirectory.path);
+        }
+        app.use("/" + imageDirectory.id + "/" + imageDirectory.path, express.static("./" + imageDirectory.path)); // serve static image files
+    });
+    fileStructureValidated = true;
+}
+
 app.get("/glassRun", function(request, response) {
     database.executeQuery(queryString.getGlassRunRecordset, function(glassRunRecordset, error) {
         if (error) {
@@ -31,10 +48,37 @@ app.get("/glassRun", function(request, response) {
     });
 });
 
+app.post("/glassRun", imageDirectoryList[0].upload.any(), function(request, response) {
+    console.log(moment(moment(), "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm:ss") + " received POST request on /glassRun");
+    let uploadLocation = [];
+    if (request.files.length === 0) {
+        console.log("no file upload received...");
+        createRecord();
+    } else {
+        request.files.forEach(function(file, index) {
+            uploadLocation.push(file.destination + file.filename + ".JPG");
+            fs.rename(file.path, uploadLocation[index], function(error) {
+                if (error) {
+                    console.log("photo upload failure: " + error);
+                    return response.status(500).send("photo upload failure: " + error);
+                } else {
+                    console.log("photo uploaded");
+                    createRecord();
+                }
+            });
+        });
+    }
+
+    function createRecord() {
+        console.log(request.body);
+        return response.status(200).end();
+    };
+});
+
 app.listen(config.serverPort, function(error) { // start backend server
     if (error) {
-        console.log("error starting formServer: " + error);
+        console.log("error starting universal formServer: " + error);
     } else {
-        console.log("universalForm server in operation... (" + config.serverUrl + ")");
+        console.log("universal formServer in operation... (" + config.serverUrl + ")");
     }
 });

@@ -1,9 +1,9 @@
 var path = require("path");
 
 module.exports = {
-    debug: true,
+    debug: false,
     context: path.resolve("js"),
-    noInfo: true,
+    noInfo: false,
     entry: {
         generateForm: "./generateForm"
     },

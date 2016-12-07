@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <form id="isProdDataForm" name="isProdDataForm" action="" method="post" enctype="multipart/form-data">
+    <form id="isProdDataForm" name="isProdDataForm" action="http://localhost:9004/glassRun" method="post" enctype="multipart/form-data">
         <div class="container">
             <div class="row text-center">
                 <h2 id="title">統義玻璃工業股份有限公司</h2>
@@ -177,12 +177,12 @@
                         <span>&nbsp;/分</span>
                     </div>
                     <div>
-                        <span style="display:inline-block;width:120px;">製瓶間隔</span>
-                        <input id="bottleSpacing" name="bottleSpacing" type="text" size="10" />
+                        <span style="display:inline-block;width:120px;">製瓶間距</span>
+                        <select id="bottleSpacing" name="bottleSpacing"></select>
                     </div>
                     <div>
                         <span style="display:inline-block;width:120px;">口模規</span>
-                        <input id="nrGauge" name="nrGauge" type="text" size="10" />
+                        <select id="nrGauge" name="nrGauge"></select>
                     </div>
                     <div>
                         <span style="display:inline-block;width:120px;">初模模具溫度</span>
@@ -202,7 +202,7 @@
                     </div>
                     <div>
                         <span style="display:inline-block;width:120px;">冷卻風壓力</span>
-                        <input id="coolingPressure" name="coolingPressure" type="text" size="10" />
+                        <select id="coolingPressure" name="coolingPressure"></select>
                     </div>
                     <div>
                         <span style="display:inline-block;width:120px;">主空氣壓｜低壓</span>
