@@ -11,6 +11,7 @@ var multer = require("multer");
 var config = require("./module/config.js");
 var database = require("./module/database.js");
 var queryString = require("./model/queryString.js");
+var utility = require("./module/utility.js")
 
 var app = express();
 app.set("view engine", "ejs");
@@ -26,15 +27,22 @@ app.use("/public/image", express.static("./public/image")); // serve favicon
 var fileStructureValidated = false;
 var imageDirectoryList = [{
     id: "isProdDataForm",
-    path: "image/isProdDataForm",
+    pathList: [
+        "image/isProdDataForm/bmCoolingStack",
+        "image/isProdDataForm/fmCoolingStack",
+        "image/isProdDataForm/gobShape"
+    ],
     upload: multer({ dest: "image/isProdDataForm" + "/" })
 }];
 if (fileStructureValidated !== true) {
     imageDirectoryList.forEach(function(imageDirectory) {
-        if (!fs.existsSync(imageDirectory.path)) {
-            fs.mkdirSync(imageDirectory.path);
-        }
-        app.use("/" + imageDirectory.id + "/" + imageDirectory.path, express.static("./" + imageDirectory.path)); // serve static image files
+        imageDirectory.pathList.forEach(function(path) {
+            if (!fs.existsSync(path)) {
+                fs.mkdirSync(path);
+            }
+            app.use("/" + imageDirectory.id + "/" + path, express.static("./" + path)); // serve static image files
+        });
+        console.log("directory created for: " + imageDirectory.id);
     });
     fileStructureValidated = true;
 }
@@ -50,28 +58,36 @@ app.get("/glassRun", function(request, response) {
 
 app.post("/glassRun", imageDirectoryList[0].upload.any(), function(request, response) {
     console.log(moment(moment(), "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm:ss") + " received POST request on /glassRun");
-    let uploadLocation = [];
+    let primaryKey = utility.uuidGenerator();
+    let uploadLocationObject = {};
     if (request.files.length === 0) {
         console.log("no file upload received...");
-        createRecord();
+        return createRecord(primaryKey, request.body, null);
     } else {
         request.files.forEach(function(file, index) {
-            uploadLocation.push(file.destination + file.filename + ".JPG");
-            fs.rename(file.path, uploadLocation[index], function(error) {
+            uploadLocationObject[file.fieldname] = file.destination + file.fieldname + "/" + primaryKey + ".JPG";
+            fs.rename(file.path, uploadLocationObject[file.fieldname], function(error) {
                 if (error) {
                     console.log("photo upload failure: " + error);
                     return response.status(500).send("photo upload failure: " + error);
                 } else {
                     console.log("photo uploaded");
-                    createRecord();
                 }
             });
         });
+        return createRecord(primaryKey, request.body, uploadLocationObject);
     }
 
-    function createRecord() {
-        console.log(request.body);
-        return response.status(200).end();
+    function createRecord(primaryKeyString, requestData, uploadPathObject) {
+        database.executeQuery(queryString.insertGlassRunRecord(
+                primaryKeyString, requestData, uploadPathObject),
+            function(error) {
+                if (error) {
+                    return response.status(500).send("發生錯誤: " + error).end();
+                }
+                console.log("isProdDataFrom insert completed...");
+                return response.status(200).redirect("http://localhost:8080/isProdDataForm.html");
+            });
     };
 });
 

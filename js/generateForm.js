@@ -24,12 +24,14 @@ function initialize() {
                 '</option>');
             $("option.current").data("schedate", record.schedate);
             $("option.current").data("glassProdLineID", record.glassProdLineID);
-            $("option.current").data("prodReference", record.PRDT_SNM);
+            $("option.current").data("prodReference", record.prd_no);
+            $("option.current").data("mockProdReference", record.PRDT_SNM);
             $("option.current").removeClass("current");
         });
     });
     $("select#glassRun").change(function() {
         $("input#prodReference").val($("select option:selected").data("prodReference"));
+        $("input#mockProdReference").val($("select option:selected").data("mockProdReference"));
         $("input#glassProdLineID").val($("select option:selected").data("glassProdLineID"));
     });
     var selectOptionListArray = [{
@@ -77,20 +79,20 @@ function initialize() {
     }, {
         id: "nrArm",
         optionList: [{
-            value: '3" SG',
-            text: '3" SG'
+            value: "3&quot; SG",
+            text: "3&quot; SG"
         }, {
-            value: '3" DG',
-            text: '3" DG'
+            value: "3&quot; DG",
+            text: "3&quot; DG"
         }]
     }, {
         id: "fuArm",
         optionList: [{
-            value: '3-1/4" SG',
-            text: '3-1/4" SG'
+            value: "3-1/4&quot; SG",
+            text: "3-1/4&quot; SG"
         }, {
-            value: '3-1/4" DG',
-            text: '3-1/4" DG'
+            value: "3-1/4&quot; DG",
+            text: "3-1/4&quot; DG"
         }]
     }, {
         id: "thimble",
@@ -260,11 +262,11 @@ function initialize() {
     }, {
         id: "bottleSpacing",
         optionList: [{
-            value: '10-1/2"',
-            text: '10-1/2"'
+            value: "10-1/2&quot;",
+            text: "10-1/2&quot;"
         }, {
-            value: '21"',
-            text: '21"'
+            value: "21&quot;",
+            text: "21&quot;"
         }]
     }, {
         id: "nrGauge",
@@ -308,7 +310,7 @@ function initialize() {
     }];
     (function prepareSelectControl(optionListArray) {
         optionListArray.forEach(function(optionList) {
-            $("select#" + optionList.id).append('<option value="" disabled selected></option>');
+            $("select#" + optionList.id).append('<option value="" selected></option>');
             optionList.optionList.forEach(function(option) {
                 $("select#" + optionList.id).append('<option class="current" value="' + option.value + '">' + option.text + '</option>');
             });

@@ -21,7 +21,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <span>製令單號&nbsp;</span>
-                    <select id="glassRun" name="glassRun"></select>
+                    <select id="glassRun" name="glassRun" required></select>
                 </div>
             </div>
             <br>
@@ -30,6 +30,7 @@
                     <div>
                         <span>瓶號&nbsp;</span>
                         <input id="prodReference" name="prodReference" type="text" size="10" readonly />
+                        <input id="mockProdReference" name="mockProdReference" type="text" size="10" readonly />
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -50,7 +51,7 @@
             </div>
             <br>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-xs-6">
                     <div class="text-center">機械設備</div>
                     <br>
                     <div>
@@ -101,41 +102,41 @@
                     </div>
                     <div>
                         <span style="display:inline-block;width:120px;">心棒上壓力</span>
-                        <input id="plUpPressure" name="plUpPressure" type="number" min="0" step="0.1" style="width:60px;" />
+                        <input id="plUpPressure" name="plUpPressure" type="number" min="0" max="10" step="0.1" style="width:60px;" />
                         <span>&nbsp;kg</span>
                     </div>
                     <div>
                         <span style="display:inline-block;width:120px;">定頭吹風壓力</span>
-                        <input id="settleBlowPressure" name="settleBlowPressure" type="number" min="0" step="0.1" style="width:60px;" />
+                        <input id="settleBlowPressure" name="settleBlowPressure" type="number" min="0" max="10" step="0.1" style="width:60px;" />
                         <span>&nbsp;kg</span>
                     </div>
                     <div>
                         <span style="display:inline-block;width:120px;">心棒冷卻壓力</span>
-                        <input id="plCoolingPressure" name="plCoolingPressure" type="number" min="0" step="0.1" style="width:60px;" />
+                        <input id="plCoolingPressure" name="plCoolingPressure" type="number" min="0" max="10" step="0.1" style="width:60px;" />
                         <span>&nbsp;kg</span>
                     </div>
                     <div>
                         <span style="display:inline-block;width:120px;">初成形吹風壓力</span>
-                        <input id="counterBlowPressure" name="counterBlowPressure" type="number" min="0" step="0.1" style="width:60px;" />
+                        <input id="counterBlowPressure" name="counterBlowPressure" type="number" min="0" max="10" step="0.1" style="width:60px;" />
                         <span>&nbsp;kg</span>
                     </div>
                     <div>
                         <span style="display:inline-block;width:120px;">成形吹風壓力</span>
-                        <input id="finalBlowPressure" name="finalBlowPressure" type="number" min="0" step="0.1" style="width:60px;" />
+                        <input id="finalBlowPressure" name="finalBlowPressure" type="number" min="0" max="10" step="0.1" style="width:60px;" />
                         <span>&nbsp;kg</span>
                     </div>
                     <div>
                         <span style="display:inline-block;width:120px;">主空氣壓｜高壓</span>
-                        <input id="highPressure" name="highPressure" type="number" min="0" step="0.1" style="width:60px;" />
+                        <input id="highPressure" name="highPressure" type="number" min="0" max="10" step="0.1" style="width:60px;" />
                         <span>&nbsp;kg</span>
                     </div>
                     <div>
                         <span style="display:inline-block;width:120px;">徐冷窯｜網速</span>
-                        <input id="annealSpeed" name="annealSpeed" type="number" min="0" step="0.001" style="width:100px;" />
+                        <input id="annealInverterSetting" name="annealInverterSetting" type="number" min="0" step="0.001" style="width:100px;" />
                         <span>&nbsp;Hz</span>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xs-6">
                     <div class="text-center">供給器</div>
                     <br>
                     <div>
@@ -148,7 +149,7 @@
                     </div>
                     <div>
                         <span style="display:inline-block;width:120px;">磚管速度</span>
-                        <input id="tubeRevSetting" name="tubeRevSetting" type="number" min="0" step="0.001" style="width:100px;" />
+                        <input id="tubeInverterSetting" name="tubeInverterSetting" type="number" min="0" step="0.001" style="width:100px;" />
                         <span>&nbsp;Hz</span>
                     </div>
                     <div>
@@ -173,7 +174,7 @@
                     </div>
                     <div>
                         <span style="display:inline-block;width:120px;">機速</span>
-                        <input id="machineSpeed" name="machineSpeed" type="number" min="1" step="0.01" maxlength="7" style="width:40px;" />
+                        <input id="machineSpeed" name="machineSpeed" type="number" min="1" step="0.01" maxlength="7" style="width:70px;" />
                         <span>&nbsp;/分</span>
                     </div>
                     <div>
@@ -206,7 +207,7 @@
                     </div>
                     <div>
                         <span style="display:inline-block;width:120px;">主空氣壓｜低壓</span>
-                        <input id="lowPressure" name="lowPressure" type="number" min="0" step="0.1" style="width:60px;" />
+                        <input id="lowPressure" name="lowPressure" type="number" min="0" max="10" step="0.1" style="width:60px;" />
                         <span>&nbsp;kg</span>
                     </div>
                     <div>
