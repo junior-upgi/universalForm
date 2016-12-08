@@ -6,23 +6,34 @@ $('document').ready(function() {
 
 function initialize() {
     $('input#recordDate').val(moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD'));
-    //$('input#prodReference').hide();
+    $('input#machno').hide();
+    $('input#schedate').hide();
+    $('input#prodReference').hide();
     $.get('./glassRun', function(recordset) {
         //console.log(recordset);
         $('select#glassRun').append('<option value="" disabled selected></option>');
         recordset.forEach(function(record, index) {
             $('select#glassRun').append('<option class="current" value="' + index + '">' +
-                record.schedate + ' -  ' +
+                moment(record.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD') + ' -  ' +
                 record.glassProdLineID + '[' +
                 record.PRDT_SNM + '] ' +
                 numeral(record.orderQty).format('0,0') + ' ' +
                 '</option>');
-            $('option.current').data('schedate', record.schedate).addClass(record.schedate);
+            $('option.current').data('schedate',
+                moment(record.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD')).addClass(
+                moment(record.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD'));
             $('option.current').data('machno', record.machno).addClass(record.machno);
             $('option.current').data('glassProdLineID', record.glassProdLineID).addClass(record.glassProdLineID);
             $('option.current').data('prodReference', record.prd_no).addClass(record.prd_no);
             $('option.current').data('mockProdReference', record.PRDT_SNM);
             $('option.current').removeClass('current');
+        });
+        $.get('./isProdData', function(recordset) {
+            recordset.forEach(function(record) {
+                $('option.' + record.glassProdLineID + '.' +
+                    moment(record.schedate, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD') + '.' +
+                    record.prodReference).append('<span class="existData">*</span>').addClass('existData').val(record.id);
+            });
         });
     });
     $('select#glassRun').change(function() {

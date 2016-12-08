@@ -45,6 +45,15 @@ if (fileStructureValidated !== true) {
     fileStructureValidated = true;
 }
 
+app.get('/isProdData', function(request, response) {
+    database.executeQuery(queryString.getISProdDataRecordset, function(isProdDataRecordset, error) {
+        if (error) {
+            return response.status(500).json([]).end();
+        }
+        return response.status(200).json(isProdDataRecordset);
+    });
+});
+
 app.get('/glassRun', function(request, response) {
     database.executeQuery(queryString.getGlassRunRecordset, function(glassRunRecordset, error) {
         if (error) {
