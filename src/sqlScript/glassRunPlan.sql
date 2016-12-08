@@ -20,7 +20,7 @@ FROM (
     -- 以同產線、生產日期以及ERP產品編號區分生產次數
 	SELECT a.machno,a.schedate,a.prd_no,SUM(CAST(a.allscheqty AS INT)) AS orderQty
 	FROM Z_DB_U105.dbo.tbmkno a
-	WHERE a.closed=0 AND b.schedate>=GETDATE() -- 篩選未結案且計劃於未來生產項目
+	WHERE a.closed=0 -- 篩選未結案項目
 	GROUP BY a.machno,a.schedate,a.prd_no) b
     -- 結合產品資料表以擷取較正確的白瓶編號
 	INNER JOIN DB_U105.dbo.PRDT c ON b.prd_no=c.PRD_NO;
