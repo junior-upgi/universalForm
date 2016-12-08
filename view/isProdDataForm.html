@@ -6,12 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
     <title>製造課生產條件記錄表</title>
-    <link rel="shortcut icon" type="image/png" href="http://localhost:9004/public/image/upgiLogo.png" />
-    <script src="public/js/generateForm.js"></script>
+    <link rel="shortcut icon" type="image/png" href="../favicon/upgiLogo.png" />
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.10/moment-timezone-with-data.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.0/numeral.min.js"></script>
+    <script src="isProdDataForm/js/generateForm.js"></script>
 </head>
 
 <body>
-    <form id="isProdDataForm" name="isProdDataForm" action="http://localhost:9004/glassRun" method="post" enctype="multipart/form-data">
+    <form id="isProdDataForm" name="isProdDataForm" action="./glassRun" method="post" enctype="multipart/form-data">
         <div class="container">
             <div class="row text-center">
                 <h2 id="title">統義玻璃工業股份有限公司</h2>
@@ -22,6 +29,9 @@
                 <div class="col-md-12">
                     <span>製令單號&nbsp;</span>
                     <select id="glassRun" name="glassRun" required></select>
+                    <input id="machno" name="machno" type="text" size="10" />
+                    <input id="schedate" name="schedate" type="date" />
+                    <input id="prodReference" name="prodReference" type="text" size="10" />
                 </div>
             </div>
             <br>
@@ -29,14 +39,13 @@
                 <div class="col-md-3">
                     <div>
                         <span>瓶號&nbsp;</span>
-                        <input id="prodReference" name="prodReference" type="text" size="10" readonly />
                         <input id="mockProdReference" name="mockProdReference" type="text" size="10" readonly />
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div>
                         <span>重量&nbsp;</span>
-                        <input id="productionWeight" name="productionWeight" type="number" name="weight" min="1" step="0.05" maxlength="7" style="width:80px;" placeholder="生產重量*" />
+                        <input id="productionWeight" name="productionWeight" type="number" name="weight" min="1" step="0.05" maxlength="7" style="width:80px;" />
                         <span>&nbsp;g</span>
                     </div>
                 </div>
