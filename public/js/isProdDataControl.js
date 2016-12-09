@@ -10,7 +10,7 @@ function prepareISProdDataForm(originalGlassRunValue) {
     //$('input#schedate').hide(); // hide field that user does not need to see
     //$('input#prodReference').hide(); // hide field that user does not need to see
     // ajax ERP extension's database for glass run record
-    $.get('http://upgi.ddns.net:9004/productionHistory/glassRun', function(recordset) {
+    $.get(serverUrl + '/glassRun', function(recordset) {
         // fill in the select control so user can choose production run
         $('select#glassRun').append('<option value="" disabled selected></option>');
         recordset.forEach(function(record, index) { // loop through production run record
@@ -32,7 +32,7 @@ function prepareISProdDataForm(originalGlassRunValue) {
             $('option.current').removeClass('current'); // remove the temporary identification class attrib
         });
         // ajax for existing IS production data records
-        $.get('http://upgi.ddns.net:9004/productionHistory/isProdData/recordID/all', function(recordset) {
+        $.get(serverUrl + '/isProdData/recordID/all', function(recordset) {
             // label glassRun options with appropriate class and value to ID existing records
             recordset.forEach(function(record) {
                 $('option.glassRun.' + record.glassProdLineID + '.' +
@@ -62,7 +62,7 @@ function glassRunSelectHandler() {
             if (checkRecordExistence()) { // if selected glassRun has existing isProdData
                 loadExistingISProdData();
             } else { // if no existing isProdData
-                $('form#isProdDataForm').attr('action', 'http://upgi.ddns.net:9004/productionHistory/isProdData').attr('method', 'post');
+                $('form#isProdDataForm').attr('action', serverUrl + '/isProdData').attr('method', 'post');
             }
         } else { // already exists a previous selection
             var newGlassRunSelection = { // save the current selected value and data
@@ -75,7 +75,7 @@ function glassRunSelectHandler() {
             };
             $('form#isProdDataForm').remove(); // remove the form
             // ajax for a clean copy of the form
-            $.get('http://upgi.ddns.net:9004/productionHistory/isProdDataForm/reload', function(formHTML) {
+            $.get(serverUrl + '/isProdDataForm/reload', function(formHTML) {
                 $('body').append(formHTML); // place a clean copy of the form back into the webpage
                 // insert the original values back into the form
                 $('input#machno').val(newGlassRunSelection.machno);
@@ -99,15 +99,14 @@ function checkRecordExistence() {
 };
 
 function loadExistingISProdData() {
-    $.get('http://upgi.ddns.net:9004/productionHistory/isProdData/recordID/' + $('select#glassRun').val(), function(record) {
-        var fieldsToRemove = [
-            'id', 'machno', 'machno', 'schedate', 'prodReference', 'glassProdLineID',
-            'recordDate', 'feeder', 'spout', 'created', 'modified'
+    $.get(serverUrl + '/isProdData/recordID/' + $('select#glassRun').val(), function(record) {
+        var fieldsToRemove = ['id', 'machno', 'machno', 'schedate', 'prodReference',
+            'glassProdLineID', 'recordDate', 'feeder', 'spout', 'created', 'modified'
         ];
         fieldsToRemove.forEach(function(fieldName) { // remove unneccessary field/property
             delete record[fieldName];
         });
-        // convert true/false values in checkbox fields into 1/0's
+        // convert true/false values in checkbox fields into 1's and 0's
         record['conveyorHeating'] = (record['conveyorHeating'] === true) ? 1 : 0;
         record['crossBridgeHeating'] = (record['crossBridgeHeating'] === true) ? 1 : 0;
         // loop through record and map data to the form fields
@@ -124,7 +123,7 @@ function loadExistingISProdData() {
                             break;
                         }
                         if ($('input#' + objectIndex).attr('type') === 'file') {
-                            console.log(objectIndex + ": dealing with file input");
+                            console.log(objectIndex + ': dealing with file input');
                             break;
                         }
                         alert('資料查詢顯示發生錯誤，請與IT聯繫 (input type not checked: ' + objectIndex + ')');
@@ -137,12 +136,12 @@ function loadExistingISProdData() {
                         break;
                     case 'DIV':
                         if ($('div#' + objectIndex).hasClass('checkboxControlHolder')) {
-                            console.log('input:checkbox[name="' + objectIndex + '"][value=' + record[objectIndex] + ']');
                             $('input:checkbox[name="' + objectIndex + '"][value=' + record[objectIndex] + ']').prop('checked', true);
                             break;
+                        } else {
+                            alert('資料查詢顯示發生錯誤，請與IT聯繫 (unknown control in DIV: ' + objectIndex + ')');
+                            break;
                         }
-                        alert('資料查詢顯示發生錯誤，請與IT聯繫 (unknown control in DIV: ' + objectIndex + ')');
-                        break;
                     default:
                         alert('資料查詢顯示發生錯誤，請與IT聯繫 (unknown control type: ' + objectIndex + ')');
                         break;

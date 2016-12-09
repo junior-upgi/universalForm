@@ -67,7 +67,7 @@ app.get('/productionHistory/isProdData/recordID/:recordID', function(request, re
         if (request.params.recordID) {
             database.executeQuery(queryString.getISProdDataRecord(request.params.recordID), function(isProdDataRecord, error) {
                 if (error) {
-                    console.log("getISProdDataRecord() failed: " + error);
+                    console.log('getISProdDataRecord() failed: ' + error);
                     return response.status(500).json({}).end();
                 }
                 return response.status(200).json(isProdDataRecord[0]);
