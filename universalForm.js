@@ -45,16 +45,7 @@ if (fileStructureValidated !== true) {
     fileStructureValidated = true;
 }
 
-app.get('/isProdData', function(request, response) {
-    database.executeQuery(queryString.getISProdDataRecordset, function(isProdDataRecordset, error) {
-        if (error) {
-            return response.status(500).json([]).end();
-        }
-        return response.status(200).json(isProdDataRecordset);
-    });
-});
-
-app.get('/glassRun', function(request, response) {
+app.get('/productionHistory/glassRun', function(request, response) {
     database.executeQuery(queryString.getGlassRunRecordset, function(glassRunRecordset, error) {
         if (error) {
             return response.status(500).json([]).end();
@@ -63,7 +54,32 @@ app.get('/glassRun', function(request, response) {
     });
 });
 
-app.post('/glassRun', imageDirectoryList[0].upload.any(), function(request, response) {
+app.get('/productionHistory/isProdData/recordID/:recordID', function(request, response) {
+    console.log(request.params.recordID);
+    if (request.params.recordID === 'all') {
+        database.executeQuery(queryString.getISProdDataRecordset, function(isProdDataRecordset, error) {
+            if (error) {
+                return response.status(500).json([]).end();
+            }
+            return response.status(200).json(isProdDataRecordset);
+        });
+    } else {
+        if (request.params.recordID) {
+            database.executeQuery(queryString.getISProdDataRecord(request.params.recordID), function(isProdDataRecord, error) {
+                if (error) {
+                    console.log("getISProdDataRecord() failed: " + error);
+                    return response.status(500).json({}).end();
+                }
+                return response.status(200).json(isProdDataRecord[0]);
+            });
+        } else {
+            console.log("getISProdDataRecord()'s recordID invalid");
+            return response.status(500).json({}).end();
+        }
+    }
+});
+
+app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), function(request, response) {
     console.log(moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + ' received POST request on /glassRun');
     var primaryKey = utility.uuidGenerator();
     var uploadLocationObject = {};
@@ -93,16 +109,20 @@ app.post('/glassRun', imageDirectoryList[0].upload.any(), function(request, resp
                     return response.status(500).send('error inserting isProdData: ' + error).end();
                 }
                 console.log('isProdDataFrom insert completed...');
-                return response.status(200).redirect(config.serverUrl + '/isProdDataForm');
+                return response.status(200).redirect(config.serverUrl + '/productionHistory/isProdDataForm');
             });
     };
 });
 
-app.use('/favicon', express.static(__dirname + '/public/image')); // serve static image
-
-app.use('/isProdDataForm/js', express.static(__dirname + '/public/js')); // serve frontend javascript
-app.get('/isProdDataForm', function(request, response) { // serve form
+app.use('/productionHistory/isProdDataForm/favicon', express.static(__dirname + '/public/image')); // serve static image
+app.use('/productionHistory/isProdDataForm/css', express.static(__dirname + '/public/css')); // serve static image
+app.use('/productionHistory/isProdDataForm/js', express.static(__dirname + '/public/js')); // serve frontend javascript
+app.get('/productionHistory/isProdDataForm', function(request, response) { // serve form
     response.status(200).sendFile(__dirname + '/view/isProdDataForm.html');
+});
+app.get('/productionHistory/isProdDataForm/reload', function(request, response) { // serve fresh copy of the form html code
+    var formHTML = fs.readFileSync(__dirname + '/view/isProdDataFormBody.html');
+    response.status(200).send(formHTML);
 });
 
 app.listen(config.serverPort, function(error) { // start backend server

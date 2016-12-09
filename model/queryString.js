@@ -1,7 +1,10 @@
 var moment = require('moment-timezone');
 
+var getISProdDataRecord = function(recordID) {
+    return "SELECT * FROM productionHistory.dbo.isProdData WHERE id='" + recordID + "';";
+};
+
 var insertGlassRunRecord = function(primaryKeyString, requestData, uploadPathObject) {
-    console.log(requestData);
     var firstPart = 'INSERT INTO productionHistory.dbo.isProdData (';
     var fieldList = '';
     var thirdPart = ') VALUES (';
@@ -40,6 +43,7 @@ var insertGlassRunRecord = function(primaryKeyString, requestData, uploadPathObj
 
 module.exports = {
     getGlassRunRecordset: 'SELECT * FROM productionHistory.dbo.glassRun ORDER BY schedate DESC,PRDT_SNM;',
+    getISProdDataRecord: getISProdDataRecord,
     getISProdDataRecordset: 'SELECT * FROM productionHistory.dbo.isProdData;',
     insertGlassRunRecord: insertGlassRunRecord
 };
