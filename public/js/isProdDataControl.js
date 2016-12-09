@@ -107,7 +107,7 @@ function loadExistingISProdData() {
         fieldsToRemove.forEach(function(fieldName) { // remove unneccessary field/property
             delete record[fieldName];
         });
-        // convert true/false values into 1/0's
+        // convert true/false values in checkbox fields into 1/0's
         record['conveyorHeating'] = (record['conveyorHeating'] === true) ? 1 : 0;
         record['crossBridgeHeating'] = (record['crossBridgeHeating'] === true) ? 1 : 0;
         // loop through record and map data to the form fields
