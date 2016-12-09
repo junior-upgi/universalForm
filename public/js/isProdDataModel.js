@@ -1,3 +1,5 @@
+'use strict';
+
 var selectOptionListArray = [{ // list to hold select control option data
     id: 'bmHolder',
     optionList: [{

@@ -256,14 +256,13 @@
                 <span>&nbsp;°C</span>
             </div>
         </div>
-        <br>
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-xs-12 bordered">
+                &nbsp;
                 <div>生產狀況記錄</div>
-                <textarea id="note" name="note" class="fieldToLoad" rows="5" cols="10" style="width:100%;border:none;"></textarea>
+                <textarea id="note" name="note" class="fieldToLoad" rows="5" cols="10" style="width:100%;border:none;"></textarea> &nbsp;
             </div>
         </div>
-        &nbsp;
         <div class="row">
             <div class="col-xs-4 bordered">
                 <div>初模冷卻風箱</div><br>
@@ -274,7 +273,7 @@
                 <input id="fmCoolingStack" name="fmCoolingStack" class="fieldToLoad" type="file" />
             </div>
             <div class="col-xs-4 bordered">
-                <div>GOB形狀</div><br>
+                <div>GOB 形狀</div><br>
                 <input id="gobShape" name="gobShape" class="fieldToLoad" type="file" />
             </div>
         </div>
@@ -290,6 +289,7 @@
             <div class="col-xs-12">
                 <input type="submit" value="送出記錄" />
                 <input type="reset" value="重置表單" />
+                <button id="deleteRecordButton" type="button" disabled>刪除記錄</button>
             </div>
         </div>
     </div>

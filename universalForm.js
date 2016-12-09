@@ -55,7 +55,6 @@ app.get('/productionHistory/glassRun', function(request, response) {
 });
 
 app.get('/productionHistory/isProdData/recordID/:recordID', function(request, response) {
-    console.log(request.params.recordID);
     if (request.params.recordID === 'all') {
         database.executeQuery(queryString.getISProdDataRecordset, function(isProdDataRecordset, error) {
             if (error) {
@@ -112,6 +111,25 @@ app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fu
                 return response.status(200).redirect(config.serverUrl + '/productionHistory/isProdDataForm');
             });
     };
+});
+
+app.put('/productionHistory/isProdData', function(request, response) {
+    console.log('PUT REQUEST NOT IMPLEMENTED YET !!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    console.log(request.body.recordID);
+    return response.status(200).redirect(config.serverUrl + '/productionHistory/isProdDataForm');
+});
+
+app.delete('/productionHistory/isProdData', function(request, response) {
+    database.executeQuery("DELETE FROM productionHistory.dbo.isProdData WHERE id='" + request.body.recordID + "';", function(error) {
+        if (error) {
+            return response.status(500).send('error deleting isProdData record: ' + error).end();
+            ////////////////////////////////////
+            // needs to delete the files also //
+            ////////////////////////////////////
+        }
+        console.log('record deleted...');
+        response.status(200).send(config.serverUrl + '/productionHistory/isProdDataForm');
+    });
 });
 
 app.use('/productionHistory/isProdDataForm/favicon', express.static(__dirname + '/public/image')); // serve static image

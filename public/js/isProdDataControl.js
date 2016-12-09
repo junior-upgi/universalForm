@@ -1,6 +1,27 @@
+'use strict';
+
 var isProdDataFormInitialization = function(originalGlassRunValue) {
     prepareISProdDataForm(originalGlassRunValue);
     glassRunSelectHandler();
+    deleteButtonHandler();
+};
+
+function deleteButtonHandler() {
+    $('button#deleteRecordButton').click(function() {
+        $.ajax({
+            url: serverUrl + '/isProdData',
+            type: 'delete',
+            data: {
+                recordID: $('select#glassRun option:selected').val()
+            },
+            success: function(response) {
+                window.location.href = response;
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
 };
 
 function prepareISProdDataForm(originalGlassRunValue) {
@@ -43,7 +64,7 @@ function prepareISProdDataForm(originalGlassRunValue) {
             if (originalGlassRunValue !== '') { // must execute at this position of the callback
                 $('select#glassRun').val(originalGlassRunValue);
             }
-            if (checkRecordExistence()) { // if selected glassRun has existing data
+            if (checkISProdDataExistence()) { // if selected glassRun has existing data
                 loadExistingISProdData();
             }
         });
@@ -53,16 +74,19 @@ function prepareISProdDataForm(originalGlassRunValue) {
 function glassRunSelectHandler() {
     $('select#glassRun').change(function() { // function to handel event of glassRun control change
         // check if a previous selection is made
-        if ($('input#machno').val() === '') { // first selection
+        if ($('input#machno').val() === '') { // first selection since starting the application
             $('input#machno').val($('select#glassRun option:selected').data('machno'));
             $('input#schedate').val($('select#glassRun option:selected').data('schedate'));
             $('input#prodReference').val($('select#glassRun option:selected').data('prodReference'));
             $('input#mockProdReference').val($('select#glassRun option:selected').data('mockProdReference'));
             $('input#glassProdLineID').val($('select#glassRun option:selected').data('glassProdLineID'));
-            if (checkRecordExistence()) { // if selected glassRun has existing isProdData
+            if (checkISProdDataExistence()) { // if selected glassRun has existing isProdData
                 loadExistingISProdData();
             } else { // if no existing isProdData
+                // set form up for record insert by POST
                 $('form#isProdDataForm').attr('action', serverUrl + '/isProdData').attr('method', 'post');
+                // disable the delete button since the page is setup for insert at this point of the code
+                $('button#deleteRecordButton').prop('disabled', true);
             }
         } else { // already exists a previous selection
             var newGlassRunSelection = { // save the current selected value and data
@@ -90,7 +114,7 @@ function glassRunSelectHandler() {
     });
 };
 
-function checkRecordExistence() {
+function checkISProdDataExistence() {
     if ($('select#glassRun option:selected').hasClass('existingData')) {
         return true;
     } else {
@@ -148,6 +172,8 @@ function loadExistingISProdData() {
                 }
             }
         }
-        // remember to set form data action and method=put
+        $('button#deleteRecordButton').prop('disabled', false); // enable deleteRecordButton
+        // set form data action and method to enable a PUT request
+        $('form#isProdDataForm').attr('action', serverUrl + '/isProdData').attr('method', 'put');
     });
 };

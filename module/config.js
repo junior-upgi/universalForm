@@ -9,7 +9,7 @@ var upgiSystemPassword = 'upgiSystem';
 module.exports = {
     serverHost: serverHost,
     serverPort: serverPort,
-    serverUrl: 'http://upgi.ddns.net:' + serverPort,
+    serverUrl: serverHost + ':' + serverPort,
     mssqlServerHost: mssqlServerHost,
     mssqlServerPort: mssqlServerPort,
     mssqlServerUrl: mssqlServerHost + ':' + mssqlServerHost,
