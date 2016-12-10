@@ -15,9 +15,11 @@ function deleteButtonHandler() {
                 recordID: $('select#glassRun option:selected').val()
             },
             success: function(response) {
+                alert('資料刪除成功');
                 window.location.href = response;
             },
             error: function(error) {
+                alert('資料刪除失敗，請聯繫IT檢視');
                 console.log(error);
             }
         });

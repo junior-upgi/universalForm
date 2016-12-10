@@ -1,7 +1,7 @@
 var serverHost = 'http://localhost';
 var serverPort = process.env.PORT || 9004;
-//var mssqlServerHost = 'http://192.168.168.5'; // access database from LAN (production)
-var mssqlServerHost = 'http://127.0.0.1'; // access database through SSH (development)
+var mssqlServerHost = 'http://192.168.168.5'; // access database from LAN (production)
+//var mssqlServerHost = 'http://127.0.0.1'; // access database through SSH (development)
 var mssqlServerPort = process.env.PORT || 1433;
 var upgiSystemAccount = 'upgiSystem';
 var upgiSystemPassword = 'upgiSystem';
@@ -10,6 +10,8 @@ module.exports = {
     serverHost: serverHost,
     serverPort: serverPort,
     serverUrl: serverHost + ':' + serverPort,
+    publicServerUrl: 'http://upgi.ddns.net:' + serverPort, // production
+    //publicServerUrl: serverHost +':' + serverPort, // development
     mssqlServerHost: mssqlServerHost,
     mssqlServerPort: mssqlServerPort,
     mssqlServerUrl: mssqlServerHost + ':' + mssqlServerHost,

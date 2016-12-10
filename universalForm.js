@@ -14,7 +14,6 @@ var queryString = require('./model/queryString.js');
 var utility = require('./module/utility.js')
 
 var app = express();
-var router = express.Router();
 app.use(cors()); // allow cross origin request
 app.use(morgan('dev')); // log request and result to console
 app.use(bodyParser.urlencoded({ extended: true })); // parse application/x-www-form-urlencoded
@@ -38,7 +37,7 @@ if (fileStructureValidated !== true) {
             if (!fs.existsSync(path)) {
                 fs.mkdirSync(path);
             }
-            app.use('/' + imageDirectory.id + '/' + path, express.static('./' + path)); // serve static image files
+            app.use('/productionHistory/' + path, express.static('./' + path)); // serve static image files
         });
         console.log('directory created for: ' + imageDirectory.id);
     });
@@ -108,7 +107,7 @@ app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fu
                     return response.status(500).send('error inserting isProdData: ' + error).end();
                 }
                 console.log('isProdDataFrom insert completed...');
-                return response.status(200).redirect(config.serverUrl + '/productionHistory/isProdDataForm');
+                return response.status(200).redirect(config.publicServerUrl + '/productionHistory/isProdDataForm');
             });
     };
 });
@@ -116,19 +115,19 @@ app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fu
 app.put('/productionHistory/isProdData', function(request, response) {
     console.log('PUT REQUEST NOT IMPLEMENTED YET !!!!!!!!!!!!!!!!!!!!!!!!!!!');
     console.log(request.body.recordID);
-    return response.status(200).redirect(config.serverUrl + '/productionHistory/isProdDataForm');
+    return response.status(200).redirect(config.publicServerUrl + '/productionHistory/isProdDataForm');
 });
 
 app.delete('/productionHistory/isProdData', function(request, response) {
     database.executeQuery("DELETE FROM productionHistory.dbo.isProdData WHERE id='" + request.body.recordID + "';", function(error) {
         if (error) {
             return response.status(500).send('error deleting isProdData record: ' + error).end();
-            ////////////////////////////////////
-            // needs to delete the files also //
-            ////////////////////////////////////
         }
+        imageDirectoryList[0].pathList.forEach(function(path) {
+            utility.fileRemoval(path + '/' + request.body.recordID + '.JPG');
+        });
         console.log('record deleted...');
-        response.status(200).send(config.serverUrl + '/productionHistory/isProdDataForm');
+        response.status(200).send(config.publicServerUrl + '/productionHistory/isProdDataForm');
     });
 });
 
