@@ -115,7 +115,6 @@ app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fu
     }
 
     function insertRecord(primaryKeyString, requestData, uploadPathObject) {
-        console.log(queryString.insertGlassRunRecord(primaryKeyString, requestData, uploadPathObject));
         database.executeQuery(queryString.insertGlassRunRecord(primaryKeyString, requestData, uploadPathObject),
             function(error) {
                 if (error) {

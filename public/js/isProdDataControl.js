@@ -146,9 +146,6 @@ function loadExistingISProdData() {
         } else {
             record['crossBridgeHeating'] = (record['crossBridgeHeating'] === true) ? 1 : 0;
         }
-        console.log(record['conveyorHeating']);
-        console.log(record['crossBridgeHeating']);
-
         fieldsToRemove.forEach(function(fieldName) { // remove unneccessary field/property
             delete record[fieldName];
         });
