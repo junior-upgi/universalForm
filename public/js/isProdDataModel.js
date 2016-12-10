@@ -318,6 +318,7 @@ var selectOptionListArray = [{ // list to hold select control option data
 
 var checkInputListArray = [{ // list to hold checkbox control option data
     id: 'conveyorHeating',
+    multiSelect: false,
     optionList: [{
         value: 1,
         text: '有'
@@ -327,6 +328,7 @@ var checkInputListArray = [{ // list to hold checkbox control option data
     }]
 }, {
     id: 'crossBridgeHeating',
+    multiSelect: false,
     optionList: [{
         value: 1,
         text: '有'

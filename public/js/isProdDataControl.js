@@ -135,12 +135,23 @@ function loadExistingISProdData() {
         var fieldsToRemove = ['id', 'machno', 'machno', 'schedate', 'prodReference',
             'glassProdLineID', 'recordDate', 'feeder', 'spout', 'created', 'modified'
         ];
+        // deal with null values of checkboxes and convert true/false values in checkbox fields into 1's and 0's
+        if (record['conveyorHeating'] === null) {
+            fieldsToRemove.push('conveyorHeating'); // when null the render action is skipped
+        } else {
+            record['conveyorHeating'] = (record['conveyorHeating'] === true) ? 1 : 0;
+        }
+        if (record['crossBridgeHeating'] === null) {
+            fieldsToRemove.push('crossBridgeHeating'); // when null the render action is skipped
+        } else {
+            record['crossBridgeHeating'] = (record['crossBridgeHeating'] === true) ? 1 : 0;
+        }
+        console.log(record['conveyorHeating']);
+        console.log(record['crossBridgeHeating']);
+
         fieldsToRemove.forEach(function(fieldName) { // remove unneccessary field/property
             delete record[fieldName];
         });
-        // convert true/false values in checkbox fields into 1's and 0's
-        record['conveyorHeating'] = (record['conveyorHeating'] === true) ? 1 : 0;
-        record['crossBridgeHeating'] = (record['crossBridgeHeating'] === true) ? 1 : 0;
         // loop through record and map data to the form fields
         for (var objectIndex in record) { // loop through the record object by index
             if (record[objectIndex] !== null) { // only process the fields that isn't 'null'
@@ -204,7 +215,6 @@ function deletePhoto(recordIndex) {
 
 function submitUpdatedRecord() {
     var updatedFormData = new FormData($('form#isProdDataForm')[0]);
-    console.log(updatedFormData);
     $.ajax({
         url: $('form#isProdDataForm').attr('action'),
         type: 'put',

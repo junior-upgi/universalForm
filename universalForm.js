@@ -115,6 +115,7 @@ app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fu
     }
 
     function insertRecord(primaryKeyString, requestData, uploadPathObject) {
+        console.log(queryString.insertGlassRunRecord(primaryKeyString, requestData, uploadPathObject));
         database.executeQuery(queryString.insertGlassRunRecord(primaryKeyString, requestData, uploadPathObject),
             function(error) {
                 if (error) {
@@ -149,7 +150,14 @@ app.put('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fun
     }
 
     function updateRecord(primaryKeyString, requestData, uploadPathObject) {
-        console.log(queryString.updateGlassRunRecord(primaryKeyString, requestData, uploadPathObject));
+        // problem with javascript 'formData' object not sending unchecked boxes any value
+        // causing problems with update, manually insert a blank value for the checkbox controls
+        if (requestData.conveyorHeating === undefined) {
+            requestData['conveyorHeating'] = '';
+        }
+        if (requestData.crossBridgeHeating === undefined) {
+            requestData['crossBridgeHeating'] = '';
+        }
         database.executeQuery(queryString.updateGlassRunRecord(primaryKeyString, requestData, uploadPathObject),
             function(data, error) {
                 if (error) {
