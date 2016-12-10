@@ -29,9 +29,9 @@ function deleteButtonHandler() {
 function prepareISProdDataForm(originalGlassRunValue) {
     // auto fill form input date
     $('input#recordDate').val(moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD'));
-    //$('input#machno').hide(); // hide field that user does not need to see
-    //$('input#schedate').hide(); // hide field that user does not need to see
-    //$('input#prodReference').hide(); // hide field that user does not need to see
+    $('input#machno').hide(); // hide field that user does not need to see
+    $('input#schedate').hide(); // hide field that user does not need to see
+    $('input#prodReference').hide(); // hide field that user does not need to see
     // ajax ERP extension's database for glass run record
     $.get(serverUrl + '/glassRun', function(recordset) {
         // fill in the select control so user can choose production run
