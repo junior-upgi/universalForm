@@ -1,16 +1,8 @@
 'use strict';
 
-$('document').ready(function() {
-    // ajax for a clean copy of the form
-    $.get(serverUrl + '/isProdDataForm/reload', function(formHTML) {
-        $('body').append(formHTML); // place a clean copy of the form into the webpage
-        initialize(isProdDataFormInitialization, ''); // initialize the webpage form
-    });
-});
-
-function initialize(formInitializationScript, originalGlassRunValue) {
+function initialize(formInitializationScript, originalGlassRunSelection) {
     // run initialize script (start form with previous selected values if passed in as argument)
-    formInitializationScript(originalGlassRunValue);
+    formInitializationScript(originalGlassRunSelection);
 
     // auto generate select control options
     (function prepareSelectControl(optionListArray) {

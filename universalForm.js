@@ -53,6 +53,21 @@ app.get('/productionHistory/glassRun', function(request, response) {
     });
 });
 
+app.get('/productionHistory/isProdDataForm/deletePhoto/recordID/:recordID/fieldName/:fieldName', function(request, response) {
+    console.log(request.params);
+    database.executeQuery(queryString.deletePhoto(request.params.recordID, request.params.fieldName), function(error) {
+        if (error) {
+            console.log('photo data reference removal failure: ' + error);
+            return response.status(500).end();
+        }
+        var imageFilePath = 'image/isProdDataForm/' + request.params.fieldName + '/';
+        utility.fileRemoval(imageFilePath + request.params.recordID + '.JPG', function() {
+            console.log('photo deleted');
+            return response.status(200).end();
+        });
+    });
+});
+
 app.get('/productionHistory/isProdData/recordID/:recordID', function(request, response) {
     if (request.params.recordID === 'all') {
         database.executeQuery(queryString.getISProdDataRecordset, function(isProdDataRecordset, error) {
@@ -83,7 +98,7 @@ app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fu
     var uploadLocationObject = {};
     if (request.files.length === 0) {
         console.log('no file upload received...');
-        return createRecord(primaryKey, request.body, null);
+        return insertRecord(primaryKey, request.body, null);
     } else {
         request.files.forEach(function(file, index) {
             uploadLocationObject[file.fieldname] = file.destination + file.fieldname + '/' + primaryKey + '.JPG';
@@ -96,12 +111,11 @@ app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fu
                 }
             });
         });
-        return createRecord(primaryKey, request.body, uploadLocationObject);
+        return insertRecord(primaryKey, request.body, uploadLocationObject);
     }
 
-    function createRecord(primaryKeyString, requestData, uploadPathObject) {
-        database.executeQuery(queryString.insertGlassRunRecord(
-                primaryKeyString, requestData, uploadPathObject),
+    function insertRecord(primaryKeyString, requestData, uploadPathObject) {
+        database.executeQuery(queryString.insertGlassRunRecord(primaryKeyString, requestData, uploadPathObject),
             function(error) {
                 if (error) {
                     return response.status(500).send('error inserting isProdData: ' + error).end();
@@ -112,10 +126,39 @@ app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fu
     };
 });
 
-app.put('/productionHistory/isProdData', function(request, response) {
-    console.log('PUT REQUEST NOT IMPLEMENTED YET !!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    console.log(request.body.recordID);
-    return response.status(200).redirect(config.publicServerUrl + '/productionHistory/isProdDataForm');
+app.put('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), function(request, response) {
+    console.log(moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + ' received PUT request on /glassRun');
+    var primaryKey = request.body.glassRun;
+    var uploadLocationObject = {};
+    if (request.files.length === 0) {
+        console.log('no file upload received...');
+        return updateRecord(primaryKey, request.body, null);
+    } else {
+        request.files.forEach(function(file, index) {
+            uploadLocationObject[file.fieldname] = file.destination + file.fieldname + '/' + primaryKey + '.JPG';
+            fs.rename(file.path, uploadLocationObject[file.fieldname], function(error) {
+                if (error) {
+                    console.log('photo upload failure: ' + error);
+                    return response.status(500).send('photo upload failure: ' + error);
+                } else {
+                    console.log('photo uploaded');
+                }
+            });
+        });
+        return updateRecord(primaryKey, request.body, uploadLocationObject);
+    }
+
+    function updateRecord(primaryKeyString, requestData, uploadPathObject) {
+        console.log(queryString.updateGlassRunRecord(primaryKeyString, requestData, uploadPathObject));
+        database.executeQuery(queryString.updateGlassRunRecord(primaryKeyString, requestData, uploadPathObject),
+            function(data, error) {
+                if (error) {
+                    return response.status(500).send('error updating isProdData: ' + error).end();
+                }
+                console.log('isProdDataFrom update completed...');
+                return response.status(200).send(config.publicServerUrl + '/productionHistory/isProdDataForm');
+            });
+    };
 });
 
 app.delete('/productionHistory/isProdData', function(request, response) {
@@ -124,7 +167,9 @@ app.delete('/productionHistory/isProdData', function(request, response) {
             return response.status(500).send('error deleting isProdData record: ' + error).end();
         }
         imageDirectoryList[0].pathList.forEach(function(path) {
-            utility.fileRemoval(path + '/' + request.body.recordID + '.JPG');
+            if (!utility.fileRemoval(path + '/' + request.body.recordID + '.JPG')) {
+                console.log('error removing photos...');
+            }
         });
         console.log('record deleted...');
         response.status(200).send(config.publicServerUrl + '/productionHistory/isProdDataForm');

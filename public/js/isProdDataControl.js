@@ -89,6 +89,7 @@ function glassRunSelectHandler() {
                 $('form#isProdDataForm').attr('action', serverUrl + '/isProdData').attr('method', 'post');
                 // disable the delete button since the page is setup for insert at this point of the code
                 $('button#deleteRecordButton').prop('disabled', true);
+                $('input#submitNewRecord').prop('disabled', false);
             }
         } else { // already exists a previous selection
             var newGlassRunSelection = { // save the current selected value and data
@@ -111,6 +112,11 @@ function glassRunSelectHandler() {
                 $('input#glassProdLineID').val(newGlassRunSelection.glassProdLineID);
                 // reinitialize the form controls
                 initialize(isProdDataFormInitialization, newGlassRunSelection.id);
+                // set form up for record insert by POST
+                $('form#isProdDataForm').attr('action', serverUrl + '/isProdData').attr('method', 'post');
+                // disable the delete button since the page is setup for insert at this point of the code
+                $('button#deleteRecordButton').prop('disabled', true);
+                $('input#submitNewRecord').prop('disabled', false);
             });
         }
     });
@@ -149,7 +155,12 @@ function loadExistingISProdData() {
                             break;
                         }
                         if ($('input#' + objectIndex).attr('type') === 'file') {
-                            console.log(objectIndex + ': dealing with file input');
+                            // put existing photo on the form and add a delete button
+                            $('div.imageHolder.' + objectIndex)
+                                .append('<img class="' + objectIndex + '" src="' + serverUrl + '/' + record[objectIndex] + '" height="200" width="200" />')
+                                .append('<button class=' + objectIndex + ' type="button" onclick="deletePhoto(\'' + objectIndex + '\')">刪除</button>');
+                            // hide the original upload control
+                            $('input#' + objectIndex).hide();
                             break;
                         }
                         alert('資料查詢顯示發生錯誤，請與IT聯繫 (input type not checked: ' + objectIndex + ')');
@@ -177,5 +188,36 @@ function loadExistingISProdData() {
         $('button#deleteRecordButton').prop('disabled', false); // enable deleteRecordButton
         // set form data action and method to enable a PUT request
         $('form#isProdDataForm').attr('action', serverUrl + '/isProdData').attr('method', 'put');
+        $('input[type="submit"]').hide();
+        $('div.formProcessButtonHolder').prepend('<button id="updateRecordButton" type="button" onclick="submitUpdatedRecord()">更新記錄</button>');
     });
 };
+
+function deletePhoto(recordIndex) {
+    $.get(serverUrl + '/isProdDataForm/deletePhoto/recordID/' + $('select#glassRun').val() + '/fieldName/' + recordIndex, function() {
+        $('img.' + recordIndex).remove(); // remove the img element
+        $('button.' + recordIndex).remove(); // remove the removal button
+        $('input#' + recordIndex).show(); // show the original upload control
+        alert("圖片已刪除");
+    });
+};
+
+function submitUpdatedRecord() {
+    var updatedFormData = new FormData($('form#isProdDataForm')[0]);
+    console.log(updatedFormData);
+    $.ajax({
+        url: $('form#isProdDataForm').attr('action'),
+        type: 'put',
+        data: updatedFormData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            alert('資料更新成功');
+            //window.location.href = response;
+        },
+        error: function(error) {
+            alert('資料更新失敗，請聯繫IT檢視');
+            console.log(error);
+        }
+    });
+}

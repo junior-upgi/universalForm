@@ -11,14 +11,19 @@ module.exports = {
         return uuid;
     },
 
-    fileRemoval: function(completeFilePath) {
+    fileRemoval: function(completeFilePath, callback) {
+        console.log(completeFilePath);
         fs.unlink(completeFilePath, function(error) {
             if (error !== null) {
                 console.log('file removal failure (may not be critical failure): ' + error);
                 return false;
             } else {
                 console.log(completeFilePath + ' removed successfully');
-                return true;
+                if (callback === undefined) {
+                    return true;
+                } else {
+                    callback();
+                }
             }
         });
     }

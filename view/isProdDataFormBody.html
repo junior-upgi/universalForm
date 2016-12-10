@@ -265,15 +265,18 @@
         </div>
         <div class="row">
             <div class="col-xs-4 bordered">
-                <div>初模冷卻風箱</div><br>
+                <div>初模冷卻風箱</div>
+                <div class="bmCoolingStack imageHolder"></div>
                 <input id="bmCoolingStack" name="bmCoolingStack" class="fieldToLoad" type="file" accept="image/*" />
             </div>
             <div class="col-xs-4 bordered">
-                <div>成模冷卻風箱</div><br>
+                <div>成模冷卻風箱</div>
+                <div class="fmCoolingStack imageHolder"></div>
                 <input id="fmCoolingStack" name="fmCoolingStack" class="fieldToLoad" type="file" accept="image/*" />
             </div>
             <div class="col-xs-4 bordered">
-                <div>GOB 形狀</div><br>
+                <div>GOB 形狀</div>
+                <div class="gobShape imageHolder"></div>
                 <input id="gobShape" name="gobShape" class="fieldToLoad" type="file" accept="image/*" />
             </div>
         </div>
@@ -286,8 +289,8 @@
         </div>
         &nbsp;
         <div class="row">
-            <div class="col-xs-12">
-                <input type="submit" value="送出記錄" />
+            <div class="col-xs-12 formProcessButtonHolder">
+                <input id="submitNewRecord" type="submit" value="送出記錄" disabled />
                 <button id="deleteRecordButton" type="button" disabled>刪除記錄</button>
             </div>
         </div>
