@@ -17,7 +17,9 @@ function initialize(formInitializationScript, originalGlassRunValue) {
         optionListArray.forEach(function(optionList) {
             $('select#' + optionList.id).append('<option value="" selected></option>');
             optionList.optionList.forEach(function(option) {
-                $('select#' + optionList.id).append('<option class="current" value="' + option.value + '">' + option.text + '</option>');
+                if (option.displayFlag === undefined || option.displayFlag === true) {
+                    $('select#' + optionList.id).append('<option class="current" value="' + option.value + '">' + option.text + '</option>');
+                }
             });
         });
     })(selectOptionListArray);
