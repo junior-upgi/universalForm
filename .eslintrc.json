@@ -1,10 +1,14 @@
 {
     "root": true,
     "env": {
+        "browser": true,
         "node": true,
-        "browser": true
+        "jquery": true
     },
-    "globals": {},
+    "stylelint.enabled": true,
+    "parserOptions": {
+        "sourceType": "module"
+    },
     "rules": {
         "quotes": [2, "single", "avoid-escape"],
         "eqeqeq": 0,
@@ -14,6 +18,5 @@
         "padded-blocks": [1, "never"],
         "space-before-function-paren": [1, "never"],
         "space-before-blocks": [1, "always"]
-    },
-    "plugins": []
+    }
 }

@@ -1,11 +1,11 @@
 var moment = require('moment-timezone');
 
 var deletePhoto = function(recordID, photoFieldName) {
-    return "UPDATE productionHistory.dbo.isProdData SET " + photoFieldName + "=NULL WHERE id='" + recordID + "'";
+    return 'UPDATE productionHistory.dbo.isProdData SET ' + photoFieldName + '=NULL WHERE id=\'' + recordID + '\';';
 };
 
 var getISProdDataRecord = function(recordID) {
-    return "SELECT * FROM productionHistory.dbo.isProdData WHERE id='" + recordID + "';";
+    return 'SELECT * FROM productionHistory.dbo.isProdData WHERE id=\'' + recordID + '\';';
 };
 
 var insertGlassRunRecord = function(primaryKeyString, requestData, uploadPathObject) {
@@ -15,33 +15,33 @@ var insertGlassRunRecord = function(primaryKeyString, requestData, uploadPathObj
     var valueList = '';
     var endPart = ');';
     fieldList += 'id';
-    valueList += "'" + primaryKeyString + "'";
+    valueList += '\'' + primaryKeyString + '\'';
     delete requestData.glassRun;
     delete requestData.mockProdReference;
     for (var key in requestData) {
         if (requestData[key] !== '') {
             fieldList += ',' + key;
-            valueList += ",'" + requestData[key] + "'";
+            valueList += ',\'' + requestData[key] + '\'';
         }
     }
     if (uploadPathObject !== null) {
         if (uploadPathObject.bmCoolingStack !== undefined) {
             fieldList += ',bmCoolingStack';
-            valueList += ",'" + uploadPathObject.bmCoolingStack + "'";
+            valueList += ',\'' + uploadPathObject.bmCoolingStack + '\'';
         }
         if (uploadPathObject.fmCoolingStack !== undefined) {
             fieldList += ',fmCoolingStack';
-            valueList += ",'" + uploadPathObject.fmCoolingStack + "'";
+            valueList += ',\'' + uploadPathObject.fmCoolingStack + '\'';
         }
         if (uploadPathObject.gobShape !== undefined) {
             fieldList += ',gobShape';
-            valueList += ",'" + uploadPathObject.gobShape + "'";
+            valueList += ',\'' + uploadPathObject.gobShape + '\'';
         }
     }
     fieldList += ',created,modified';
-    valueList += ",'" +
-        moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + "','" +
-        moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + "'";
+    valueList += ',\'' +
+        moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + '\',\'' +
+        moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + '\'';
     return firstPart + fieldList + thirdPart + valueList + endPart;
 };
 
@@ -49,28 +49,28 @@ var updateGlassRunRecord = function(primaryKeyString, requestData, uploadPathObj
     var updateString = 'UPDATE productionHistory.dbo.isProdData ';
     var setString = 'SET ';
     var fieldList = [];
-    var conditionString = "WHERE id='" + primaryKeyString + "';";
+    var conditionString = 'WHERE id=\'' + primaryKeyString + '\';';
     delete requestData.glassRun;
     delete requestData.mockProdReference;
     for (var key in requestData) {
         if (requestData[key] !== '') {
-            fieldList += key + "='" + requestData[key] + "',";
+            fieldList += key + '=\'' + requestData[key] + '\',';
         } else {
-            fieldList += key + "=NULL,";
+            fieldList += key + '=NULL,';
         }
     }
     if (uploadPathObject !== null) {
         if (uploadPathObject.bmCoolingStack !== undefined) {
-            fieldList += "bmCoolingStack='" + uploadPathObject.bmCoolingStack + "',";
+            fieldList += 'bmCoolingStack=\'' + uploadPathObject.bmCoolingStack + '\',';
         }
         if (uploadPathObject.fmCoolingStack !== undefined) {
-            fieldList += "fmCoolingStack='" + uploadPathObject.fmCoolingStack + "',";
+            fieldList += 'fmCoolingStack=\'' + uploadPathObject.fmCoolingStack + '\',';
         }
         if (uploadPathObject.gobShape !== undefined) {
-            fieldList += "gobShape='" + uploadPathObject.gobShape + "',";
+            fieldList += 'gobShape=\'' + uploadPathObject.gobShape + '\',';
         }
     }
-    fieldList += "modified='" + moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + "' ";
+    fieldList += 'modified=\'' + moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + '\' ';
     return updateString + setString + fieldList + conditionString;
 };
 

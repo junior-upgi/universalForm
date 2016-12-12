@@ -11,13 +11,13 @@ var multer = require('multer');
 var config = require('./module/config.js');
 var database = require('./module/database.js');
 var queryString = require('./model/queryString.js');
-var utility = require('./module/utility.js')
+var utility = require('./module/utility.js');
 
 var app = express();
 app.use(cors()); // allow cross origin request
 app.use(morgan('dev')); // log request and result to console
 app.use(bodyParser.urlencoded({ extended: true })); // parse application/x-www-form-urlencoded
-var urlencodedParser = bodyParser.urlencoded({ extended: true });
+//var urlencodedParser = bodyParser.urlencoded({ extended: true });
 app.use(bodyParser.json()); // parse application/json
 
 // at start up, make sure that the file structure to hold image exists and starts image server
@@ -86,7 +86,7 @@ app.get('/productionHistory/isProdData/recordID/:recordID', function(request, re
                 return response.status(200).json(isProdDataRecord[0]);
             });
         } else {
-            console.log("getISProdDataRecord()'s recordID invalid");
+            console.log('getISProdDataRecord()\'s recordID invalid');
             return response.status(500).json({}).end();
         }
     }
@@ -100,7 +100,7 @@ app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fu
         console.log('no file upload received...');
         return insertRecord(primaryKey, request.body, null);
     } else {
-        request.files.forEach(function(file, index) {
+        request.files.forEach(function(file) {
             uploadLocationObject[file.fieldname] = file.destination + file.fieldname + '/' + primaryKey + '.JPG';
             fs.rename(file.path, uploadLocationObject[file.fieldname], function(error) {
                 if (error) {
@@ -123,7 +123,7 @@ app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fu
                 console.log('isProdDataFrom insert completed...');
                 return response.status(200).redirect(config.publicServerUrl + '/productionHistory/isProdDataForm');
             });
-    };
+    }
 });
 
 app.put('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), function(request, response) {
@@ -134,7 +134,7 @@ app.put('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fun
         console.log('no file upload received...');
         return updateRecord(primaryKey, request.body, null);
     } else {
-        request.files.forEach(function(file, index) {
+        request.files.forEach(function(file) {
             uploadLocationObject[file.fieldname] = file.destination + file.fieldname + '/' + primaryKey + '.JPG';
             fs.rename(file.path, uploadLocationObject[file.fieldname], function(error) {
                 if (error) {
@@ -165,11 +165,11 @@ app.put('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fun
                 console.log('isProdDataFrom update completed...');
                 return response.status(200).send(config.publicServerUrl + '/productionHistory/isProdDataForm');
             });
-    };
+    }
 });
 
 app.delete('/productionHistory/isProdData', function(request, response) {
-    database.executeQuery("DELETE FROM productionHistory.dbo.isProdData WHERE id='" + request.body.recordID + "';", function(error) {
+    database.executeQuery('DELETE FROM productionHistory.dbo.isProdData WHERE id=\'' + request.body.recordID + '\';', function(error) {
         if (error) {
             return response.status(500).send('error deleting isProdData record: ' + error).end();
         }

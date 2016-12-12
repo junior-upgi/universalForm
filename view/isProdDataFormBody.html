@@ -310,7 +310,7 @@
                         if ($(this).prop('checked') === true) {
                             checkItemCount += 1;
                             if (checkItemCount > 1) {
-                                alert($('input[name="' + targetCheckboxSet + '"]').text() + "項目不得複選\n所有項目將取消");
+                                alert($('input[name="' + targetCheckboxSet + '"]').text() + '項目不得複選\n所有項目將取消');
                                 $('input[name="' + targetCheckboxSet + '"]').prop('checked', false);
                             }
                         }

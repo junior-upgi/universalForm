@@ -206,7 +206,7 @@ function deletePhoto(recordIndex) {
         $('img.' + recordIndex).remove(); // remove the img element
         $('button.' + recordIndex).remove(); // remove the removal button
         $('input#' + recordIndex).show(); // show the original upload control
-        alert("圖片已刪除");
+        alert('圖片已刪除');
     });
 };
 
