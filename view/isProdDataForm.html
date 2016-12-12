@@ -20,10 +20,10 @@
     <!-- production environment -->
     <link rel="shortcut icon" type="image/png" href="http://upgi.ddns.net:9004/productionHistory/isProdDataForm/favicon/upgiLogo.png" />
     <link rel="stylesheet" href="http://upgi.ddns.net:9004/productionHistory/isProdDataForm/css/style.css" />
-    <script src="http://upgi.ddns.net:9004/productionHistory/isProdDataForm/js/config.js"></script>
     <script src="http://upgi.ddns.net:9004/productionHistory/isProdDataForm/js/isProdDataModel.js"></script>
     <script src="http://upgi.ddns.net:9004/productionHistory/isProdDataForm/js/isProdDataControl.js"></script>
     <script src="http://upgi.ddns.net:9004/productionHistory/isProdDataForm/js/generateForm.js"></script>
+    <script src="http://upgi.ddns.net:9004/productionHistory/isProdDataForm/js/entry.js"></script>
     <!-- development environment -->
     <!--
     <link rel="shortcut icon" type="image/png" href="http://127.0.0.1:9004/productionHistory/isProdDataForm/favicon/upgiLogo.png" />
@@ -39,15 +39,3 @@
 </body>
 
 </html>
-
-<script>
-    'use strict';
-
-    $('document').ready(function() {
-        // ajax for a clean copy of the form
-        $.get(serverUrl + '/isProdDataForm/reload', function(formHTML) {
-            $('body').append(formHTML); // place a clean copy of the form into the webpage
-            initialize(isProdDataFormInitialization, ''); // initialize the webpage form
-        });
-    });
-</script>
