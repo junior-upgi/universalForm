@@ -12,6 +12,60 @@ var selectOptionListArray = [{ // list to hold select control option data
         value: 'NO.3 SG',
         text: 'NO.3 SG'
     }, {
+        value: 'NO.4 SG',
+        text: 'NO.4 SG'
+    }, {
+        value: 'NO.5 SG',
+        text: 'NO.5 SG'
+    }, {
+        value: 'NO.6 SG',
+        text: 'NO.6 SG'
+    }, {
+        value: 'NO.1-1 SG (DG 尺寸)',
+        text: 'NO.1-1 SG (DG 尺寸)'
+    }, {
+        value: 'NO.1-2 SG (DG 尺寸)',
+        text: 'NO.1-2 SG (DG 尺寸)'
+    }, {
+        value: 'NO.1 SG (DG 尺寸)',
+        text: 'NO.1 SG (DG 尺寸)'
+    }, {
+        value: 'NO.2 SG (DG 尺寸)',
+        text: 'NO.2 SG (DG 尺寸)'
+    }, {
+        value: 'NO.3 SG (DG 尺寸)',
+        text: 'NO.3 SG (DG 尺寸)'
+    }, {
+        value: 'NO.4 SG (DG 尺寸)',
+        text: 'NO.4 SG (DG 尺寸)'
+    }, {
+        value: 'NO.5 SG (DG 尺寸)',
+        text: 'NO.5 SG (DG 尺寸)'
+    }, {
+        value: 'NO.6 SG (DG 尺寸)',
+        text: 'NO.6 SG (DG 尺寸)'
+    }, {
+        value: 'NO.7 SG (DG 尺寸)',
+        text: 'NO.7 SG (DG 尺寸)'
+    }, {
+        value: 'NO.12 SG (DG 尺寸)',
+        text: 'NO.12 SG (DG 尺寸)'
+    }, {
+        value: 'NO.13 SG (DG 尺寸)',
+        text: 'NO.13 SG (DG 尺寸)'
+    }, {
+        value: 'NO.16 SG (DG 尺寸)',
+        text: 'NO.16 SG (DG 尺寸)'
+    }, {
+        value: 'NO.17 SG (DG 尺寸)',
+        text: 'NO.17 SG (DG 尺寸)'
+    }, {
+        value: 'Φ65 DG',
+        text: 'Φ65 DG'
+    }, {
+        value: 'Φ75 DG',
+        text: 'Φ75 DG'
+    }, {
         value: 'NO.1 DG',
         text: 'NO.1 DG'
     }, {
@@ -20,6 +74,21 @@ var selectOptionListArray = [{ // list to hold select control option data
     }, {
         value: 'NO.3 DG',
         text: 'NO.3 DG'
+    }, {
+        value: 'NO.4 DG',
+        text: 'NO.4 DG'
+    }, {
+        value: 'NO.5 DG',
+        text: 'NO.5 DG'
+    }, {
+        value: 'NO.6 DG',
+        text: 'NO.6 DG'
+    }, {
+        value: 'NO.7 DG',
+        text: 'NO.7 DG'
+    }, {
+        value: 'Φ108 DG',
+        text: 'Φ108 DG'
     }]
 }, {
     id: 'fmHolder',
@@ -33,6 +102,60 @@ var selectOptionListArray = [{ // list to hold select control option data
         value: 'NO.3 SG',
         text: 'NO.3 SG'
     }, {
+        value: 'NO.4 SG',
+        text: 'NO.4 SG'
+    }, {
+        value: 'NO.5 SG',
+        text: 'NO.5 SG'
+    }, {
+        value: 'NO.6 SG',
+        text: 'NO.6 SG'
+    }, {
+        value: 'NO.1-1 SG (DG 尺寸)',
+        text: 'NO.1-1 SG (DG 尺寸)'
+    }, {
+        value: 'NO.1-2 SG (DG 尺寸)',
+        text: 'NO.1-2 SG (DG 尺寸)'
+    }, {
+        value: 'NO.1 SG (DG 尺寸)',
+        text: 'NO.1 SG (DG 尺寸)'
+    }, {
+        value: 'NO.2 SG (DG 尺寸)',
+        text: 'NO.2 SG (DG 尺寸)'
+    }, {
+        value: 'NO.3 SG (DG 尺寸)',
+        text: 'NO.3 SG (DG 尺寸)'
+    }, {
+        value: 'NO.4 SG (DG 尺寸)',
+        text: 'NO.4 SG (DG 尺寸)'
+    }, {
+        value: 'NO.5 SG (DG 尺寸)',
+        text: 'NO.5 SG (DG 尺寸)'
+    }, {
+        value: 'NO.6 SG (DG 尺寸)',
+        text: 'NO.6 SG (DG 尺寸)'
+    }, {
+        value: 'NO.7 SG (DG 尺寸)',
+        text: 'NO.7 SG (DG 尺寸)'
+    }, {
+        value: 'NO.12 SG (DG 尺寸)',
+        text: 'NO.12 SG (DG 尺寸)'
+    }, {
+        value: 'NO.13 SG (DG 尺寸)',
+        text: 'NO.13 SG (DG 尺寸)'
+    }, {
+        value: 'NO.16 SG (DG 尺寸)',
+        text: 'NO.16 SG (DG 尺寸)'
+    }, {
+        value: 'NO.17 SG (DG 尺寸)',
+        text: 'NO.17 SG (DG 尺寸)'
+    }, {
+        value: 'Φ65 DG',
+        text: 'Φ65 DG'
+    }, {
+        value: 'Φ75 DG',
+        text: 'Φ75 DG'
+    }, {
         value: 'NO.1 DG',
         text: 'NO.1 DG'
     }, {
@@ -41,33 +164,69 @@ var selectOptionListArray = [{ // list to hold select control option data
     }, {
         value: 'NO.3 DG',
         text: 'NO.3 DG'
+    }, {
+        value: 'NO.4 DG',
+        text: 'NO.4 DG'
+    }, {
+        value: 'NO.5 DG',
+        text: 'NO.5 DG'
+    }, {
+        value: 'NO.6 DG',
+        text: 'NO.6 DG'
+    }, {
+        value: 'NO.7 DG',
+        text: 'NO.7 DG'
+    }, {
+        value: 'Φ108 DG',
+        text: 'Φ108 DG'
     }]
 }, {
     id: 'nrArm',
     optionList: [{
-        value: '3&quot; SG',
-        text: '3&quot; SG'
+        value: '3&quot;',
+        text: '3&quot;'
     }, {
-        value: '3&quot; DG',
-        text: '3&quot; DG'
+        value: 'NO. 1',
+        text: 'NO. 1'
+    }, {
+        value: 'NO. 2',
+        text: 'NO. 2'
+    }, {
+        value: 'NO. 3',
+        text: 'NO. 3'
     }]
 }, {
     id: 'fuArm',
     optionList: [{
-        value: '3-1/4&quot; SG',
-        text: '3-1/4&quot; SG'
+        value: '2-7/8&quot;',
+        text: '2-7/8&quot;'
     }, {
-        value: '3-1/4&quot; DG',
-        text: '3-1/4&quot; DG'
+        value: '3-1/4&quot;',
+        text: '3-1/4&quot;'
+    }, {
+        value: '3-1/2&quot;',
+        text: '3-1/2&quot;'
+    }, {
+        value: '4-1/2&quot;',
+        text: '4-1/2&quot;'
+    }, {
+        value: '5&quot;',
+        text: '5&quot;'
     }]
 }, {
     id: 'thimble',
     optionList: [{
-        value: '45mm',
-        text: '45mm'
+        value: '53mm',
+        text: '53mm'
+    }, {
+        value: '58mm',
+        text: '58mm'
     }, {
         value: '70mm',
         text: '70mm'
+    }, {
+        value: '70mm (特殊)',
+        text: '70mm (特殊)'
     }]
 }, {
     id: 'plPositioner',
@@ -81,57 +240,156 @@ var selectOptionListArray = [{ // list to hold select control option data
 }, {
     id: 'scoop',
     optionList: [{
-        value: 'NO.1 SG',
-        text: 'NO.1 SG'
+        value: '5/8',
+        text: '5/8'
     }, {
-        value: 'NO.2 SG',
-        text: 'NO.2 SG'
+        value: '3/8-3/4',
+        text: '3/8-3/4'
     }, {
-        value: 'NO.1 DG',
-        text: 'NO.1 DG'
+        value: 'NO.0-2',
+        text: 'NO.0-2'
     }, {
-        value: 'NO.2 DG',
-        text: 'NO.2 DG'
+        value: 'NO.1',
+        text: 'NO.1'
     }, {
-        value: 'NO.3 DG',
-        text: 'NO.3 DG'
+        value: 'NO.2',
+        text: 'NO.2'
+    }, {
+        value: 'NO.3',
+        text: 'NO.3'
+    }, {
+        value: 'NO.4',
+        text: 'NO.4'
+    }, {
+        value: 'NO.5',
+        text: 'NO.5'
+    }, {
+        value: 'NO.2-3',
+        text: 'NO.2-3'
+    }, {
+        value: 'NO.3-4',
+        text: 'NO.3-4'
+    }, {
+        value: 'NO.0',
+        text: 'NO.0'
     }]
 }, {
     id: 'trough',
     optionList: [{
-        value: 'NO.1 SG',
-        text: 'NO.1 SG'
+        value: 'NO.1',
+        text: 'NO.1'
     }, {
-        value: 'NO.2 SG',
-        text: 'NO.2 SG'
+        value: 'NO.2',
+        text: 'NO.2'
     }, {
-        value: 'NO.1 DG',
-        text: 'NO.1 DG'
+        value: 'NO.3',
+        text: 'NO.3'
     }, {
-        value: 'NO.2 DG',
-        text: 'NO.2 DG'
+        value: 'NO.4',
+        text: 'NO.4'
     }, {
-        value: 'NO.3 DG',
-        text: 'NO.3 DG'
+        value: 'NO.5',
+        text: 'NO.5'
+    }, {
+        value: 'NO.0-2',
+        text: 'NO.0-2'
+    }, {
+        value: 'NO.0-3',
+        text: 'NO.0-3'
+    }, {
+        value: 'NO.2-3',
+        text: 'NO.2-3'
+    }, {
+        value: 'NO.3-4',
+        text: 'NO.3-4'
+    }, {
+        value: 'NO.0',
+        text: 'NO.0'
+    }, {
+        value: '5/8&quot;',
+        text: '5/8&quot;'
+    }, {
+        value: '3/4&quot;',
+        text: '3/4&quot;'
+    }, {
+        value: '7/8&quot;',
+        text: '7/8&quot;'
     }]
 }, {
     id: 'deflector',
     optionList: [{
-        value: 'NO.1 SG',
-        text: 'NO.1 SG'
-    }, {
-        value: 'NO.2 SG',
-        text: 'NO.2 SG'
-    }, {
-        value: 'NO.1 DG',
-        text: 'NO.1 DG'
-    }, {
-        value: 'NO.2 DG',
-        text: 'NO.2 DG'
-    }, {
-        value: 'NO.3 DG',
-        text: 'NO.3 DG'
-    }]
+            value: '3/8&quot;',
+            text: '3/8&quot;'
+        },
+        {
+            value: '1/2&quot;',
+            text: '1/2&quot;'
+        },
+        {
+            value: '5/8&quot;',
+            text: '5/8&quot;'
+        },
+        {
+            value: '3/4&quot;',
+            text: '3/4&quot;'
+        },
+        {
+            value: '7/8&quot;',
+            text: '7/8&quot;'
+        },
+        {
+            value: '1&quot;',
+            text: '1&quot;'
+        },
+        {
+            value: '1-1/8&quot;',
+            text: '1-1/8&quot;'
+        },
+        {
+            value: '1-1/4&quot;',
+            text: '1-1/4&quot;'
+        },
+        {
+            value: '1-3/8&quot;',
+            text: '1-3/8&quot;'
+        },
+        {
+            value: '1-1/2&quot;',
+            text: '1-1/2&quot;'
+        },
+        {
+            value: '1-5/8&quot;',
+            text: '1-5/8&quot;'
+        },
+        {
+            value: '1-3/4&quot;',
+            text: '1-3/4&quot;'
+        },
+        {
+            value: '1-7/8&quot;',
+            text: '1-7/8&quot;'
+        },
+        {
+            value: '2&quot;',
+            text: '2&quot;'
+        },
+        {
+            value: '2-1/8&quot;',
+            text: '2-1/8&quot;'
+        },
+        {
+            value: '2-3/8&quot;',
+            text: '2-3/8&quot;'
+        },
+        {
+            value: '2-1/4&quot;',
+            text: '2-1/4&quot;'
+        },
+        {
+            value: '2-3/4&quot;',
+            text: '2-3/4&quot;'
+        }
+    ]
 }, {
     id: 'orificeRing',
     optionList: [
@@ -209,6 +467,9 @@ var selectOptionListArray = [{ // list to hold select control option data
 }, {
     id: 'shearCam',
     optionList: [{
+        value: '20°',
+        text: '20°'
+    }, {
         value: '31°',
         text: '31°'
     }, {
@@ -218,8 +479,14 @@ var selectOptionListArray = [{ // list to hold select control option data
         value: '49°',
         text: '49°'
     }, {
+        value: '50°',
+        text: '50°'
+    }, {
         value: '61°',
         text: '61°'
+    }, {
+        value: '65°',
+        text: '65°'
     }, {
         value: '70°',
         text: '70°'
@@ -235,24 +502,54 @@ var selectOptionListArray = [{ // list to hold select control option data
     }, {
         value: '113°',
         text: '113°'
+    }, {
+        value: '特殊',
+        text: '特殊'
     }]
 }, {
     id: 'shear',
     optionList: [{
+        value: 'NO.1',
+        text: 'NO.1'
+    }, {
         value: 'NO.285',
         text: 'NO.285'
     }, {
         value: 'NO.375',
         text: 'NO.375'
+    }, {
+        value: 'NO.4',
+        text: 'NO.4'
     }]
 }, {
     id: 'plunger',
     optionList: [{
-        value: '82-1976',
-        text: '82-1976'
+        value: '29-610',
+        text: '29-610'
     }, {
-        value: '82-1978',
-        text: '82-1978'
+        value: '29-611',
+        text: '29-611'
+    }, {
+        value: '29-612',
+        text: '29-612'
+    }, {
+        value: '58-2573',
+        text: '58-2573'
+    }, {
+        value: '58-2574',
+        text: '58-2574'
+    }, {
+        value: '58-2575',
+        text: '58-2575'
+    }, {
+        value: '81-3920',
+        text: '81-3920'
+    }, {
+        value: '81-3928',
+        text: '81-3928'
+    }, {
+        value: '81-3929',
+        text: '81-3929'
     }]
 }, {
     id: 'plungerCam',
@@ -269,11 +566,32 @@ var selectOptionListArray = [{ // list to hold select control option data
         value: 'NO.4',
         text: 'NO.4'
     }, {
+        value: 'NO.4-1/2',
+        text: 'NO.4-2/1'
+    }, {
         value: 'NO.5',
         text: 'NO.5'
     }, {
+        value: 'NO.5-1/4',
+        text: 'NO.5-1/4'
+    }, {
+        value: 'NO.5-1/2',
+        text: 'NO.5-1/2'
+    }, {
         value: 'NO.6',
         text: 'NO.6'
+    }, {
+        value: 'NO.7(正)',
+        text: 'NO.7(正)'
+    }, {
+        value: 'NO.7(反)',
+        text: 'NO.7(反)'
+    }, {
+        value: 'NO.12',
+        text: 'NO.12'
+    }, {
+        value: 'HS-556',
+        text: 'HS-556'
     }]
 }, {
     id: 'bottleSpacing',

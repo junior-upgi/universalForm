@@ -5,7 +5,7 @@
             <h4 id="subtitle">製造課生產條件記錄表</h4>
         </div>
         <br>
-        <div class="row">
+        <div class="row noPrint">
             <div class="col-xs-12">
                 <span>製令單號&nbsp;</span>
                 <select id="glassRun" name="glassRun" required></select>
@@ -14,7 +14,7 @@
                 <input id="prodReference" name="prodReference" class="fieldToLoad" type="text" size="10" />
             </div>
         </div>
-        <br>
+        <br class="noPrint">
         <div class="row">
             <div class="col-xs-3">
                 <span>瓶號&nbsp;</span>
@@ -260,24 +260,24 @@
             <div class="col-xs-12 bordered">
                 &nbsp;
                 <div>生產狀況記錄</div>
-                <textarea id="note" name="note" class="fieldToLoad" rows="5" cols="10" style="width:100%;border:none;"></textarea> &nbsp;
+                <textarea id="note" name="note" class="fieldToLoad" rows="3" cols="10" style="width:100%;border:none;"></textarea> &nbsp;
             </div>
         </div>
         <div class="row">
             <div class="col-xs-4 bordered">
                 <div>初模冷卻風箱</div>
                 <div class="bmCoolingStack imageHolder"></div>
-                <input id="bmCoolingStack" name="bmCoolingStack" class="fieldToLoad" type="file" accept="image/*" />
+                <input id="bmCoolingStack" name="bmCoolingStack" class="fieldToLoad noPrint" type="file" accept="image/*" />
             </div>
             <div class="col-xs-4 bordered">
                 <div>成模冷卻風箱</div>
                 <div class="fmCoolingStack imageHolder"></div>
-                <input id="fmCoolingStack" name="fmCoolingStack" class="fieldToLoad" type="file" accept="image/*" />
+                <input id="fmCoolingStack" name="fmCoolingStack" class="fieldToLoad noPrint" type="file" accept="image/*" />
             </div>
             <div class="col-xs-4 bordered">
                 <div>GOB 形狀</div>
                 <div class="gobShape imageHolder"></div>
-                <input id="gobShape" name="gobShape" class="fieldToLoad" type="file" accept="image/*" />
+                <input id="gobShape" name="gobShape" class="fieldToLoad noPrint" type="file" accept="image/*" />
             </div>
         </div>
         &nbsp;
@@ -288,7 +288,7 @@
             <div class="col-xs-3">填表</div>
         </div>
         &nbsp;
-        <div class="row">
+        <div class="row noPrint">
             <div class="col-xs-12 formProcessButtonHolder">
                 <input id="submitNewRecord" type="submit" value="送出記錄" disabled />
                 <button id="deleteRecordButton" type="button" disabled>刪除記錄</button>
@@ -296,27 +296,3 @@
         </div>
     </div>
 </form>
-
-<script>
-    $("document").ready(function() {
-        // monitor sets of checkbox's and make sure multiselection setting is enforced
-        $('input').change(function() { // checks on every change to checkbox's
-            var targetCheckboxSet = $(this).attr('name'); // save current checkbox's name for access
-            checkInputListArray.forEach(function(checkInputList) { // loop through sets available
-                // when the looped set is found and multiselection is false
-                if ((checkInputList.id === targetCheckboxSet) && (checkInputList.multiSelect === false)) {
-                    var checkItemCount = 0;
-                    $('input[name="' + targetCheckboxSet + '"]').each(function() {
-                        if ($(this).prop('checked') === true) {
-                            checkItemCount += 1;
-                            if (checkItemCount > 1) {
-                                alert($('input[name="' + targetCheckboxSet + '"]').text() + '項目不得複選\n所有項目將取消');
-                                $('input[name="' + targetCheckboxSet + '"]').prop('checked', false);
-                            }
-                        }
-                    });
-                }
-            });
-        });
-    });
-</script>

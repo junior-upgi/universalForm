@@ -166,7 +166,7 @@ function loadExistingISProdData() {
                             // put existing photo on the form and add a delete button
                             $('div.imageHolder.' + objectIndex)
                                 .append('<img class="' + objectIndex + '" src="' + serverUrl + '/' + record[objectIndex] + '" height="200" width="200" />')
-                                .append('<button class=' + objectIndex + ' type="button" onclick="deletePhoto(\'' + objectIndex + '\')">刪除</button>');
+                                .append('<button class="' + objectIndex + ' noPrint" type="button" onclick="deletePhoto(\'' + objectIndex + '\')">刪除</button>');
                             // hide the original upload control
                             $('input#' + objectIndex).hide();
                             break;
