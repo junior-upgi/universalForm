@@ -6,6 +6,14 @@ var isProdDataFormInitialization = function(originalGlassRunValue) {
     deleteButtonHandler();
 };
 
+function prepareTaskListForm(originalGlassRunValue) {
+    $.get('http://localhost:9005/taskList', {
+        recordID: originalGlassRunValue
+    }, function(taskListHTMLSource) {
+        $('form#isProdDataForm').before(taskListHTMLSource);
+    });
+};
+
 function deleteButtonHandler() {
     $('button#deleteRecordButton').click(function() {
         $.ajax({
@@ -100,7 +108,7 @@ function glassRunSelectHandler() {
                 mockProdReference: $('select option:selected').data('mockProdReference'),
                 glassProdLineID: $('select option:selected').data('glassProdLineID')
             };
-            $('form#isProdDataForm').remove(); // remove the form
+            $('body').empty(); // remove the html page
             // ajax for a clean copy of the form
             $.get(serverUrl + '/isProdDataForm/reload', function(formHTML) {
                 $('body').append(formHTML); // place a clean copy of the form back into the webpage
@@ -131,6 +139,9 @@ function checkISProdDataExistence() {
 };
 
 function loadExistingISProdData() {
+    // load task list against the record id
+    //prepareTaskListForm($('select#glassRun').val());
+    // load data for the actual form
     $.get(serverUrl + '/isProdData/recordID/' + $('select#glassRun').val(), function(record) {
         var fieldsToRemove = ['id', 'machno', 'machno', 'schedate', 'prodReference',
             'glassProdLineID', 'recordDate', 'feeder', 'spout', 'created', 'modified'

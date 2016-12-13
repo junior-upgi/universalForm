@@ -7,6 +7,7 @@ $('document').ready(function() {
     $.get(serverUrl + '/isProdDataForm/reload', function(formHTML) {
         $('body').append(formHTML); // place a clean copy of the form into the webpage
         initialize(isProdDataFormInitialization, ''); // initialize the webpage form
+
         // monitor sets of checkbox's and make sure multiselection setting is enforced
         $('input').change(function() { // checks on every change to checkbox's
             var targetCheckboxSet = $(this).attr('name'); // save current checkbox's name for access
