@@ -165,8 +165,8 @@ function loadExistingISProdData() {
                         if ($('input#' + objectIndex).attr('type') === 'file') {
                             // put existing photo on the form and add a delete button
                             $('div.imageHolder.' + objectIndex)
-                                .append('<img class="' + objectIndex + '" src="' + serverUrl + '/' + record[objectIndex] + '" height="200" width="200" />')
-                                .append('<button class="' + objectIndex + ' noPrint" type="button" onclick="deletePhoto(\'' + objectIndex + '\')">刪除</button>');
+                                .append('<img class="' + objectIndex + '" src="' + serverUrl + '/' + record[objectIndex] + '" height="160" width="160" />')
+                                .append('<button class="' + objectIndex + ' hideWhenPrint" type="button" onclick="deletePhoto(\'' + objectIndex + '\')">刪除</button>');
                             // hide the original upload control
                             $('input#' + objectIndex).hide();
                             break;
@@ -227,4 +227,23 @@ function submitUpdatedRecord() {
             console.log(error);
         }
     });
-}
+};
+
+function printForm() {
+    $('.hideWhenPrint').hide(); // hide elements that should not appear on the printed page
+    // prepare elements for printing
+    $('input.prepareToPrint').each(function() {
+        $(this).after('<span class="removeAfterPrint">' + $(this).val() + '</span>');
+        $(this).hide();
+    });
+    $('select.prepareToPrint').each(function() {
+        $(this).after('<span class="removeAfterPrint">' + $(this).val() + '</span>');
+        $(this).hide();
+    });
+    $('div.bordered.heightControl').css('height', 28); // compress cells a bit
+    print(); // print page
+    $('div.bordered.heightControl').css('height', 30); // restore cell height
+    $('span.removeAfterPrint').remove(); // remove items that were prepared for printing
+    $('.hideWhenPrint').show(); // show elements that were hidden while printing
+    $('.prepareToPrint').show(); // show elements that were hidden after prepared for print
+};

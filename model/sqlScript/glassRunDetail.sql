@@ -6,7 +6,8 @@ SELECT
 	,a.prd_no
 	,d.PRD_MARK
 	,a.PRDT_SNM
-    ,a.orderQty
+    --,a.orderQty
+    ,d.QTY
 	,a.PRDT_SPC
 	,e.REM AS SPC_NAME
 	,b.mk_no
