@@ -4,34 +4,42 @@
             <h2 id="title">統義玻璃工業股份有限公司</h2>
             <h4 id="subtitle">製造課生產條件記錄表</h4>
         </div>
-        <br class="hideWhenPrint">
-        <div class="row hideWhenPrint">
+        <br class="noPrint">
+        <div class="row noPrint">
             <div class="col-xs-12">
-                <span>製令單號&nbsp;</span>
+                <span>製令單號</span>&nbsp;
                 <select id="glassRun" name="glassRun" required></select>
-                <input id="machno" name="machno" class="fieldToLoad" type="text" size="10" />
-                <input id="schedate" name="schedate" class="fieldToLoad" type="date" />
-                <input id="prodReference" name="prodReference" class="fieldToLoad" type="text" size="10" />
+                <span>系統線別:</span>
+                <input id="machno" name="machno" class="restoreData" type="text" size="10" />
+                <span>生產日期:</span>
+                <input id="schedate" name="schedate" class="restoreData" type="date" />
+                <span>ERP 產品編號:</span>
+                <input id="prodReference" name="prodReference" class="restoreData" type="text" size="10" />
+                <select id="formState" name="formState" required>
+                    <option value="0" selected>skeleton form</option>
+                    <option value="1">new pristine record</option>
+                    <option value="2">new record with data</option>
+                    <option value="3">pristine historical record</option>
+                    <option value="4">historical record with new data</option>
+                </select>
             </div>
         </div>
-        <br class="hideWhenPrint">
+        <br class="noPrint">
         <div class="row">
-            <div class="col-xs-3">
-                <span>瓶號&nbsp;</span>
-                <input id="mockProdReference" name="mockProdReference" class="fieldToLoad prepareToPrint" type="text" size="10" readonly />
-            </div>
-            <div class="col-xs-3">
-                <span>重量&nbsp;</span>
-                <input id="productionWeight" name="productionWeight" class="fieldToLoad prepareToPrint" type="number" name="weight" min="1" step="0.05" maxlength="7" style="width:70px;" />
-                <span>&nbsp;g</span>
-            </div>
-            <div class="col-xs-3">
-                <span>生產線&nbsp;</span>
-                <input id="glassProdLineID" name="glassProdLineID" class="fieldToLoad prepareToPrint" type="text" size="8" readonly />
-            </div>
-            <div class="col-xs-3">
-                <span>記錄日期&nbsp;</span>
-                <input id="recordDate" name="recordDate" type="date" class="fieldToLoad prepareToPrint" style="width:130px;" readonly />
+            <div class="col-xs-12">
+                <span>瓶號</span>&nbsp;
+                <input id="mockProdReference" name="mockProdReference" class="restoreData preparePrint" type="text" size="10" />&nbsp;
+                <input id="samping" name="sampling" class="restoreData" type="checkbox" />
+                <span>試模</span>&nbsp;&nbsp;&nbsp;
+                <span>重量</span>&nbsp;
+                <input id="productionWeight" name="productionWeight" class="restoreData preparePrint" type="number" name="weight" min="1" step="0.05" maxlength="7" style="width:70px;" />&nbsp;
+                <span>g</span>&nbsp;&nbsp;&nbsp;
+                <span>生產線</span>&nbsp;
+                <input id="glassProdLineID" name="glassProdLineID" class="restoreData preparePrint" type="text" size="8" />&nbsp;&nbsp;&nbsp;
+                <span>生產數量</span>&nbsp;
+                <input id="allscheqty" name="allscheqty" class="restoreData preparePrint" type="number" min='1' step="1" maxlength="10" style="width:100px;" />&nbsp;&nbsp;&nbsp;
+                <span>記錄日期</span>&nbsp;
+                <input id="recordDate" name="recordDate" type="date" class="restoreData preparePrint" style="width:130px;" />
             </div>
         </div>
         <div class="row">
@@ -45,238 +53,238 @@
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">初模抱具</span>
-                <select id="bmHolder" name="bmHolder" class="fieldToLoad prepareToPrint"></select>
+                <select id="bmHolder" name="bmHolder" class="restoreData preparePrint"></select>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">型式</span>
-                <input id="feeder" name="feeder" class="fieldToLoad prepareToPrint" type="text" size="10" value="CIH-1" readonly />
+                <input id="feeder" name="feeder" class="restoreData preparePrint" type="text" size="10" value="CIH-1" readonly />
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">成模抱具</span>
-                <select id="fmHolder" name="fmHolder" class="fieldToLoad prepareToPrint"></select>
+                <select id="fmHolder" name="fmHolder" class="restoreData preparePrint"></select>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">盆磚</span>
-                <input id="spout" name="spout" class="fieldToLoad prepareToPrint" type="text" size="10" value='144-704-6"-5"' readonly/>
+                <input id="spout" name="spout" class="restoreData preparePrint" type="text" size="10" value='144-704-6"-5"' readonly />
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">口模臂</span>
-                <select id="nrArm" name="nrArm" class="fieldToLoad prepareToPrint"></select>
+                <select id="nrArm" name="nrArm" class="restoreData preparePrint"></select>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">磚管速度</span>
-                <input id="tubeInverterSetting" name="tubeInverterSetting" class="fieldToLoad prepareToPrint" type="number" min="0" step="0.001" style="width:100px;" />
+                <input id="tubeInverterSetting" name="tubeInverterSetting" class="restoreData preparePrint" type="number" min="0" step="0.001" style="width:100px;" />
                 <span>&nbsp;Hz</span>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">漏斗臂</span>
-                <select id="fuArm" name="fuArm" class="fieldToLoad prepareToPrint"></select>
+                <select id="fuArm" name="fuArm" class="restoreData preparePrint"></select>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">出口杯規格</span>
-                <select id="orificeRing" name="orificeRing" class="fieldToLoad prepareToPrint"></select>
+                <select id="orificeRing" name="orificeRing" class="restoreData preparePrint"></select>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">套筒</span>
-                <select id="thimble" name="thimble" class="fieldToLoad prepareToPrint"></select>
+                <select id="thimble" name="thimble" class="restoreData preparePrint"></select>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">剪刀凸輪</span>
-                <select id="shearCam" name="shearCam" class="fieldToLoad prepareToPrint"></select>
+                <select id="shearCam" name="shearCam" class="restoreData preparePrint"></select>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">心棒機構配件</span>
-                <select id="plPositioner" name="plPositioner" class="fieldToLoad prepareToPrint"></select>
+                <select id="plPositioner" name="plPositioner" class="restoreData preparePrint"></select>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">剪刀規格</span>
-                <select id="shear" name="shear" class="fieldToLoad prepareToPrint"></select>
+                <select id="shear" name="shear" class="restoreData preparePrint"></select>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">心棒間隔物</span>
-                <input id="spacer" name="spacer" class="fieldToLoad prepareToPrint" type="number" min="1" step="0.5" style="width:60px;" />
+                <input id="spacer" name="spacer" class="restoreData preparePrint" type="number" min="1" step="0.5" style="width:60px;" />
                 <span>&nbsp;mm</span>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">磚棒凸輪</span>
-                <select id="plungerCam" name="plungerCam" class="fieldToLoad prepareToPrint" class="clearable"></select>
+                <select id="plungerCam" name="plungerCam" class="restoreData preparePrint" class="clearable"></select>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">承受螺絲</span>
-                <input id="stopScrew" name="stopScrew" class="fieldToLoad prepareToPrint" type="number" min="1" step="0.5" style="width:60px;" />
+                <input id="stopScrew" name="stopScrew" class="restoreData preparePrint" type="number" min="1" step="0.5" style="width:60px;" />
                 <span>&nbsp;mm</span>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">磚棒規格</span>
-                <select id="plunger" name="plunger" class="fieldToLoad prepareToPrint"></select>
+                <select id="plunger" name="plunger" class="restoreData preparePrint"></select>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">接收槽</span>
-                <select id="scoop" name="scoop" class="fieldToLoad prepareToPrint"></select>
+                <select id="scoop" name="scoop" class="restoreData preparePrint"></select>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">機速</span>
-                <input id="machineSpeed" name="machineSpeed" class="fieldToLoad prepareToPrint" type="number" min="1" step="0.01" maxlength="7" style="width:70px;" />
+                <input id="machineSpeed" name="machineSpeed" class="restoreData preparePrint" type="number" min="1" step="0.01" maxlength="7" style="width:70px;" />
                 <span>&nbsp;/分</span>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">直槽</span>
-                <select id="trough" name="trough" class="fieldToLoad prepareToPrint"></select>
+                <select id="trough" name="trough" class="restoreData preparePrint"></select>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">製瓶間距</span>
-                <select id="bottleSpacing" name="bottleSpacing" class="fieldToLoad prepareToPrint"></select>
+                <select id="bottleSpacing" name="bottleSpacing" class="restoreData preparePrint"></select>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">彎槽</span>
-                <select id="deflector" name="deflector" class="fieldToLoad prepareToPrint"></select>
+                <select id="deflector" name="deflector" class="restoreData preparePrint"></select>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">口模規</span>
-                <select id="nrGauge" name="nrGauge" class="fieldToLoad prepareToPrint"></select>
+                <select id="nrGauge" name="nrGauge" class="restoreData preparePrint"></select>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">心棒上壓力</span>
-                <input id="plUpPressure" name="plUpPressure" class="fieldToLoad prepareToPrint" type="number" min="0" max="10" step="0.1" style="width:60px;" />
+                <input id="plUpPressure" name="plUpPressure" class="restoreData preparePrint" type="number" min="0" max="10" step="0.1" style="width:60px;" />
                 <span>&nbsp;kg</span>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">初模模具溫度</span>
-                <input id="bmTemp" name="bmTemp" class="fieldToLoad prepareToPrint" type="number" min="0" step="1" style="width:60px;" />
+                <input id="bmTemp" name="bmTemp" class="restoreData preparePrint" type="number" min="0" step="1" style="width:60px;" />
                 <span>&nbsp;°C</span>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">定頭吹風壓力</span>
-                <input id="settleBlowPressure" name="settleBlowPressure" class="fieldToLoad prepareToPrint" type="number" min="0" max="10" step="0.1" style="width:60px;" />
+                <input id="settleBlowPressure" name="settleBlowPressure" class="restoreData preparePrint" type="number" min="0" max="10" step="0.1" style="width:60px;" />
                 <span>&nbsp;kg</span>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">成模模具溫度</span>
-                <input id="fmTemp" name="fmTemp" class="fieldToLoad prepareToPrint" type="number" min="0" step="1" style="width:60px;" />
+                <input id="fmTemp" name="fmTemp" class="restoreData preparePrint" type="number" min="0" step="1" style="width:60px;" />
                 <span>&nbsp;°C</span>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">心棒冷卻壓力</span>
-                <input id="plCoolingPressure" name="plCoolingPressure" class="fieldToLoad prepareToPrint" type="number" min="0" max="10" step="0.1" style="width:60px;" />
+                <input id="plCoolingPressure" name="plCoolingPressure" class="restoreData preparePrint" type="number" min="0" max="10" step="0.1" style="width:60px;" />
                 <span>&nbsp;kg</span>
             </div>
-            <div id="conveyorHeating" class="col-xs-6 checkboxControlHolder fieldToLoad bordered heightControl">
+            <div id="conveyorHeating" class="col-xs-6 checkboxControlContainer restoreData bordered heightControl">
                 <span style="display:inline-block;width:120px;">輸送帶點火</span>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">初成形吹風壓力</span>
-                <input id="counterBlowPressure" name="counterBlowPressure" class="fieldToLoad prepareToPrint" type="number" min="0" max="10" step="0.1" style="width:60px;" />
+                <input id="counterBlowPressure" name="counterBlowPressure" class="restoreData preparePrint" type="number" min="0" max="10" step="0.1" style="width:60px;" />
                 <span>&nbsp;kg</span>
             </div>
-            <div id="crossBridgeHeating" class="col-xs-6 checkboxControlHolder fieldToLoad bordered heightControl">
+            <div id="crossBridgeHeating" class="col-xs-6 checkboxControlContainer restoreData bordered heightControl">
                 <span style="display:inline-block;width:120px;">過橋板點火</span>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">成形吹風壓力</span>
-                <input id="finalBlowPressure" name="finalBlowPressure" class="fieldToLoad prepareToPrint" type="number" min="0" max="10" step="0.1" style="width:60px;" />
+                <input id="finalBlowPressure" name="finalBlowPressure" class="restoreData preparePrint" type="number" min="0" max="10" step="0.1" style="width:60px;" />
                 <span>&nbsp;kg</span>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">冷卻風壓力</span>
-                <select id="coolingPressure" name="coolingPressure" class="fieldToLoad prepareToPrint"></select>
+                <select id="coolingPressure" name="coolingPressure" class="restoreData preparePrint"></select>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">主空氣壓｜高壓</span>
-                <input id="highPressure" name="highPressure" class="fieldToLoad prepareToPrint" type="number" min="0" max="10" step="0.1" style="width:60px;" />
+                <input id="highPressure" name="highPressure" class="restoreData preparePrint" type="number" min="0" max="10" step="0.1" style="width:60px;" />
                 <span>&nbsp;kg</span>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">主空氣壓｜低壓</span>
-                <input id="lowPressure" name="lowPressure" class="fieldToLoad prepareToPrint" type="number" min="0" max="10" step="0.1" style="width:60px;" />
+                <input id="lowPressure" name="lowPressure" class="restoreData preparePrint" type="number" min="0" max="10" step="0.1" style="width:60px;" />
                 <span>&nbsp;kg</span>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">徐冷窯｜網速</span>
-                <input id="annealInverterSetting" name="annealInverterSetting" class="fieldToLoad prepareToPrint" type="number" min="0" step="0.001" style="width:100px;" />
+                <input id="annealInverterSetting" name="annealInverterSetting" class="restoreData preparePrint" type="number" min="0" step="0.001" style="width:100px;" />
                 <span>&nbsp;Hz</span>
             </div>
             <div class="col-xs-6 bordered heightControl">
                 <span style="display:inline-block;width:120px;">徐冷窯｜溫度</span>
-                <input id="annealFirstTemp" name="annealFirstTemp" class="fieldToLoad prepareToPrint" type="number" min="0" step="1" style="width:50px;" />
+                <input id="annealFirstTemp" name="annealFirstTemp" class="restoreData preparePrint" type="number" min="0" step="1" style="width:50px;" />
                 <span>&nbsp;°C</span>
-                <input id="annealSecondTemp" name="annealSecondTemp" class="fieldToLoad prepareToPrint" type="number" min="0" step="1" style="width:50px;" />
+                <input id="annealSecondTemp" name="annealSecondTemp" class="restoreData preparePrint" type="number" min="0" step="1" style="width:50px;" />
                 <span>&nbsp;°C</span>
-                <input id="annealThirdTemp" name="annealThirdTemp" class="fieldToLoad prepareToPrint" type="number" min="0" step="1" style="width:50px;" />
+                <input id="annealThirdTemp" name="annealThirdTemp" class="restoreData preparePrint" type="number" min="0" step="1" style="width:50px;" />
                 <span>&nbsp;°C</span>
             </div>
         </div>
         <div class="row bordered heightControl">
             <div class="col-xs-4">
                 <span style="display:inline-block;width:120px;">前爐溫度｜冷卻段</span>
-                <input id="fhCoolingTemp" name="fhCoolingTemp" class="fieldToLoad prepareToPrint" type="number" min="0" step="5" style="width:70px;" />
+                <input id="fhCoolingTemp" name="fhCoolingTemp" class="restoreData preparePrint" type="number" min="0" step="5" style="width:70px;" />
                 <span>&nbsp;°C</span>
             </div>
             <div class="col-xs-4">
                 <span style="display:inline-block;width:120px;">前爐溫度｜調溫段</span>
-                <input id="fhAdjustTemp" name="fhAdjustTemp" class="fieldToLoad prepareToPrint" type="number" min="0" step="5" style="width:70px;" />
+                <input id="fhAdjustTemp" name="fhAdjustTemp" class="restoreData preparePrint" type="number" min="0" step="5" style="width:70px;" />
                 <span>&nbsp;°C</span>
             </div>
             <div class="col-xs-4">
                 <span style="display:inline-block;width:120px;">GOB溫度</span>
-                <input id="gobTemp" name="gobTemp" class="fieldToLoad prepareToPrint" type="number" min="0" step="1" style="width:70px;" />
+                <input id="gobTemp" name="gobTemp" class="restoreData preparePrint" type="number" min="0" step="1" style="width:70px;" />
                 <span>&nbsp;°C</span>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-12 bordered">
                 <div>生產狀況記錄</div>
-                <textarea id="note" name="note" class="fieldToLoad prepareToPrint" rows="5" cols="10" style="width:100%;border:none;"></textarea>
+                <textarea id="note" name="note" class="restoreData preparePrint" rows="5" cols="10" style="width:100%;border:none;"></textarea>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-4 bordered">
                 <div>初模冷卻風箱</div>
                 <div class="bmCoolingStack imageHolder"></div>
-                <input id="bmCoolingStack" name="bmCoolingStack" class="fieldToLoad hideWhenPrint" type="file" accept="image/*" />
+                <input id="bmCoolingStack" name="bmCoolingStack" class="restoreData noPrint" type="file" accept="image/*" />
             </div>
             <div class="col-xs-4 bordered">
                 <div>成模冷卻風箱</div>
                 <div class="fmCoolingStack imageHolder"></div>
-                <input id="fmCoolingStack" name="fmCoolingStack" class="fieldToLoad hideWhenPrint" type="file" accept="image/*" />
+                <input id="fmCoolingStack" name="fmCoolingStack" class="restoreData noPrint" type="file" accept="image/*" />
             </div>
             <div class="col-xs-4 bordered">
                 <div>GOB 形狀</div>
                 <div class="gobShape imageHolder"></div>
-                <input id="gobShape" name="gobShape" class="fieldToLoad hideWhenPrint" type="file" accept="image/*" />
+                <input id="gobShape" name="gobShape" class="restoreData noPrint" type="file" accept="image/*" />
             </div>
         </div>
         &nbsp;
@@ -287,10 +295,10 @@
             <div class="col-xs-3">填表</div>
         </div>
         &nbsp;
-        <div class="row hideWhenPrint">
+        <div class="row noPrint">
             <div class="col-xs-12 formProcessButtonHolder">
-                <input id="submitNewRecord" type="submit" value="送出記錄" disabled /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button id="printRecordButton" type="button" onclick="printForm()">列印文件</button>
+                <input id="submitNewRecord" type="submit" value="新增記錄" disabled /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button id="printRecordButton" type="button" disabled>列印文件</button>
                 <button id="deleteRecordButton" type="button" disabled>刪除記錄</button>
             </div>
         </div>

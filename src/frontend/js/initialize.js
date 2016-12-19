@@ -1,5 +1,4 @@
-'use strict';
-
+/*
 function initialize(formInitializationScript, originalGlassRunSelection) {
     // run initialize script (start form with previous selected values if passed in as argument)
     formInitializationScript(originalGlassRunSelection);
@@ -25,3 +24,4 @@ function initialize(formInitializationScript, originalGlassRunSelection) {
         });
     })(checkInputListArray);
 }
+*/

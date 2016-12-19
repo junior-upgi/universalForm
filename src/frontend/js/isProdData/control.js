@@ -1,6 +1,73 @@
-'use strict';
+function formController(formState) {
+    let prdtData = $.get('../../erp/prdt');
+    let prodSnmList = [];
+    prdtData
+        .done(function(dataArray) {
+            $.each(dataArray, function(key, value) {
+                prodSnmList.push(value.SNM);
+            });
+        })
+        .fail(function(error) {
+            alert('[control.js] formController prdtData initial retrieval failure: ' + error);
+        });
+    switch (formState) {
+        case '0':
+            console.log('skeleton form');
+            break;
+        case '1':
+            console.log('new pristine record');
+            $('select#glassRun').prop('required', false);
+            $('input#machno').prop('readonly', true);
+            $('input#schedate').prop('required', true);
+            $('input#prodReference').prop('readonly', true);
+            $('form#isProdDataForm').attr('action', './createRecord').attr('method', 'post');
+            $('input#submitNewRecord').prop('disabled', false);
+            $('input#mockProdReference').autocomplete({
+                source: prodSnmList
+            });
+            break;
+        case '2':
+            console.log('new record with data');
+            break;
+        case '3':
+            console.log('pristine historical record');
+            break;
+        case '4':
+            console.log('historical record with new data');
+            break;
+        default:
+            alert('[control.js] formController failure: state process procedures not found for ' + formState);
+            break;
+    }
+    $('input#mockProdReference').on('autocompletechange', function(event, ui) {
+        syncProdReferenceFields(prdtData, $(this), $('input#prodReference'));
+    });
+}
 
-var isProdDataFormInitialization = function(originalGlassRunValue) {
+function syncProdReferenceFields(prdtData, mockProdReferenceHandle, prodReferenceHandle) {
+    let tempStore = mockProdReferenceHandle.val();
+    mockProdReferenceHandle.val('');
+    prodReferenceHandle.val('');
+    prdtData
+        .done(function(dataArray) {
+            $.each(dataArray, function(key, value) {
+                if (tempStore === value.SNM) {
+                    mockProdReferenceHandle.val(value.SNM);
+                    prodReferenceHandle.val(value.PRD_NO);
+                }
+            });
+        })
+        .fail(function(error) {
+            alert('[control.js] formController prdtData 2nd retrieval failure: ' + error);
+        });
+}
+
+module.exports = {
+    formController: formController
+};
+
+/*
+let isProdDataFormInitialization = function(originalGlassRunValue) {
     prepareISProdDataForm(originalGlassRunValue);
     glassRunSelectHandler();
     deleteButtonHandler();
@@ -12,7 +79,7 @@ function prepareTaskListForm(originalGlassRunValue) {
     }, function(taskListHTMLSource) {
         $('form#isProdDataForm').before(taskListHTMLSource);
     });
-};
+}
 
 function deleteButtonHandler() {
     $('button#deleteRecordButton').click(function() {
@@ -32,7 +99,7 @@ function deleteButtonHandler() {
             }
         });
     });
-};
+}
 
 function prepareISProdDataForm(originalGlassRunValue) {
     // auto fill form input date
@@ -79,7 +146,7 @@ function prepareISProdDataForm(originalGlassRunValue) {
             }
         });
     });
-};
+}
 
 function glassRunSelectHandler() {
     $('select#glassRun').change(function() { // function to handel event of glassRun control change
@@ -100,7 +167,7 @@ function glassRunSelectHandler() {
                 $('input#submitNewRecord').prop('disabled', false);
             }
         } else { // already exists a previous selection
-            var newGlassRunSelection = { // save the current selected value and data
+            let newGlassRunSelection = { // save the current selected value and data
                 id: ($('select option:selected').val() === '') ? undefined : $('select option:selected').val(),
                 machno: $('select option:selected').data('machno'),
                 schedate: $('select option:selected').data('schedate'),
@@ -128,7 +195,7 @@ function glassRunSelectHandler() {
             });
         }
     });
-};
+}
 
 function checkISProdDataExistence() {
     if ($('select#glassRun option:selected').hasClass('existingData')) {
@@ -136,14 +203,14 @@ function checkISProdDataExistence() {
     } else {
         return false;
     }
-};
+}
 
 function loadExistingISProdData() {
     // load task list against the record id
-    //prepareTaskListForm($('select#glassRun').val());
+    // prepareTaskListForm($('select#glassRun').val());
     // load data for the actual form
     $.get(serverUrl + '/isProdData/recordID/' + $('select#glassRun').val(), function(record) {
-        var fieldsToRemove = ['id', 'machno', 'machno', 'schedate', 'prodReference',
+        let fieldsToRemove = ['id', 'machno', 'machno', 'schedate', 'prodReference',
             'glassProdLineID', 'recordDate', 'feeder', 'spout', 'created', 'modified'
         ];
         // deal with null values of checkboxes and convert true/false values in checkbox fields into 1's and 0's
@@ -161,7 +228,7 @@ function loadExistingISProdData() {
             delete record[fieldName];
         });
         // loop through record and map data to the form fields
-        for (var objectIndex in record) { // loop through the record object by index
+        for (let objectIndex in record) { // loop through the record object by index
             if (record[objectIndex] !== null) { // only process the fields that isn't 'null'
                 switch ($('#' + objectIndex).get(0).tagName) {
                     case 'INPUT':
@@ -210,7 +277,7 @@ function loadExistingISProdData() {
         $('input[type="submit"]').hide();
         $('div.formProcessButtonHolder').prepend('<button id="updateRecordButton" type="button" onclick="submitUpdatedRecord()">更新記錄</button>');
     });
-};
+}
 
 function deletePhoto(recordIndex) {
     $.get(serverUrl + '/isProdDataForm/deletePhoto/recordID/' + $('select#glassRun').val() + '/fieldName/' + recordIndex, function() {
@@ -219,10 +286,10 @@ function deletePhoto(recordIndex) {
         $('input#' + recordIndex).show(); // show the original upload control
         alert('圖片已刪除');
     });
-};
+}
 
 function submitUpdatedRecord() {
-    var updatedFormData = new FormData($('form#isProdDataForm')[0]);
+    let updatedFormData = new FormData($('form#isProdDataForm')[0]);
     $.ajax({
         url: $('form#isProdDataForm').attr('action'),
         type: 'put',
@@ -231,14 +298,14 @@ function submitUpdatedRecord() {
         contentType: false,
         success: function(response) {
             alert('資料更新成功');
-            //window.location.href = response;
+            // window.location.href = response;
         },
         error: function(error) {
             alert('資料更新失敗，請聯繫IT檢視');
             console.log(error);
         }
     });
-};
+}
 
 function printForm() {
     $('.hideWhenPrint').hide(); // hide elements that should not appear on the printed page
@@ -257,4 +324,12 @@ function printForm() {
     $('span.removeAfterPrint').remove(); // remove items that were prepared for printing
     $('.hideWhenPrint').show(); // show elements that were hidden while printing
     $('.prepareToPrint').show(); // show elements that were hidden after prepared for print
+}
+
+module.exports = {
+    prepareTaskListForm: prepareTaskListForm,
+    deletePhoto: deletePhoto,
+    submitUpdatedRecord: submitUpdatedRecord,
+    printForm: printForm
 };
+*/

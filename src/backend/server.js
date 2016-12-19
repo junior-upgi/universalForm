@@ -1,28 +1,77 @@
-'use strict';
+let bodyParser = require('body-parser');
+let cors = require('cors');
+let express = require('express');
+// let fs = require('fs');
+let morgan = require('morgan');
+// let moment = require('moment-timezone');
+// let multer = require('multer');
+let favicon = require('serve-favicon');
+let uuid = require('uuid');
 
-var bodyParser = require('body-parser');
-var cors = require('cors');
-var express = require('express');
-var fs = require('fs');
-var morgan = require('morgan');
-var moment = require('moment-timezone');
-var multer = require('multer');
+let database = require('./module/database.js');
+let serverConfig = require('./module/serverConfig.js');
+let utility = require('./module/utility.js');
 
-var config = require('./module/config.js');
-var database = require('./module/database.js');
-var queryString = require('./model/queryString.js');
-var utility = require('./module/utility.js');
+let formControlData = {
+    isProdData: require('./model/isProdData/controlConfiguration.js')
+};
+let glassProdLine = require('./model/glassProdLine.js');
+// let queryString = require('./model/queryString.js');
 
-var app = express();
+let app = express();
 app.use(cors()); // allow cross origin request
 app.use(morgan('dev')); // log request and result to console
-app.use(bodyParser.urlencoded({ extended: true })); // parse application/x-www-form-urlencoded
-//var urlencodedParser = bodyParser.urlencoded({ extended: true });
+app.use(bodyParser.urlencoded({
+    extended: true
+})); // parse application/x-www-form-urlencoded
+// var urlencodedParser = bodyParser.urlencoded({ extended: true });
 app.use(bodyParser.json()); // parse application/json
+app.use(favicon(__dirname + '/../public/upgiLogo.png')); // middleware to serve favicon
 
+app.get('/status', function(request, response) { // serve system status information
+    return response.status(200).json({
+        system: serverConfig.systsem,
+        status: 'online'
+    });
+});
+
+app.use('/productionHistory/isProdDataForm', express.static('./public')); // serve static files
+
+app.get('/erp/prdt', function(request, response) { // serve erp DB_U105.dbo.PRDT data
+    database.executeQuery('SELECT PRD_NO,SNM FROM DB_U105.dbo.PRDT WHERE PRD_NO LIKE \'B[0-9][0-9][0-9][0-9][0-9]__\';', function(prdtData, error) {
+        if (error) {
+            utility.alertSystemError('universalForm', 'route /erp/prdt', error);
+            return response.status(500).json([{}]);
+        }
+        return response.status(200).json(prdtData);
+    });
+});
+
+app.get('/data/glassProdLine', function(request, response) {
+    return response.status(200).json(glassProdLine.list);
+});
+
+app.get('/formControlData/formReference/:formReference', function(request, response) { // serve form control configuration data
+    return response.status(200).json(formControlData[request.params.formReference]);
+});
+
+app.post('/productionHistory/isProdDataForm/createRecord', function(request, response) {
+    let newUuid = uuid.v4();
+    return response.status(200).redirect(serverConfig.publicServerUrl + '/productionHistory/isProdDataForm?formReference=isProdData&id=' + newUuid);
+});
+
+app.listen(serverConfig.serverPort, function(error) { // start backend server
+    if (error) {
+        console.log('error starting universalForm server: ' + error);
+    } else {
+        console.log('universalForm server in operation... (' + serverConfig.serverUrl + ')');
+    }
+});
+
+/*
 // at start up, make sure that the file structure to hold image exists and starts image server
-var fileStructureValidated = false;
-var imageDirectoryList = [{
+let fileStructureValidated = false;
+let imageDirectoryList = [{
     id: 'isProdDataForm',
     pathList: [
         'image/isProdDataForm/bmCoolingStack',
@@ -60,7 +109,7 @@ app.get('/productionHistory/isProdDataForm/deletePhoto/recordID/:recordID/fieldN
             console.log('photo data reference removal failure: ' + error);
             return response.status(500).end();
         }
-        var imageFilePath = 'image/isProdDataForm/' + request.params.fieldName + '/';
+        let imageFilePath = 'image/isProdDataForm/' + request.params.fieldName + '/';
         utility.fileRemoval(imageFilePath + request.params.recordID + '.JPG', function() {
             console.log('photo deleted');
             return response.status(200).end();
@@ -94,8 +143,8 @@ app.get('/productionHistory/isProdData/recordID/:recordID', function(request, re
 
 app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), function(request, response) {
     console.log(moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + ' received POST request on /glassRun');
-    var primaryKey = utility.uuidGenerator();
-    var uploadLocationObject = {};
+    let primaryKey = utility.uuidGenerator();
+    let uploadLocationObject = {};
     if (request.files.length === 0) {
         console.log('no file upload received...');
         return insertRecord(primaryKey, request.body, null);
@@ -121,15 +170,15 @@ app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fu
                     return response.status(500).send('error inserting isProdData: ' + error).end();
                 }
                 console.log('isProdDataFrom insert completed...');
-                return response.status(200).redirect(config.publicServerUrl + '/productionHistory/isProdDataForm');
+                return response.status(200).redirect(serverConfig.publicServerUrl + '/productionHistory/isProdDataForm');
             });
     }
 });
 
 app.put('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), function(request, response) {
     console.log(moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + ' received PUT request on /glassRun');
-    var primaryKey = request.body.glassRun;
-    var uploadLocationObject = {};
+    let primaryKey = request.body.glassRun;
+    let uploadLocationObject = {};
     if (request.files.length === 0) {
         console.log('no file upload received...');
         return updateRecord(primaryKey, request.body, null);
@@ -163,7 +212,7 @@ app.put('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fun
                     return response.status(500).send('error updating isProdData: ' + error).end();
                 }
                 console.log('isProdDataFrom update completed...');
-                return response.status(200).send(config.publicServerUrl + '/productionHistory/isProdDataForm');
+                return response.status(200).send(serverConfig.publicServerUrl + '/productionHistory/isProdDataForm');
             });
     }
 });
@@ -179,7 +228,7 @@ app.delete('/productionHistory/isProdData', function(request, response) {
             }
         });
         console.log('record deleted...');
-        response.status(200).send(config.publicServerUrl + '/productionHistory/isProdDataForm');
+        response.status(200).send(serverConfig.publicServerUrl + '/productionHistory/isProdDataForm');
     });
 });
 
@@ -190,14 +239,7 @@ app.get('/productionHistory/isProdDataForm', function(request, response) { // se
     response.status(200).sendFile(__dirname + '/view/isProdDataForm.html');
 });
 app.get('/productionHistory/isProdDataForm/reload', function(request, response) { // serve fresh copy of the form html code
-    var formHTML = fs.readFileSync(__dirname + '/view/isProdDataFormBody.html');
+    let formHTML = fs.readFileSync(__dirname + '/view/isProdDataFormBody.html');
     response.status(200).send(formHTML);
 });
-
-app.listen(config.serverPort, function(error) { // start backend server
-    if (error) {
-        console.log('error starting universalForm server: ' + error);
-    } else {
-        console.log('universalForm server in operation... (' + config.serverUrl + ')');
-    }
-});
+*/

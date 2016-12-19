@@ -1,22 +1,94 @@
 {
-    "root": true,
-    "env": {
-        "browser": true,
-        "node": true,
-        "jquery": true
-    },
-    "stylelint.enabled": true,
+    "extends": [
+        "eslint:recommended",
+        "eslint-config-google"
+    ],
+    "parser": "babel-eslint",
     "parserOptions": {
         "sourceType": "module"
     },
+    "evn": {
+        "browser": true,
+        "node": true,
+        "commonjs": true,
+        "jquery": true,
+        "es6": true
+    },
+    "plugins": [
+        "html"
+    ],
     "rules": {
-        "quotes": [2, "single", "avoid-escape"],
-        "eqeqeq": 0,
-        "brace-style": [2, "1tbs"],
-        "eol-last": 0,
-        "no-nested-ternary": 1,
-        "padded-blocks": [1, "never"],
-        "space-before-function-paren": [1, "never"],
-        "space-before-blocks": [1, "always"]
+        "array-bracket-spacing": [
+            "error",
+            "never", {
+                "singleValue": false,
+                "arraysInArrays": false,
+                "objectsInArrays": false
+            }
+        ],
+        "brace-style": [
+            "error",
+            "1tbs"
+        ],
+        "camelcase": "off",
+        "comma-dangle": [
+            "error",
+            "never"
+        ],
+        "computed-property-spacing": [
+            "error",
+            "never"
+        ],
+        "eqeqeq": [
+            "warn",
+            "always"
+        ],
+        "guard-for-in": "off",
+        "indent": [
+            "error",
+            4, {
+                "SwitchCase": 1,
+                "VariableDeclarator": {
+                    "var": 2,
+                    "let": 2,
+                    "const": 3
+                }
+            }
+        ],
+        "max-len": "off",
+        "no-console": "off",
+        "no-invalid-this": "off",
+        "no-undef": "off",
+        "object-curly-spacing": [
+            "error",
+            "always", {
+                "arraysInObjects": true,
+                "objectsInObjects": true
+            }
+        ],
+        "quotes": [
+            "warn",
+            "single"
+        ],
+        "require-jsdoc": "off",
+        "semi": [
+            "error",
+            "always"
+        ],
+        "space-before-blocks": [
+            "error",
+            "always"
+        ],
+        "space-before-function-paren": [
+            "error",
+            "never"
+        ],
+        "space-infix-ops": [
+            "error"
+        ],
+        "strict": [
+            "error",
+            "safe"
+        ]
     }
 }

@@ -1,24 +1,24 @@
-var moment = require('moment-timezone');
+let moment = require('moment-timezone');
 
-var deletePhoto = function(recordID, photoFieldName) {
+let deletePhoto = function(recordID, photoFieldName) {
     return 'UPDATE productionHistory.dbo.isProdData SET ' + photoFieldName + '=NULL WHERE id=\'' + recordID + '\';';
 };
 
-var getISProdDataRecord = function(recordID) {
+let getISProdDataRecord = function(recordID) {
     return 'SELECT * FROM productionHistory.dbo.isProdData WHERE id=\'' + recordID + '\';';
 };
 
-var insertGlassRunRecord = function(primaryKeyString, requestData, uploadPathObject) {
-    var firstPart = 'INSERT INTO productionHistory.dbo.isProdData (';
-    var fieldList = '';
-    var thirdPart = ') VALUES (';
-    var valueList = '';
-    var endPart = ');';
+let insertGlassRunRecord = function(primaryKeyString, requestData, uploadPathObject) {
+    let firstPart = 'INSERT INTO productionHistory.dbo.isProdData (';
+    let fieldList = '';
+    let thirdPart = ') VALUES (';
+    let valueList = '';
+    let endPart = ');';
     fieldList += 'id';
     valueList += '\'' + primaryKeyString + '\'';
     delete requestData.glassRun;
     delete requestData.mockProdReference;
-    for (var key in requestData) {
+    for (let key in requestData) {
         if (requestData[key] !== '') {
             fieldList += ',' + key;
             valueList += ',\'' + requestData[key] + '\'';
@@ -45,14 +45,14 @@ var insertGlassRunRecord = function(primaryKeyString, requestData, uploadPathObj
     return firstPart + fieldList + thirdPart + valueList + endPart;
 };
 
-var updateGlassRunRecord = function(primaryKeyString, requestData, uploadPathObject) {
-    var updateString = 'UPDATE productionHistory.dbo.isProdData ';
-    var setString = 'SET ';
-    var fieldList = [];
-    var conditionString = 'WHERE id=\'' + primaryKeyString + '\';';
+let updateGlassRunRecord = function(primaryKeyString, requestData, uploadPathObject) {
+    let updateString = 'UPDATE productionHistory.dbo.isProdData ';
+    let setString = 'SET ';
+    let fieldList = [];
+    let conditionString = 'WHERE id=\'' + primaryKeyString + '\';';
     delete requestData.glassRun;
     delete requestData.mockProdReference;
-    for (var key in requestData) {
+    for (let key in requestData) {
         if (requestData[key] !== '') {
             fieldList += key + '=\'' + requestData[key] + '\',';
         } else {

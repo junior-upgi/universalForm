@@ -1,14 +1,12 @@
-'use strict';
-
-var mssql = require('mssql');
-var config = require('./config.js');
+let mssql = require('mssql');
+let serverConfig = require('./serverConfig.js');
 
 module.exports = {
     executeQuery: function(queryString, callback) {
-        var mssqlConnection = new mssql.Connection(config.mssqlConfig);
+        let mssqlConnection = new mssql.Connection(serverConfig.mssqlConfig);
         mssqlConnection.connect()
             .then(function() {
-                var mssqlRequest = new mssql.Request(mssqlConnection);
+                let mssqlRequest = new mssql.Request(mssqlConnection);
                 mssqlRequest.query(queryString)
                     .then(function(recordset) {
                         mssqlConnection.close();

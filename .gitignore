@@ -1,4 +1,7 @@
 node_modules
-*.log
+bower_components
+build
+public
+debug.log
+npm-debug.log
 isProdDataForm
-npm-debug
