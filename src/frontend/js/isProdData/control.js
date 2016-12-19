@@ -10,6 +10,18 @@ function formController(formState) {
         .fail(function(error) {
             alert('[control.js] formController prdtData initial retrieval failure: ' + error);
         });
+    let glassProdLineData = $.get('../../data/glassProdLine');
+    let glassProdLineIDList = [];
+    glassProdLineData
+        .done(function(dataArray) {
+            console.log(dataArray);
+            $.each(dataArray, function(key, value) {
+                glassProdLineIDList.push(value.reference);
+            });
+        })
+        .fail(function(error) {
+            alert('[control.js] formController glassProdLineData initial retrieval failure: ' + error);
+        });
     switch (formState) {
         case '0':
             console.log('skeleton form');
@@ -24,6 +36,9 @@ function formController(formState) {
             $('input#submitNewRecord').prop('disabled', false);
             $('input#mockProdReference').autocomplete({
                 source: prodSnmList
+            });
+            $('input#glassProdLineID').autocomplete({
+                source: glassProdLineIDList
             });
             break;
         case '2':
@@ -42,6 +57,27 @@ function formController(formState) {
     $('input#mockProdReference').on('autocompletechange', function(event, ui) {
         syncProdReferenceFields(prdtData, $(this), $('input#prodReference'));
     });
+    $('input#glassProdLineID').on('autocompletechange', function(event, ui) {
+        syncProdLineFields(glassProdLineData, $(this), $('input#machno'));
+    });
+}
+
+function syncProdLineFields(glassProdLineData, glassProdLineIDHandle, machnoHandle) {
+    let tempStore = glassProdLineIDHandle.val();
+    glassProdLineIDHandle.val('');
+    machnoHandle.val('');
+    glassProdLineData
+        .done(function(dataArray) {
+            $.each(dataArray, function(key, value) {
+                if (tempStore === value.reference) {
+                    glassProdLineIDHandle.val(value.reference);
+                    machnoHandle.val(value.tbmknoRef);
+                }
+            });
+        })
+        .fail(function(error) {
+            alert('[control.js] formController glassProdLineData 2nd retrieval failure: ' + error);
+        });
 }
 
 function syncProdReferenceFields(prdtData, mockProdReferenceHandle, prodReferenceHandle) {
