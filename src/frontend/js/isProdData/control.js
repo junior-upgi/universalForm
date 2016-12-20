@@ -1,3 +1,5 @@
+import utility from '../utility.js';
+
 function formController(formState) {
     switch (formState) {
         case '0':
@@ -18,38 +20,38 @@ function formController(formState) {
                     }, function(dataArray) {
                         response(dataArray);
                     });
+                },
+                change: function(event, ui) {
+                    event.preventDefault();
+                    if (ui.item === null) {
+                        $(this).val('');
+                        $('input#prodReference').val('');
+                    } else {
+                        $(this).val(ui.item.label);
+                        $('input#prodReference').val(ui.item.value);
+                    }
+                },
+                select: function(event, ui) {
+                    event.preventDefault();
+                    if (ui.item === null) {
+                        $(this).val('');
+                        $('input#prodReference').val('');
+                    } else {
+                        $(this).val(ui.item.label);
+                        $('input#prodReference').val(ui.item.value);
+                    }
+                },
+                focus: function(event, ui) {
+                    event.preventDefault();
+                    if (ui.item === null) {
+                        $(this).val('');
+                        $('input#prodReference').val('');
+                    } else {
+                        $(this).val(ui.item.label);
+                        $('input#prodReference').val(ui.item.value);
+                    }
                 }
             }).prop('required', true);
-            $('#mockProdReference').on('autocompletechange', function(event, ui) {
-                event.preventDefault();
-                if (ui.item === null) {
-                    $(this).val('');
-                    $('input#prodReference').val('');
-                } else {
-                    $(this).val(ui.item.label);
-                    $('input#prodReference').val(ui.item.value);
-                }
-            });
-            $('#mockProdReference').on('autocompletefocus', function(event, ui) {
-                event.preventDefault();
-                if (ui.item === null) {
-                    $(this).val('');
-                    $('input#prodReference').val('');
-                } else {
-                    $(this).val(ui.item.label);
-                    $('input#prodReference').val(ui.item.value);
-                }
-            });
-            $('#mockProdReference').on('autocompleteselect', function(event, ui) {
-                event.preventDefault();
-                if (ui.item === null) {
-                    $(this).val('');
-                    $('input#prodReference').val('');
-                } else {
-                    $(this).val(ui.item.label);
-                    $('input#prodReference').val(ui.item.value);
-                }
-            });
             $('input#glassProdLineID').autocomplete({
                 source: function(request, response) {
                     $.getJSON('../../data/glassProdLine', function(dataArray) {
@@ -62,38 +64,38 @@ function formController(formState) {
                         });
                         response(mappedDataArray);
                     });
+                },
+                change: function(event, ui) {
+                    event.preventDefault();
+                    if (ui.item === null) {
+                        $(this).val('');
+                        $('input#machno').val('');
+                    } else {
+                        $(this).val(ui.item.label);
+                        $('input#machno').val(ui.item.value);
+                    }
+                },
+                select: function(event, ui) {
+                    event.preventDefault();
+                    if (ui.item === null) {
+                        $(this).val('');
+                        $('input#machno').val('');
+                    } else {
+                        $(this).val(ui.item.label);
+                        $('input#machno').val(ui.item.value);
+                    }
+                },
+                focus: function(event, ui) {
+                    event.preventDefault();
+                    if (ui.item === null) {
+                        $(this).val('');
+                        $('input#machno').val('');
+                    } else {
+                        $(this).val(ui.item.label);
+                        $('input#machno').val(ui.item.value);
+                    }
                 }
             }).prop('required', true);
-            $('input#glassProdLineID').on('autocompletechange', function(event, ui) {
-                event.preventDefault();
-                if (ui.item === null) {
-                    $(this).val('');
-                    $('input#machno').val('');
-                } else {
-                    $(this).val(ui.item.label);
-                    $('input#machno').val(ui.item.value);
-                }
-            });
-            $('input#glassProdLineID').on('autocompletefocus', function(event, ui) {
-                event.preventDefault();
-                if (ui.item === null) {
-                    $(this).val('');
-                    $('input#machno').val('');
-                } else {
-                    $(this).val(ui.item.label);
-                    $('input#machno').val(ui.item.value);
-                }
-            });
-            $('input#glassProdLineID').on('autocompleteselect', function(event, ui) {
-                event.preventDefault();
-                if (ui.item === null) {
-                    $(this).val('');
-                    $('input#machno').val('');
-                } else {
-                    $(this).val(ui.item.label);
-                    $('input#machno').val(ui.item.value);
-                }
-            });
             $('input#sampling').change(function() {
                 if ($(this).prop('checked') === true) {
                     $('input#allscheqty').val(0).prop('readonly', true).prop('required', false);
@@ -103,8 +105,10 @@ function formController(formState) {
             });
             break;
         case '2':
-            console.log('new record with data');
-            $('button#deleteRecordButton').text('清除內容').prop('disabled', false).attr('onClick', 'resetForm()');
+            $('button#deleteRecordButton').text('清除內容').prop('disabled', false).on('click', function() {
+                alert('頁面即將重置');
+                window.location = `./index.html?formReference=${utility.getAllUrlParams().formReference}&id=${utility.getAllUrlParams().id}`;
+            });
             break;
         case '3':
             console.log('pristine historical record');
@@ -116,80 +120,28 @@ function formController(formState) {
             alert('[control.js] formController failure: state process procedures not found for ' + formState);
             break;
     }
-}
-
-/*
-,
-                        focus: function(event, ui) {
-                            console.log('here');
-                            event.preventDefault();
-                            if (ui === null) {
-                                $(this).val('');
-                                $('input#prodReference').val('');
-                            } else {
-                                $(this).val(ui.item.label);
-                                $('input#prodReference').val(ui.item.value);
-                            }
-                            // restricSyncProdReferenceField(prdtData, $(this), $('input#prodReference'));
-                        },
-                        change: function(event, ui) {
-                            event.preventDefault();
-                            if (ui === null) {
-                                $(this).val('');
-                                $('input#prodReference').val('');
-                            } else {
-                                $(this).val(ui.item.label);
-                                $('input#prodReference').val(ui.item.value);
-                            }
-                            // restricSyncProdReferenceField(prdtData, $(this), $('input#prodReference'));
-                        },
-                        select: function(event, ui) {
-                            event.preventDefault();
-                            if (ui === null) {
-                                $(this).val('');
-                                $('input#prodReference').val('');
-                            } else {
-                                $(this).val(ui.item.label);
-                                $('input#prodReference').val(ui.item.value);
-                            }
-                            // restricSyncProdReferenceField(prdtData, $(this), $('input#prodReference'));
-                        }
-*/
-
-function restricSyncProdReferenceField(prdtData, mockProdReferenceHandle, prodReferenceHandle) {
-    let tempStore = mockProdReferenceHandle.val();
-    mockProdReferenceHandle.val('');
-    prodReferenceHandle.val('');
-    prdtData
-        .done(function(dataArray) {
-            $.each(dataArray, function(key, value) {
-                if (tempStore === value.SNM) {
-                    mockProdReferenceHandle.val(value.SNM);
-                    prodReferenceHandle.val(value.PRD_NO);
-                }
-            });
-        })
-        .fail(function(error) {
-            alert('[control.js] restricSyncProdReferenceField data retrieval failure: ' + error);
-        });
-}
-
-function restricSyncProdLineField(glassProdLineData, glassProdLineIDHandle, machnoHandle) {
-    let tempStore = glassProdLineIDHandle.val();
-    glassProdLineIDHandle.val('');
-    machnoHandle.val('');
-    glassProdLineData
-        .done(function(dataArray) {
-            $.each(dataArray, function(key, value) {
-                if (tempStore === value.reference) {
-                    glassProdLineIDHandle.val(value.reference);
-                    machnoHandle.val(value.tbmknoRef);
-                }
-            });
-        })
-        .fail(function(error) {
-            alert('[control.js] restricSyncProdLineField data retrieval failure: ' + error);
-        });
+    $('select#glassRun').change(function() {
+        switch ($('select#formState').val()) {
+            case '0':
+                console.log('skeleton form');
+                break;
+            case '1':
+                console.log('new pristine record');
+                break;
+            case '2':
+                console.log('new record with data');
+                break;
+            case '3':
+                console.log('pristine historical record');
+                break;
+            case '4':
+                console.log('historical record with new data');
+                break;
+            default:
+                alert('[control.js] glassRun select control on click event handler failure: state process procedures not found for ' + formState);
+                break;
+        }
+    });
 }
 
 module.exports = {

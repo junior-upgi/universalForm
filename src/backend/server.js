@@ -1,10 +1,12 @@
 let bodyParser = require('body-parser');
 let cors = require('cors');
+let clone = require('clone');
 let express = require('express');
 let fs = require('fs');
 let morgan = require('morgan');
-// let moment = require('moment-timezone');
+let moment = require('moment-timezone');
 let multer = require('multer');
+let numeral = require('numeral');
 let favicon = require('serve-favicon');
 let uuid = require('uuid');
 
@@ -19,7 +21,7 @@ let imageDirData = {
     isProdData: require('./model/isProdData/imageDir.js')
 };
 let glassProdLine = require('./model/glassProdLine.js');
-// let queryString = require('./model/queryString.js');
+let queryString = require('./model/queryString.js');
 
 let app = express();
 app.use(cors()); // allow cross origin request
@@ -73,8 +75,36 @@ app.get('/data/glassProdLine', function(request, response) {
     return response.status(200).json(glassProdLine.list);
 });
 
-app.get('/formControlData/formReference/:formReference', function(request, response) { // serve form control configuration data
-    return response.status(200).json(formControlData[request.params.formReference]);
+app.get('/formControlData/formReference/:formReference', function(request, response) { // serve form control configuration datalet getGlassRun = function() {
+    database.executeQuery(queryString.getGlassRunRecordset, function(glassRunRecordset, error) {
+        if (error) {
+            utility.alertSystemError('univeralForm/isProdDataForm', 'controlConfiguration/getGlassRun', error);
+            console.log('getGlassRun failure: ' + error);
+            return response.status(500).json(formControlData[request.params.formReference]);
+        }
+        let glassRunOptionList = {
+            id: 'glassRun',
+            attribute: true,
+            optionList: []
+        };
+        glassRunRecordset.forEach(function(glassRunRecord) {
+            glassRunOptionList.optionList.push({
+                value: `${moment(glassRunRecord.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD')} ${glassRunRecord.glassProdLineID} ${glassRunRecord.PRDT_SNM}`,
+                text: `${moment(glassRunRecord.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD')} - ${glassRunRecord.glassProdLineID}[${glassRunRecord.PRDT_SNM}] ${numeral(glassRunRecord.orderQty).format('0,0')}`,
+                id: glassRunRecord.id,
+                sampling: glassRunRecord.sampling,
+                machno: glassRunRecord.machno,
+                glassProdLineID: glassRunRecord.glassProdLineID,
+                schedate: moment(glassRunRecord.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD'),
+                prd_no: glassRunRecord.prd_no,
+                PRDT_SNM: glassRunRecord.PRDT_SNM,
+                orderQty: glassRunRecord.orderQty
+            });
+        });
+        let formControlDataCopy = clone(formControlData[request.params.formReference]);
+        formControlDataCopy.selectOptionListArray.push(glassRunOptionList);
+        return response.status(200).json(formControlDataCopy);
+    });
 });
 
 app.post('/productionHistory/isProdDataForm/createRecord', imageDirData.isProdData.configuration.upload.any(), function(request, response) {
@@ -93,20 +123,23 @@ app.post('/productionHistory/isProdDataForm/createRecord', imageDirData.isProdDa
                 }
             });
         });
-        return insertRecord(primaryKey, request.body, uploadLocationObject);
-    }
-
-    function insertRecord(primaryKeyString, requestData, uploadPathObject) {
-        console.log(requestData);
-        /*
-        database.executeQuery(queryString.insertGlassRunRecord(primaryKeyString, requestData, uploadPathObject), function(error) {
+        database.executeQuery(queryString.insertGlassRunRecord(primaryKey, request.body, uploadLocationObject), function(error) {
             if (error) {
                 alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord', error);
                 return response.status(500).send('error inserting isProdData: ' + error).end();
             }
             return response.status(200).redirect(serverConfig.publicServerUrl + '/productionHistory/isProdDataForm?formReference=isProdData&id=' + primaryKey);
-        });*/
-        return response.status(200).redirect(serverConfig.publicServerUrl + '/productionHistory/isProdDataForm?formReference=isProdData&id=' + primaryKey);
+        });
+    }
+
+    function insertRecord(primaryKey, requestData, uploadLocationObject) {
+        database.executeQuery(queryString.insertGlassRunRecord(primaryKey, requestData, uploadLocationObject), function(error) {
+            if (error) {
+                alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord', error);
+                return response.status(500).send('error inserting isProdData: ' + error).end();
+            }
+            return response.status(200).redirect(serverConfig.publicServerUrl + '/productionHistory/isProdDataForm?formReference=isProdData&id=' + primaryKey);
+        });
     }
 });
 

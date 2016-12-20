@@ -11,8 +11,6 @@
                 <select id="glassRun" name="glassRun" tabindex="" required></select>
                 <span>系統線別:</span>
                 <input id="machno" name="machno" class="restoreData" type="text" size="10" tabindex="" />
-                <span>生產日期:</span>
-                <input id="schedate" name="schedate" class="restoreData dataField" type="date" tabindex="" />
                 <span>ERP 產品編號:</span>
                 <input id="prodReference" name="prodReference" class="restoreData" type="text" size="10" tabindex="" />
                 <select id="formState" name="formState" tabindex="">
@@ -22,24 +20,26 @@
                     <option value="3">pristine historical record</option>
                     <option value="4">historical record with new data</option>
                 </select>
+                <span>記錄日期</span>&nbsp;
+                <input id="recordDate" name="recordDate" type="date" class="restoreData preparePrint" style="width:130px;" tabindex="" />
             </div>
         </div>
         <br class="noPrint">
         <div class="row">
             <div class="col-xs-12">
+                <span>生產日期:</span>
+                <input id="schedate" name="schedate" class="restoreData dataField" type="date" tabindex="" />
+                <span>生產線</span>&nbsp;
+                <input id="glassProdLineID" name="glassProdLineID" class="restoreData preparePrint autocompleteDataField" type="text" size="8" tabindex="" />&nbsp;&nbsp;&nbsp;
                 <span>瓶號</span>&nbsp;
-                <input id="mockProdReference" name="mockProdReference" class="restoreData preparePrint dataField" type="text" size="10" tabindex="" />&nbsp;
+                <input id="mockProdReference" name="mockProdReference" class="restoreData preparePrint autocompleteDataField" type="text" size="10" tabindex="" />&nbsp;
                 <input id="sampling" name="sampling" class="restoreData dataField" type="checkbox" tabindex="" />
                 <span>試模</span>&nbsp;&nbsp;&nbsp;
                 <span>重量</span>&nbsp;
                 <input id="productionWeight" name="productionWeight" class="restoreData preparePrint dataField" type="number" name="weight" min="1" step="0.05" maxlength="7" style="width:70px;" tabindex="" />&nbsp;
                 <span>g</span>&nbsp;&nbsp;&nbsp;
-                <span>生產線</span>&nbsp;
-                <input id="glassProdLineID" name="glassProdLineID" class="restoreData preparePrint dataField" type="text" size="8" tabindex="" />&nbsp;&nbsp;&nbsp;
                 <span>生產數量</span>&nbsp;
-                <input id="allscheqty" name="allscheqty" class="restoreData preparePrint dataField" type="number" min='1' step="1" maxlength="10" style="width:100px;" tabindex="" />&nbsp;&nbsp;&nbsp;
-                <span>記錄日期</span>&nbsp;
-                <input id="recordDate" name="recordDate" type="date" class="restoreData preparePrint" style="width:130px;" tabindex="" />
+                <input id="allscheqty" name="allscheqty" class="restoreData preparePrint dataField" type="number" min='1' step="1" maxlength="10" style="width:100px;" tabindex="" />
             </div>
         </div>
         <div class="row">

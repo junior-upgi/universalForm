@@ -1292,20 +1292,24 @@ let checkboxOptionArray = [{ // list to hold checkbox control option data
     multiSelect: false,
     optionList: [{
         value: 1,
-        text: '有'
+        text: '有',
+        default: false
     }, {
         value: 0,
-        text: '無'
+        text: '無',
+        default: true
     }]
 }, {
     id: 'crossBridgeHeating',
     multiSelect: false,
     optionList: [{
         value: 1,
-        text: '有'
+        text: '有',
+        default: false
     }, {
         value: 0,
-        text: '無'
+        text: '無',
+        default: true
     }]
 }];
 

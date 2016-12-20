@@ -5,9 +5,7 @@ const formControl = {
 };
 
 $('document').ready(function() {
-    let formReference = utility.getAllUrlParams().formReference;
-    // let id = utility.getAllUrlParams().id;
-    initialize(formReference);
+    initialize();
 });
 
 function preventEnterSubmit() {
@@ -23,21 +21,40 @@ function preventEnterSubmit() {
     });
 }
 
-function resetForm() {
-    alert('reset form still to be implemented');
-}
-
 function monitorFormUpdate() {
     $('input.dataField,select.dataField,textarea.dataField').change(function() {
-        if (($('select#formState').val() === '1') || ($('select#formState').val() === '3')) {
-            $('select#formState').val((parseInt($('select#formState').val()) + 1).toString());
-            let formReference = utility.getAllUrlParams().formReference;
-            formControl[formReference].formController($('select#formState').val());
-        }
+        markFormAsUpdated();
     });
+    $('input.autocompleteDataField')
+        .on('autocompletechange', function(event, ui) {
+            event.preventDefault();
+            if (ui.item !== null) {
+                markFormAsUpdated();
+            }
+        })
+        .on('autocompleteselect', function(event, ui) {
+            event.preventDefault();
+            if (ui.item !== null) {
+                markFormAsUpdated();
+            }
+        });
 }
 
-function initialize(formReference) {
+function markFormAsUpdated() {
+    if (($('select#formState').val() === '1') || ($('select#formState').val() === '3')) {
+        changeFormState((parseInt($('select#formState').val()) + 1).toString());
+        let formReference = utility.getAllUrlParams().formReference;
+        formControl[formReference].formController($('select#formState').val());
+    }
+}
+
+function changeFormState(stateCode) {
+    $('select#formState').val(stateCode);
+}
+
+function initialize() {
+    let formReference = utility.getAllUrlParams().formReference;
+    // let id = utility.getAllUrlParams().id;
     $('body').empty();
     changeFormState(0);
     getFormBody(formReference)
@@ -80,7 +97,7 @@ function configureFormControlElement(formConfigurationData) {
         switch (objectIndex) {
             case 'selectOptionListArray':
                 formConfigurationData[objectIndex].forEach(function(elementConfigurationData) {
-                    initializeSelectControl($('select#' + elementConfigurationData.id), elementConfigurationData.optionList);
+                    initializeSelectControl($('select#' + elementConfigurationData.id), elementConfigurationData.attribute, elementConfigurationData.optionList);
                 });
                 break;
             case 'checkboxOptionArray':
@@ -103,21 +120,33 @@ function configureFormControlElement(formConfigurationData) {
     }
 }
 
-function initializeSelectControl(selectControlElement, optionDataArray) {
+function initializeSelectControl(selectControlElement, attribute, optionDataArray) {
     selectControlElement.append('<option value="" selected></option>');
     optionDataArray.forEach(function(optionData) {
         if (optionData.displayFlag === undefined || optionData.displayFlag === true) {
-            selectControlElement.append('<option class="current" value="' + optionData.value + '">' + optionData.text + '</option>');
+            selectControlElement.append('<option class="current glassRun" value="' + optionData.value + '">' + optionData.text + '</option>');
+            if (attribute === true) {
+                $('option.current')
+                    .data('id', optionData.id)
+                    .data('sampling', optionData.sampling)
+                    .data('machno', optionData.machno)
+                    .data('glassProdLineID', optionData.glassProdLineID)
+                    .data('schedate', optionData.schedate)
+                    .data('prd_no', optionData.prd_no)
+                    .data('PRDT_SNM', optionData.PRDT_SNM)
+                    .data('orderQty', optionData.orderQty);
+            }
+            $('option.current').removeClass('current');
         }
     });
 }
 
 function initializeCheckboxControl(checkboxControlContainer, checkboxDataArray) {
     checkboxDataArray.forEach(function(optionData) {
-        checkboxControlContainer.append('<input name="' + checkboxControlContainer.attr('id') + '" type="checkbox" value="' + optionData.value + '" class="dataField" tabindex="" />&nbsp;' + optionData.text + '&nbsp;');
+        checkboxControlContainer.append('<input name="' + checkboxControlContainer.attr('id') + '" type="checkbox" value="' + optionData.value + '" class="dataField current" tabindex="" />&nbsp;' + optionData.text + '&nbsp;');
+        if (optionData.default === true) {
+            $('input.current').prop('checked', true);
+        }
+        $('input.current').removeClass('current');
     });
-}
-
-function changeFormState(stateCode) {
-    $('select#formState').val(stateCode);
 }

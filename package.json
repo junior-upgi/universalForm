@@ -21,6 +21,7 @@
     "body-parser": "^1.15.2",
     "bootstrap": "^3.3.7",
     "chart.js": "^2.4.0",
+    "clone": "^2.1.0",
     "cors": "^2.8.1",
     "cron": "^1.1.1",
     "express": "^4.14.0",

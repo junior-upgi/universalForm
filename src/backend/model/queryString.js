@@ -1,41 +1,39 @@
 let moment = require('moment-timezone');
 
-let deletePhoto = function(recordID, photoFieldName) {
-    return 'UPDATE productionHistory.dbo.isProdData SET ' + photoFieldName + '=NULL WHERE id=\'' + recordID + '\';';
-};
-
-let getISProdDataRecord = function(recordID) {
-    return 'SELECT * FROM productionHistory.dbo.isProdData WHERE id=\'' + recordID + '\';';
-};
-
-let insertGlassRunRecord = function(primaryKeyString, requestData, uploadPathObject) {
+let insertIsProdDataRecord = function(primaryKey, requestData, uploadLocationObject) {
     let firstPart = 'INSERT INTO productionHistory.dbo.isProdData (';
     let fieldList = '';
     let thirdPart = ') VALUES (';
     let valueList = '';
     let endPart = ');';
     fieldList += 'id';
-    valueList += '\'' + primaryKeyString + '\'';
+    valueList += '\'' + primaryKey + '\'';
+    delete requestData.formState;
     delete requestData.glassRun;
     delete requestData.mockProdReference;
+    if (requestData.sampling === 'on') {
+        requestData.sampling = 1;
+    } else {
+        requestData.sampling = 0;
+    }
     for (let key in requestData) {
         if (requestData[key] !== '') {
             fieldList += ',' + key;
             valueList += ',\'' + requestData[key] + '\'';
         }
     }
-    if (uploadPathObject !== null) {
-        if (uploadPathObject.bmCoolingStack !== undefined) {
+    if (uploadLocationObject !== null) {
+        if (uploadLocationObject.bmCoolingStack !== undefined) {
             fieldList += ',bmCoolingStack';
-            valueList += ',\'' + uploadPathObject.bmCoolingStack + '\'';
+            valueList += ',\'' + uploadLocationObject.bmCoolingStack + '\'';
         }
-        if (uploadPathObject.fmCoolingStack !== undefined) {
+        if (uploadLocationObject.fmCoolingStack !== undefined) {
             fieldList += ',fmCoolingStack';
-            valueList += ',\'' + uploadPathObject.fmCoolingStack + '\'';
+            valueList += ',\'' + uploadLocationObject.fmCoolingStack + '\'';
         }
-        if (uploadPathObject.gobShape !== undefined) {
+        if (uploadLocationObject.gobShape !== undefined) {
             fieldList += ',gobShape';
-            valueList += ',\'' + uploadPathObject.gobShape + '\'';
+            valueList += ',\'' + uploadLocationObject.gobShape + '\'';
         }
     }
     fieldList += ',created,modified';
@@ -44,6 +42,25 @@ let insertGlassRunRecord = function(primaryKeyString, requestData, uploadPathObj
         moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + '\'';
     return firstPart + fieldList + thirdPart + valueList + endPart;
 };
+
+module.exports = {
+    // deletePhoto: deletePhoto,
+    getGlassRunRecordset: 'SELECT * FROM productionHistory.dbo.glassRun ORDER BY schedate DESC,PRDT_SNM;',
+    // getISProdDataRecord: getISProdDataRecord,
+    // getISProdDataRecordset: 'SELECT * FROM productionHistory.dbo.isProdData;',
+    insertIsProdDataRecord: insertIsProdDataRecord
+        // updateGlassRunRecord: updateGlassRunRecord
+};
+
+/*
+let deletePhoto = function(recordID, photoFieldName) {
+    return 'UPDATE productionHistory.dbo.isProdData SET ' + photoFieldName + '=NULL WHERE id=\'' + recordID + '\';';
+};
+
+let getISProdDataRecord = function(recordID) {
+    return 'SELECT * FROM productionHistory.dbo.isProdData WHERE id=\'' + recordID + '\';';
+};
+
 
 let updateGlassRunRecord = function(primaryKeyString, requestData, uploadPathObject) {
     let updateString = 'UPDATE productionHistory.dbo.isProdData ';
@@ -73,12 +90,4 @@ let updateGlassRunRecord = function(primaryKeyString, requestData, uploadPathObj
     fieldList += 'modified=\'' + moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + '\' ';
     return updateString + setString + fieldList + conditionString;
 };
-
-module.exports = {
-    deletePhoto: deletePhoto,
-    getGlassRunRecordset: 'SELECT * FROM productionHistory.dbo.glassRun ORDER BY schedate DESC,PRDT_SNM;',
-    getISProdDataRecord: getISProdDataRecord,
-    getISProdDataRecordset: 'SELECT * FROM productionHistory.dbo.isProdData;',
-    insertGlassRunRecord: insertGlassRunRecord,
-    updateGlassRunRecord: updateGlassRunRecord
-};
+*/
