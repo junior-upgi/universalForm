@@ -143,7 +143,7 @@ function loadExistingISProdData() {
     //prepareTaskListForm($('select#glassRun').val());
     // load data for the actual form
     $.get(serverUrl + '/isProdData/recordID/' + $('select#glassRun').val(), function(record) {
-        var fieldsToRemove = ['id', 'machno', 'machno', 'schedate', 'prodReference',
+        var fieldsToRemove = ['id', 'sampling', 'machno', 'machno', 'schedate', 'prodReference',
             'glassProdLineID', 'recordDate', 'feeder', 'spout', 'created', 'modified'
         ];
         // deal with null values of checkboxes and convert true/false values in checkbox fields into 1's and 0's
