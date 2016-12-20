@@ -1,5 +1,3 @@
-import moment from 'moment-timezone';
-
 import utility from './utility.js';
 
 const formControl = {
@@ -12,6 +10,33 @@ $('document').ready(function() {
     initialize(formReference);
 });
 
+function preventEnterSubmit() {
+    $('input,select').keydown(function(event) {
+        if (event.keyCode === 13) {
+            let inputs = $(this).parents('form').eq(0).find(':input');
+            if (inputs[inputs.index(this) + 1] !== null) {
+                inputs[inputs.index(this) + 1].focus();
+            }
+            event.preventDefault();
+            return false;
+        }
+    });
+}
+
+function resetForm() {
+    alert('reset form still to be implemented');
+}
+
+function monitorFormUpdate() {
+    $('input.dataField,select.dataField,textarea.dataField').change(function() {
+        if (($('select#formState').val() === '1') || ($('select#formState').val() === '3')) {
+            $('select#formState').val((parseInt($('select#formState').val()) + 1).toString());
+            let formReference = utility.getAllUrlParams().formReference;
+            formControl[formReference].formController($('select#formState').val());
+        }
+    });
+}
+
 function initialize(formReference) {
     $('body').empty();
     changeFormState(0);
@@ -21,6 +46,8 @@ function initialize(formReference) {
             resetForm(formReference);
             changeFormState(1);
             setFormControl(formReference);
+            preventEnterSubmit();
+            monitorFormUpdate();
         }).catch(function(error) {
             console.log(error);
             alert('[entry.js] initialize failure: ' + error);
@@ -28,14 +55,7 @@ function initialize(formReference) {
 }
 
 function setFormControl(formReference) {
-    switch (formReference) {
-        case ('isProdData'):
-            formControl.isProdData.formController($('select#formState').val());
-            break;
-        default:
-            alert('[entry.js] setFormControl failure: unable to find correct formControl data for ' + formReference);
-            break;
-    }
+    formControl[formReference].formController($('select#formState').val());
 }
 
 function getFormBody(formReference) { // ajax for a clean copy of the form
@@ -94,7 +114,7 @@ function initializeSelectControl(selectControlElement, optionDataArray) {
 
 function initializeCheckboxControl(checkboxControlContainer, checkboxDataArray) {
     checkboxDataArray.forEach(function(optionData) {
-        checkboxControlContainer.append('<input name="' + checkboxControlContainer.attr('id') + '" type="checkbox" value="' + optionData.value + '" />&nbsp;' + optionData.text + '&nbsp;');
+        checkboxControlContainer.append('<input name="' + checkboxControlContainer.attr('id') + '" type="checkbox" value="' + optionData.value + '" class="dataField" tabindex="" />&nbsp;' + optionData.text + '&nbsp;');
     });
 }
 

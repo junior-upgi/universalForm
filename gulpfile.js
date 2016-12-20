@@ -7,6 +7,7 @@ const $ = require('gulp-load-plugins')({
     lazy: true,
     camelize: true
 });
+const vinylBuffer = require('vinyl-buffer');
 const vinylSourceStream = require('vinyl-source-stream');
 const yargs = require('yargs').argv;
 
@@ -57,27 +58,22 @@ gulp.task('transpile', function() {
     log('transpile frontend javascript');
     let entryScript = './src/frontend/js/entry.js';
     let destDir = './public/js';
-    return browserify(entryScript)
+    return browserify(entryScript, {
+            debug: true
+    })
         .transform(babelify, {
-            presets: ['es2015']
+            presets: ['es2015'],
+            sourceMaps: true
         })
         .bundle()
         .pipe(vinylSourceStream('bundle.js'))
+        .pipe(vinylBuffer())
+        .pipe($.sourcemaps.init({
+            loadMaps: true
+        }))
+        .pipe($.uglify())
+        .pipe($.sourcemaps.write('./'))
         .pipe(gulp.dest(destDir));
-});
-
-gulp.task('bootstrapCss', function() {
-    log('processing bootstrap css files');
-    let destDir = './public/css';
-    return gulp
-        .src('./node_modules/bootstrap/dist/css/*.min.*')
-        .pipe(gulp.dest(destDir));
-});
-
-gulp.task('bootstrapFont', function() {
-    log('processing bootstrap font files');
-    let destDir = './public/fonts';
-    return gulp.src('./node_modules/bootstrap/dist/fonts/*.*').pipe(gulp.dest(destDir));
 });
 
 gulp.task('staticHtml', function() {
@@ -104,19 +100,7 @@ gulp.task('favicon', function() {
     return gulp.src('./src/frontend/*.png').pipe(gulp.dest(destDir));
 });
 
-gulp.task('jqueryScript', function() {
-    log('import jquery dependency...');
-    let destDir = './public/js';
-    return gulp.src('./node_modules/jquery/dist/jquery.min.*').pipe(gulp.dest(destDir));
-});
-
-gulp.task('bootstrapScript', function() {
-    log('import bootstrap dependency...');
-    let destDir = './public/js';
-    return gulp.src('./node_modules/bootstrap/dist/js/*.min.js').pipe(gulp.dest(destDir));
-});
-
-gulp.task('staticFrontendFiles', ['bootstrapCss', 'bootstrapFont', 'staticCss', 'staticView', 'staticHtml', 'favicon', 'jqueryScript', 'bootstrapScript'], function() {
+gulp.task('staticFrontendFiles', ['staticCss', 'staticView', 'staticHtml', 'favicon'], function() {
     return;
 });
 

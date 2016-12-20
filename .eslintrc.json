@@ -28,7 +28,9 @@
         ],
         "brace-style": [
             "error",
-            "1tbs"
+            "1tbs", {
+                "allowSingleLine": true
+            }
         ],
         "camelcase": "off",
         "comma-dangle": [
@@ -48,10 +50,24 @@
             "error",
             4, {
                 "SwitchCase": 1,
+                "ArrayExpression": "first",
+                "CallExpression": {
+                    "arguments": "first"
+                },
+                "FunctionDeclaration": {
+                    "body": 1,
+                    "parameters": 1
+                },
+                "FunctionExpression": {
+                    "body": 1,
+                    "parameters": 1
+                },
+                "MemberExpression": 1,
+                "ObjectExpression": "first",
                 "VariableDeclarator": {
                     "var": 2,
                     "let": 2,
-                    "const": 3
+                    "const": 4
                 }
             }
         ],

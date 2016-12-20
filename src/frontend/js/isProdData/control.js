@@ -1,33 +1,9 @@
 function formController(formState) {
-    let prdtData = $.get('../../erp/prdt');
-    let prodSnmList = [];
-    prdtData
-        .done(function(dataArray) {
-            $.each(dataArray, function(key, value) {
-                prodSnmList.push(value.SNM);
-            });
-        })
-        .fail(function(error) {
-            alert('[control.js] formController prdtData initial retrieval failure: ' + error);
-        });
-    let glassProdLineData = $.get('../../data/glassProdLine');
-    let glassProdLineIDList = [];
-    glassProdLineData
-        .done(function(dataArray) {
-            console.log(dataArray);
-            $.each(dataArray, function(key, value) {
-                glassProdLineIDList.push(value.reference);
-            });
-        })
-        .fail(function(error) {
-            alert('[control.js] formController glassProdLineData initial retrieval failure: ' + error);
-        });
     switch (formState) {
         case '0':
             console.log('skeleton form');
             break;
         case '1':
-            console.log('new pristine record');
             $('select#glassRun').prop('required', false);
             $('input#machno').prop('readonly', true);
             $('input#schedate').prop('required', true);
@@ -35,14 +11,100 @@ function formController(formState) {
             $('form#isProdDataForm').attr('action', './createRecord').attr('method', 'post');
             $('input#submitNewRecord').prop('disabled', false);
             $('input#mockProdReference').autocomplete({
-                source: prodSnmList
+                minLength: 2,
+                source: function(request, response) {
+                    $.getJSON('../../erp/prdt', {
+                        term: request.term
+                    }, function(dataArray) {
+                        response(dataArray);
+                    });
+                }
+            }).prop('required', true);
+            $('#mockProdReference').on('autocompletechange', function(event, ui) {
+                event.preventDefault();
+                if (ui.item === null) {
+                    $(this).val('');
+                    $('input#prodReference').val('');
+                } else {
+                    $(this).val(ui.item.label);
+                    $('input#prodReference').val(ui.item.value);
+                }
+            });
+            $('#mockProdReference').on('autocompletefocus', function(event, ui) {
+                event.preventDefault();
+                if (ui.item === null) {
+                    $(this).val('');
+                    $('input#prodReference').val('');
+                } else {
+                    $(this).val(ui.item.label);
+                    $('input#prodReference').val(ui.item.value);
+                }
+            });
+            $('#mockProdReference').on('autocompleteselect', function(event, ui) {
+                event.preventDefault();
+                if (ui.item === null) {
+                    $(this).val('');
+                    $('input#prodReference').val('');
+                } else {
+                    $(this).val(ui.item.label);
+                    $('input#prodReference').val(ui.item.value);
+                }
             });
             $('input#glassProdLineID').autocomplete({
-                source: glassProdLineIDList
+                source: function(request, response) {
+                    $.getJSON('../../data/glassProdLine', function(dataArray) {
+                        let mappedDataArray = [];
+                        dataArray.forEach(function(dataEntry) {
+                            mappedDataArray.push({
+                                label: dataEntry.reference,
+                                value: dataEntry.tbmknoRef
+                            });
+                        });
+                        response(mappedDataArray);
+                    });
+                }
+            }).prop('required', true);
+            $('input#glassProdLineID').on('autocompletechange', function(event, ui) {
+                event.preventDefault();
+                if (ui.item === null) {
+                    $(this).val('');
+                    $('input#machno').val('');
+                } else {
+                    $(this).val(ui.item.label);
+                    $('input#machno').val(ui.item.value);
+                }
+            });
+            $('input#glassProdLineID').on('autocompletefocus', function(event, ui) {
+                event.preventDefault();
+                if (ui.item === null) {
+                    $(this).val('');
+                    $('input#machno').val('');
+                } else {
+                    $(this).val(ui.item.label);
+                    $('input#machno').val(ui.item.value);
+                }
+            });
+            $('input#glassProdLineID').on('autocompleteselect', function(event, ui) {
+                event.preventDefault();
+                if (ui.item === null) {
+                    $(this).val('');
+                    $('input#machno').val('');
+                } else {
+                    $(this).val(ui.item.label);
+                    $('input#machno').val(ui.item.value);
+                }
+            });
+            $('input#sampling').change(function() {
+                if ($(this).prop('checked') === true) {
+                    $('input#allscheqty').val(0).prop('readonly', true).prop('required', false);
+                } else {
+                    $('input#allscheqty').val('').prop('readonly', false).prop('required', true);
+                }
             });
             break;
         case '2':
             console.log('new record with data');
+            $('button#deleteRecordButton').text('清除內容').prop('disabled', false).attr('onClick', 'resetForm()');
             break;
         case '3':
             console.log('pristine historical record');
@@ -54,33 +116,47 @@ function formController(formState) {
             alert('[control.js] formController failure: state process procedures not found for ' + formState);
             break;
     }
-    $('input#mockProdReference').on('autocompletechange', function(event, ui) {
-        syncProdReferenceFields(prdtData, $(this), $('input#prodReference'));
-    });
-    $('input#glassProdLineID').on('autocompletechange', function(event, ui) {
-        syncProdLineFields(glassProdLineData, $(this), $('input#machno'));
-    });
 }
 
-function syncProdLineFields(glassProdLineData, glassProdLineIDHandle, machnoHandle) {
-    let tempStore = glassProdLineIDHandle.val();
-    glassProdLineIDHandle.val('');
-    machnoHandle.val('');
-    glassProdLineData
-        .done(function(dataArray) {
-            $.each(dataArray, function(key, value) {
-                if (tempStore === value.reference) {
-                    glassProdLineIDHandle.val(value.reference);
-                    machnoHandle.val(value.tbmknoRef);
-                }
-            });
-        })
-        .fail(function(error) {
-            alert('[control.js] formController glassProdLineData 2nd retrieval failure: ' + error);
-        });
-}
+/*
+,
+                        focus: function(event, ui) {
+                            console.log('here');
+                            event.preventDefault();
+                            if (ui === null) {
+                                $(this).val('');
+                                $('input#prodReference').val('');
+                            } else {
+                                $(this).val(ui.item.label);
+                                $('input#prodReference').val(ui.item.value);
+                            }
+                            // restricSyncProdReferenceField(prdtData, $(this), $('input#prodReference'));
+                        },
+                        change: function(event, ui) {
+                            event.preventDefault();
+                            if (ui === null) {
+                                $(this).val('');
+                                $('input#prodReference').val('');
+                            } else {
+                                $(this).val(ui.item.label);
+                                $('input#prodReference').val(ui.item.value);
+                            }
+                            // restricSyncProdReferenceField(prdtData, $(this), $('input#prodReference'));
+                        },
+                        select: function(event, ui) {
+                            event.preventDefault();
+                            if (ui === null) {
+                                $(this).val('');
+                                $('input#prodReference').val('');
+                            } else {
+                                $(this).val(ui.item.label);
+                                $('input#prodReference').val(ui.item.value);
+                            }
+                            // restricSyncProdReferenceField(prdtData, $(this), $('input#prodReference'));
+                        }
+*/
 
-function syncProdReferenceFields(prdtData, mockProdReferenceHandle, prodReferenceHandle) {
+function restricSyncProdReferenceField(prdtData, mockProdReferenceHandle, prodReferenceHandle) {
     let tempStore = mockProdReferenceHandle.val();
     mockProdReferenceHandle.val('');
     prodReferenceHandle.val('');
@@ -94,7 +170,25 @@ function syncProdReferenceFields(prdtData, mockProdReferenceHandle, prodReferenc
             });
         })
         .fail(function(error) {
-            alert('[control.js] formController prdtData 2nd retrieval failure: ' + error);
+            alert('[control.js] restricSyncProdReferenceField data retrieval failure: ' + error);
+        });
+}
+
+function restricSyncProdLineField(glassProdLineData, glassProdLineIDHandle, machnoHandle) {
+    let tempStore = glassProdLineIDHandle.val();
+    glassProdLineIDHandle.val('');
+    machnoHandle.val('');
+    glassProdLineData
+        .done(function(dataArray) {
+            $.each(dataArray, function(key, value) {
+                if (tempStore === value.reference) {
+                    glassProdLineIDHandle.val(value.reference);
+                    machnoHandle.val(value.tbmknoRef);
+                }
+            });
+        })
+        .fail(function(error) {
+            alert('[control.js] restricSyncProdLineField data retrieval failure: ' + error);
         });
 }
 
