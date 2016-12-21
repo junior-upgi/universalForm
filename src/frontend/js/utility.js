@@ -1,4 +1,4 @@
-function getAllUrlParams(url) {
+export function getAllUrlParams(url) {
     let queryString = url ? url.split('?')[1] : window.location.search.slice(1); // get query string from url (optional) or window
     let obj = {}; // we'll store the parameters here
     if (queryString) { // if query string exists
@@ -30,7 +30,3 @@ function getAllUrlParams(url) {
     }
     return obj;
 }
-
-module.exports = {
-    getAllUrlParams: getAllUrlParams
-};

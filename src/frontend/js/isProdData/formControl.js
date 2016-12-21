@@ -1,6 +1,8 @@
-import utility from '../utility.js';
+import {
+    initialize
+} from '../appControl.js';
 
-function formController(formState) {
+export function isProdDataFormControl(formState) {
     switch (formState) {
         case '0':
             console.log('skeleton form');
@@ -107,7 +109,7 @@ function formController(formState) {
         case '2':
             $('button#deleteRecordButton').text('清除內容').prop('disabled', false).on('click', function() {
                 alert('頁面即將重置');
-                window.location = `./index.html?formReference=${utility.getAllUrlParams().formReference}&id=${utility.getAllUrlParams().id}`;
+                initialize();
             });
             break;
         case '3':
@@ -143,10 +145,6 @@ function formController(formState) {
         }
     });
 }
-
-module.exports = {
-    formController: formController
-};
 
 /*
 let isProdDataFormInitialization = function(originalGlassRunValue) {
