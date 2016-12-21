@@ -12,7 +12,7 @@ export function isProdDataFormControl(formState) {
             $('input#machno').prop('readonly', true);
             $('input#schedate').prop('required', true);
             $('input#prodReference').prop('readonly', true);
-            $('form#isProdDataForm').attr('action', './createRecord').attr('method', 'post');
+            $('form#isProdDataForm').attr('action', './createManualRecord').attr('method', 'post');
             $('input#submitNewRecord').prop('disabled', false);
             $('input#mockProdReference').autocomplete({
                 minLength: 2,
@@ -108,8 +108,7 @@ export function isProdDataFormControl(formState) {
             break;
         case '2':
             $('button#deleteRecordButton').text('清除內容').prop('disabled', false).on('click', function() {
-                alert('頁面即將重置');
-                initialize();
+                deleteButtonHandler('2');
             });
             break;
         case '3':
@@ -146,22 +145,14 @@ export function isProdDataFormControl(formState) {
     });
 }
 
-/*
-let isProdDataFormInitialization = function(originalGlassRunValue) {
-    prepareISProdDataForm(originalGlassRunValue);
-    glassRunSelectHandler();
-    deleteButtonHandler();
-};
-
-function prepareTaskListForm(originalGlassRunValue) {
-    $.get('http://localhost:9005/taskList', {
-        recordID: originalGlassRunValue
-    }, function(taskListHTMLSource) {
-        $('form#isProdDataForm').before(taskListHTMLSource);
-    });
-}
-
-function deleteButtonHandler() {
+function deleteButtonHandler(formStateCode) {
+    if (formStateCode === '2') {
+        alert('自行新增記錄內容即將重置');
+        initialize();
+    } else {
+        alert(`此頁面狀態 formStateCode: ${formStateCode} 尚未配置程式`);
+    }
+    /*
     $('button#deleteRecordButton').click(function() {
         $.ajax({
             url: serverUrl + '/isProdData',
@@ -178,6 +169,21 @@ function deleteButtonHandler() {
                 console.log(error);
             }
         });
+    });*/
+}
+
+/*
+let isProdDataFormInitialization = function(originalGlassRunValue) {
+    prepareISProdDataForm(originalGlassRunValue);
+    glassRunSelectHandler();
+    deleteButtonHandler();
+};
+
+function prepareTaskListForm(originalGlassRunValue) {
+    $.get('http://localhost:9005/taskList', {
+        recordID: originalGlassRunValue
+    }, function(taskListHTMLSource) {
+        $('form#isProdDataForm').before(taskListHTMLSource);
     });
 }
 

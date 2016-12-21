@@ -107,7 +107,7 @@ app.get('/formControlData/formReference/:formReference', function(request, respo
     });
 });
 
-app.post('/productionHistory/isProdDataForm/createRecord', imageDirData.isProdData.configuration.upload.any(), function(request, response) {
+app.post('/productionHistory/isProdDataForm/createManualRecord', imageDirData.isProdData.configuration.upload.any(), function(request, response) {
     let primaryKey = uuid.v4();
     let uploadLocationObject = {};
     if (request.files.length === 0) {
@@ -118,27 +118,27 @@ app.post('/productionHistory/isProdDataForm/createRecord', imageDirData.isProdDa
             fs.rename(file.path, uploadLocationObject[file.fieldname], function(error) {
                 if (error) {
                     console.log('photo upload failure: ' + error);
-                    alertSystemError('universalForm/isProdDataForm', 'createRecord/photoUpload', error);
+                    alertSystemError('universalForm/isProdDataForm', 'createManualRecord/photoUpload', error);
                     return response.status(500).send('photo upload failure: ' + error);
                 }
             });
         });
-        database.executeQuery(queryString.insertGlassRunRecord(primaryKey, request.body, uploadLocationObject), function(error) {
-            if (error) {
-                alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord', error);
-                return response.status(500).send('error inserting isProdData: ' + error).end();
-            }
-            return response.status(200).redirect(serverConfig.publicServerUrl + '/productionHistory/isProdDataForm?formReference=isProdData&id=' + primaryKey);
-        });
+        return insertRecord(primaryKey, request.body, uploadLocationObject);
     }
 
     function insertRecord(primaryKey, requestData, uploadLocationObject) {
-        database.executeQuery(queryString.insertGlassRunRecord(primaryKey, requestData, uploadLocationObject), function(error) {
+        database.executeQuery(queryString.insertTbmknoRecord(primaryKey, requestData), function(error) {
             if (error) {
-                alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord', error);
-                return response.status(500).send('error inserting isProdData: ' + error).end();
+                alertSystemError('universalForm/isProdDataForm', 'createManualRecord/insertRecord', error);
+                return response.status(500).send('error inserting tbmkno data: ' + error);
             }
-            return response.status(200).redirect(serverConfig.publicServerUrl + '/productionHistory/isProdDataForm?formReference=isProdData&id=' + primaryKey);
+            database.executeQuery(queryString.insertIsProdDataRecord(primaryKey, requestData, uploadLocationObject), function(error) {
+                if (error) {
+                    alertSystemError('universalForm/isProdDataForm', 'createManualRecord/insertRecord', error);
+                    return response.status(500).send('error inserting isProdData: ' + error);
+                }
+                return response.status(200).send(primaryKey);
+            });
         });
     }
 });

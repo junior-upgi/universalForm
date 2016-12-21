@@ -1,6 +1,7 @@
 let moment = require('moment-timezone');
 
 let insertIsProdDataRecord = function(primaryKey, requestData, uploadLocationObject) {
+    let currentDatetime = moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
     let firstPart = 'INSERT INTO productionHistory.dbo.isProdData (';
     let fieldList = '';
     let thirdPart = ') VALUES (';
@@ -11,7 +12,8 @@ let insertIsProdDataRecord = function(primaryKey, requestData, uploadLocationObj
     delete requestData.formState;
     delete requestData.glassRun;
     delete requestData.mockProdReference;
-    if (requestData.sampling === 'on') {
+    delete requestData.orderQty;
+    if (requestData.sampling === 'on' || requestData.sampling === '1' || requestData.sampling === 1) {
         requestData.sampling = 1;
     } else {
         requestData.sampling = 0;
@@ -37,10 +39,19 @@ let insertIsProdDataRecord = function(primaryKey, requestData, uploadLocationObj
         }
     }
     fieldList += ',created,modified';
-    valueList += ',\'' +
-        moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + '\',\'' +
-        moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + '\'';
+    valueList += ',\'' + currentDatetime + '\',\'' + currentDatetime + '\'';
     return firstPart + fieldList + thirdPart + valueList + endPart;
+};
+
+let insertTbmknoRecord = function(primaryKey, requestData) {
+    let currentDatetime = moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
+    if (requestData.sampling === 'on' || requestData.sampling === '1' || requestData.sampling === 1) {
+        requestData.sampling = 1;
+    } else {
+        requestData.sampling = 0;
+    }
+    console.log(`INSERT INTO productionHistory.dbo.tbmkno VALUES('${primaryKey}',${requestData.sampling},'${requestData.machno}','${requestData.glassProdLineID}','${requestData.schedate}','${requestData.prodReference}',${requestData.orderQty},'${currentDatetime}','${currentDatetime}');`);
+    return `INSERT INTO productionHistory.dbo.tbmkno VALUES('${primaryKey}',${requestData.sampling},'${requestData.machno}','${requestData.glassProdLineID}','${requestData.schedate}','${requestData.prodReference}',${requestData.orderQty},'${currentDatetime}','${currentDatetime}');`;
 };
 
 module.exports = {
@@ -48,8 +59,9 @@ module.exports = {
     getGlassRunRecordset: 'SELECT * FROM productionHistory.dbo.glassRun ORDER BY schedate DESC,PRDT_SNM;',
     // getISProdDataRecord: getISProdDataRecord,
     // getISProdDataRecordset: 'SELECT * FROM productionHistory.dbo.isProdData;',
-    insertIsProdDataRecord: insertIsProdDataRecord
-        // updateGlassRunRecord: updateGlassRunRecord
+    // updateGlassRunRecord: updateGlassRunRecord,
+    insertIsProdDataRecord: insertIsProdDataRecord,
+    insertTbmknoRecord: insertTbmknoRecord
 };
 
 /*

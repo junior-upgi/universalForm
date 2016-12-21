@@ -29,8 +29,8 @@ export function initialize() {
         });
 }
 
-function changeFormState(stateCode) {
-    $('select#formState').val(stateCode);
+function changeFormState(formStateCode) {
+    $('select#formState').val(formStateCode);
 }
 
 function getFormBody(formReference) { // ajax for a clean copy of the form
@@ -128,15 +128,11 @@ function initializeSelectControl(selectControlElement, attribute, optionDataArra
         if (optionData.displayFlag === undefined || optionData.displayFlag === true) {
             selectControlElement.append('<option class="current glassRun" value="' + optionData.value + '">' + optionData.text + '</option>');
             if (attribute === true) {
-                $('option.current')
-                    .data('id', optionData.id)
-                    .data('sampling', optionData.sampling)
-                    .data('machno', optionData.machno)
-                    .data('glassProdLineID', optionData.glassProdLineID)
-                    .data('schedate', optionData.schedate)
-                    .data('prd_no', optionData.prd_no)
-                    .data('PRDT_SNM', optionData.PRDT_SNM)
-                    .data('orderQty', optionData.orderQty);
+                delete optionData.value;
+                delete optionData.text;
+                for (let objectIndex in optionData) {
+                    $('option.current').data(objectIndex, optionData[objectIndex]);
+                }
             }
             $('option.current').removeClass('current');
         }
