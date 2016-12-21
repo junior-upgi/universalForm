@@ -3,14 +3,15 @@ import {
 } from './utility.js';
 
 import {
-    isProdDataFormControl
+    isProdDataFormControl,
+    loadIsProdDataRecord
 } from './isProdData/formControl.js';
 
 const formControlArray = {
     isProdData: isProdDataFormControl
 };
 
-export function initialize() {
+export function initialize(recordID) {
     let formReference = getAllUrlParams().formReference;
     // let id = getAllUrlParams().id;
     $('body').empty();
@@ -19,10 +20,19 @@ export function initialize() {
         .then(function(formHtml) {
             $('body').append(formHtml);
             resetForm(formReference);
-            changeFormState(1);
-            initiateFormControl(formReference);
-            preventEnterSubmit();
-            monitorFormUpdate();
+            if (recordID === '') {
+                preventEnterSubmit();
+                monitorFormUpdate();
+                changeFormState(1);
+                initiateFormControl(formReference);
+            } else {
+                preventEnterSubmit();
+                monitorFormUpdate();
+                loadIsProdDataRecord(recordID);
+                changeFormState(3);
+                console.log($('select#formState').val());
+                initiateFormControl(formReference);
+            }
         }).catch(function(error) {
             console.log(error);
             alert('[entry.js] initialize failure: ' + error);

@@ -3,5 +3,5 @@ import {
 } from './appControl.js';
 
 $('document').ready(function() {
-    initialize();
+    initialize('');
 });

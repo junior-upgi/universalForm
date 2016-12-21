@@ -75,7 +75,7 @@ app.get('/data/glassProdLine', function(request, response) {
     return response.status(200).json(glassProdLine.list);
 });
 
-app.get('/formControlData/formReference/:formReference', function(request, response) { // serve form control configuration datalet getGlassRun = function() {
+app.get('/formControlData/formReference/:formReference', function(request, response) { // serve form control configuration data
     database.executeQuery(queryString.getGlassRunRecordset, function(glassRunRecordset, error) {
         if (error) {
             utility.alertSystemError('univeralForm/isProdDataForm', 'controlConfiguration/getGlassRun', error);
@@ -88,9 +88,22 @@ app.get('/formControlData/formReference/:formReference', function(request, respo
             optionList: []
         };
         glassRunRecordset.forEach(function(glassRunRecord) {
+            let value = `${moment(glassRunRecord.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD')} ${glassRunRecord.glassProdLineID} ${glassRunRecord.PRDT_SNM}`;
+            let text = `${moment(glassRunRecord.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD')} - ${glassRunRecord.glassProdLineID}[${glassRunRecord.PRDT_SNM}]`;
+            if (glassRunRecord.orderQty === null) {
+                text += ' 不詳';
+            } else {
+                text += ` ${numeral(glassRunRecord.orderQty).format('0,0')}`;
+            }
+            if (glassRunRecord.existingIsProdDataRecord === 1) {
+                text += ' *';
+            }
+            if (glassRunRecord.sampling === 1) {
+                text += ' (試)';
+            }
             glassRunOptionList.optionList.push({
-                value: `${moment(glassRunRecord.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD')} ${glassRunRecord.glassProdLineID} ${glassRunRecord.PRDT_SNM}`,
-                text: `${moment(glassRunRecord.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD')} - ${glassRunRecord.glassProdLineID}[${glassRunRecord.PRDT_SNM}] ${numeral(glassRunRecord.orderQty).format('0,0')}`,
+                value: value,
+                text: text,
                 id: glassRunRecord.id,
                 sampling: glassRunRecord.sampling,
                 machno: glassRunRecord.machno,
@@ -98,7 +111,9 @@ app.get('/formControlData/formReference/:formReference', function(request, respo
                 schedate: moment(glassRunRecord.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD'),
                 prd_no: glassRunRecord.prd_no,
                 PRDT_SNM: glassRunRecord.PRDT_SNM,
-                orderQty: glassRunRecord.orderQty
+                orderQty: glassRunRecord.orderQty,
+                source: glassRunRecord.source,
+                existingIsProdDataRecord: glassRunRecord.existingIsProdDataRecord
             });
         });
         let formControlDataCopy = clone(formControlData[request.params.formReference]);

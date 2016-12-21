@@ -1,5 +1,6 @@
 let mssql = require('mssql');
 let serverConfig = require('./serverConfig.js');
+let utility = require('./utility.js');
 
 module.exports = {
     executeQuery: function(queryString, callback) {
@@ -13,11 +14,13 @@ module.exports = {
                         callback(recordset);
                     })
                     .catch(function(error) {
+                        utility.alertSystemError('query failure', `[queryString]: ${queryString}`, error);
                         console.log('query failure: ' + error);
                         callback(null, error);
                     });
             })
             .catch(function(error) {
+                utility.alertSystemError('database connection failure', `[queryString]: ${queryString}`, error);
                 console.log('database connection failure: ' + error);
                 callback(null, error);
             });

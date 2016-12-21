@@ -50,13 +50,24 @@ let insertTbmknoRecord = function(primaryKey, requestData) {
     } else {
         requestData.sampling = 0;
     }
-    console.log(`INSERT INTO productionHistory.dbo.tbmkno VALUES('${primaryKey}',${requestData.sampling},'${requestData.machno}','${requestData.glassProdLineID}','${requestData.schedate}','${requestData.prodReference}',${requestData.orderQty},'${currentDatetime}','${currentDatetime}');`);
-    return `INSERT INTO productionHistory.dbo.tbmkno VALUES('${primaryKey}',${requestData.sampling},'${requestData.machno}','${requestData.glassProdLineID}','${requestData.schedate}','${requestData.prodReference}',${requestData.orderQty},'${currentDatetime}','${currentDatetime}');`;
+    let potentialFieldList = ['sampling', 'machno', 'glassProdLineID', 'schedate', 'prd_no', 'orderQty'];
+    let fieldString = 'id';
+    let valueString = '\'' + primaryKey + '\'';
+    potentialFieldList.forEach(function(potentialField) {
+        if ((requestData[potentialField] !== undefined) && (requestData[potentialField] !== '')) {
+            fieldString += ',' + potentialField;
+            valueString += ',\'' + requestData[potentialField] + '\'';
+        }
+    });
+    fieldString += ',created,modified';
+    valueString += ',\'' + currentDatetime + '\',\'' + currentDatetime + '\'';
+    console.log(`INSERT INTO productionHistory.dbo.tbmkno (${fieldString}) VALUES(${valueString});`);
+    return `INSERT INTO productionHistory.dbo.tbmkno (${fieldString}) VALUES(${valueString});`;
 };
 
 module.exports = {
     // deletePhoto: deletePhoto,
-    getGlassRunRecordset: 'SELECT * FROM productionHistory.dbo.glassRun ORDER BY schedate DESC,PRDT_SNM;',
+    getGlassRunRecordset: 'SELECT * FROM productionHistory.dbo.isProdDataGlassRun ORDER BY schedate DESC,PRDT_SNM;',
     // getISProdDataRecord: getISProdDataRecord,
     // getISProdDataRecordset: 'SELECT * FROM productionHistory.dbo.isProdData;',
     // updateGlassRunRecord: updateGlassRunRecord,

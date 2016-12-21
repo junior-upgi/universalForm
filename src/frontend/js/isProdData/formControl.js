@@ -11,8 +11,7 @@ export function isProdDataFormControl(formState) {
             $('select#glassRun').prop('required', false);
             $('input#machno').prop('readonly', true);
             $('input#schedate').prop('required', true);
-            $('input#prodReference').prop('readonly', true);
-            $('form#isProdDataForm').attr('action', './createManualRecord').attr('method', 'post');
+            $('input#prd_no').prop('readonly', true);
             $('input#submitNewRecord').prop('disabled', false);
             $('input#mockProdReference').autocomplete({
                 minLength: 2,
@@ -27,30 +26,30 @@ export function isProdDataFormControl(formState) {
                     event.preventDefault();
                     if (ui.item === null) {
                         $(this).val('');
-                        $('input#prodReference').val('');
+                        $('input#prd_no').val('');
                     } else {
                         $(this).val(ui.item.label);
-                        $('input#prodReference').val(ui.item.value);
+                        $('input#prd_no').val(ui.item.value);
                     }
                 },
                 select: function(event, ui) {
                     event.preventDefault();
                     if (ui.item === null) {
                         $(this).val('');
-                        $('input#prodReference').val('');
+                        $('input#prd_no').val('');
                     } else {
                         $(this).val(ui.item.label);
-                        $('input#prodReference').val(ui.item.value);
+                        $('input#prd_no').val(ui.item.value);
                     }
                 },
                 focus: function(event, ui) {
                     event.preventDefault();
                     if (ui.item === null) {
                         $(this).val('');
-                        $('input#prodReference').val('');
+                        $('input#prd_no').val('');
                     } else {
                         $(this).val(ui.item.label);
-                        $('input#prodReference').val(ui.item.value);
+                        $('input#prd_no').val(ui.item.value);
                     }
                 }
             }).prop('required', true);
@@ -105,10 +104,19 @@ export function isProdDataFormControl(formState) {
                     $('input#allscheqty').val('').prop('readonly', false).prop('required', true);
                 }
             });
+            $('button#deleteRecordButton').text('尚無內容').prop('disabled', true);
+            $('button#printRecordButton').text('尚無內容').prop('disabled', true);
+            $('input#submitRecord').val('尚無內容').prop('disabled', true);
             break;
         case '2':
+            $('form#isProdDataForm').attr('action', './createManualRecord').attr('method', 'post');
             $('button#deleteRecordButton').text('清除內容').prop('disabled', false).on('click', function() {
                 deleteButtonHandler('2');
+            });
+            $('button#printRecordButton').text('尚無內容').prop('disabled', true);
+            $('input#submitRecord').val('手動新增記錄').prop('disabled', false).on('click', function(event) {
+                event.preventDefault();
+                submitButtonHandler('2');
             });
             break;
         case '3':
@@ -145,13 +153,27 @@ export function isProdDataFormControl(formState) {
     });
 }
 
+export function loadIsProdDataRecord(recordID) {
+    console.log('to do: implement record loading');
+}
+
 function deleteButtonHandler(formStateCode) {
+    switch (formStateCode) {
+        case '2':
+            alert('自行新增記錄內容即將重置');
+            initialize();
+            break;
+        default:
+            alert(`此頁面狀態 formStateCode: ${formStateCode} 尚未配置頁面淨空程式`);
+            break;
+    }
+    /*
     if (formStateCode === '2') {
         alert('自行新增記錄內容即將重置');
         initialize();
     } else {
         alert(`此頁面狀態 formStateCode: ${formStateCode} 尚未配置程式`);
-    }
+    }*/
     /*
     $('button#deleteRecordButton').click(function() {
         $.ajax({
@@ -170,6 +192,51 @@ function deleteButtonHandler(formStateCode) {
             }
         });
     });*/
+}
+
+function submitButtonHandler(formStateCode) {
+    switch (formStateCode) {
+        case '2':
+            $.ajax({
+                url: $('form#isProdDataForm').attr('action'),
+                type: $('form#isProdDataForm').attr('method'),
+                data: new FormData($('form#isProdDataForm')[0]),
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    alert('資料新增成功');
+                    initialize(response);
+                },
+                error: function(error) {
+                    alert('資料更新失敗，請聯繫IT檢視');
+                    console.log(error);
+                }
+            });
+            break;
+        default:
+            alert(`此頁面狀態 formStateCode: ${formStateCode} 尚未配置記錄資料傳送程式`);
+            break;
+    }
+    /*
+    function submitUpdatedRecord() {
+        let updatedFormData = new FormData($('form#isProdDataForm')[0]);
+        $.ajax({
+            url: $('form#isProdDataForm').attr('action'),
+            type: 'put',
+            data: updatedFormData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                alert('資料更新成功');
+                // window.location.href = response;
+            },
+            error: function(error) {
+                alert('資料更新失敗，請聯繫IT檢視');
+                console.log(error);
+            }
+        });
+    }
+    */
 }
 
 /*
@@ -192,7 +259,7 @@ function prepareISProdDataForm(originalGlassRunValue) {
     $('input#recordDate').val(moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD'));
     $('input#machno').hide(); // hide field that user does not need to see
     $('input#schedate').hide(); // hide field that user does not need to see
-    $('input#prodReference').hide(); // hide field that user does not need to see
+    $('input#prd_no').hide(); // hide field that user does not need to see
     // ajax ERP extension's database for glass run record
     $.get(serverUrl + '/glassRun', function(recordset) {
         // fill in the select control so user can choose production run
@@ -211,7 +278,7 @@ function prepareISProdDataForm(originalGlassRunValue) {
                 moment(record.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD'));
             $('option.current').data('machno', record.machno).addClass(record.machno);
             $('option.current').data('glassProdLineID', record.glassProdLineID).addClass(record.glassProdLineID);
-            $('option.current').data('prodReference', record.prd_no).addClass(record.prd_no);
+            $('option.current').data('prd_no', record.prd_no).addClass(record.prd_no);
             $('option.current').data('mockProdReference', record.PRDT_SNM);
             $('option.current').removeClass('current'); // remove the temporary identification class attrib
         });
@@ -221,7 +288,7 @@ function prepareISProdDataForm(originalGlassRunValue) {
             recordset.forEach(function(record) {
                 $('option.glassRun.' + record.glassProdLineID + '.' +
                     moment(record.schedate, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD') + '.' +
-                    record.prodReference).append('<span class="existingData">*</span>').addClass('existingData').val(record.id);
+                    record.prd_no).append('<span class="existingData">*</span>').addClass('existingData').val(record.id);
             });
             // place the original selection back into the control
             if (originalGlassRunValue !== '') { // must execute at this position of the callback
@@ -240,7 +307,7 @@ function glassRunSelectHandler() {
         if ($('input#machno').val() === '') { // first selection since starting the application
             $('input#machno').val($('select#glassRun option:selected').data('machno'));
             $('input#schedate').val($('select#glassRun option:selected').data('schedate'));
-            $('input#prodReference').val($('select#glassRun option:selected').data('prodReference'));
+            $('input#prd_no').val($('select#glassRun option:selected').data('prd_no'));
             $('input#mockProdReference').val($('select#glassRun option:selected').data('mockProdReference'));
             $('input#glassProdLineID').val($('select#glassRun option:selected').data('glassProdLineID'));
             if (checkISProdDataExistence()) { // if selected glassRun has existing isProdData
@@ -257,7 +324,7 @@ function glassRunSelectHandler() {
                 id: ($('select option:selected').val() === '') ? undefined : $('select option:selected').val(),
                 machno: $('select option:selected').data('machno'),
                 schedate: $('select option:selected').data('schedate'),
-                prodReference: $('select option:selected').data('prodReference'),
+                prd_no: $('select option:selected').data('prd_no'),
                 mockProdReference: $('select option:selected').data('mockProdReference'),
                 glassProdLineID: $('select option:selected').data('glassProdLineID')
             };
@@ -268,7 +335,7 @@ function glassRunSelectHandler() {
                 // insert the original values back into the form
                 $('input#machno').val(newGlassRunSelection.machno);
                 $('input#schedate').val(newGlassRunSelection.schedate);
-                $('input#prodReference').val(newGlassRunSelection.prodReference);
+                $('input#prd_no').val(newGlassRunSelection.prd_no);
                 $('input#mockProdReference').val(newGlassRunSelection.mockProdReference);
                 $('input#glassProdLineID').val(newGlassRunSelection.glassProdLineID);
                 // reinitialize the form controls
@@ -296,7 +363,7 @@ function loadExistingISProdData() {
     // prepareTaskListForm($('select#glassRun').val());
     // load data for the actual form
     $.get(serverUrl + '/isProdData/recordID/' + $('select#glassRun').val(), function(record) {
-        let fieldsToRemove = ['id', 'machno', 'machno', 'schedate', 'prodReference',
+        let fieldsToRemove = ['id', 'machno', 'machno', 'schedate', 'prd_no',
             'glassProdLineID', 'recordDate', 'feeder', 'spout', 'created', 'modified'
         ];
         // deal with null values of checkboxes and convert true/false values in checkbox fields into 1's and 0's
@@ -371,25 +438,6 @@ function deletePhoto(recordIndex) {
         $('button.' + recordIndex).remove(); // remove the removal button
         $('input#' + recordIndex).show(); // show the original upload control
         alert('圖片已刪除');
-    });
-}
-
-function submitUpdatedRecord() {
-    let updatedFormData = new FormData($('form#isProdDataForm')[0]);
-    $.ajax({
-        url: $('form#isProdDataForm').attr('action'),
-        type: 'put',
-        data: updatedFormData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            alert('資料更新成功');
-            // window.location.href = response;
-        },
-        error: function(error) {
-            alert('資料更新失敗，請聯繫IT檢視');
-            console.log(error);
-        }
     });
 }
 

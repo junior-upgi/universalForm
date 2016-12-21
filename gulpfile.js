@@ -160,7 +160,7 @@ function startBrowserSync() {
         return;
     }
     let option = {
-        proxy: 'http://localhost:' + serverConfig.serverPort + '/productionHistory/isProdDataForm/index.html?formReference=isProdData&id=',
+        proxy: 'http://localhost:' + serverConfig.serverPort + '/productionHistory/isProdDataForm/index.html?formReference=isProdData',
         port: 9999,
         files: ['./src/frontend/**/*.*'],
         ghostMode: {
