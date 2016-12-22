@@ -152,7 +152,11 @@ app.post('/productionHistory/isProdDataForm/createManualRecord', imageDirData.is
                     alertSystemError('universalForm/isProdDataForm', 'createManualRecord/insertRecord', error);
                     return response.status(500).send('error inserting isProdData: ' + error);
                 }
-                return response.status(200).send(primaryKey);
+                return response.status(200).send({
+                    id: primaryKey,
+                    source: 'generated',
+                    existingIsProdDataRecord: 1
+                });
             });
         });
     }

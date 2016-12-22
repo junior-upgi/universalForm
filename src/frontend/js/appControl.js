@@ -11,16 +11,15 @@ const formControlArray = {
     isProdData: isProdDataFormControl
 };
 
-export function initialize(recordID) {
+export function initialize(recordIdObject) {
     let formReference = getAllUrlParams().formReference;
-    // let id = getAllUrlParams().id;
     $('body').empty();
     changeFormState(0);
     getFormBody(formReference)
         .then(function(formHtml) {
             $('body').append(formHtml);
             resetForm(formReference);
-            if (recordID === '') {
+            if ($.isEmptyObject(recordIdObject)) {
                 preventEnterSubmit();
                 monitorFormUpdate();
                 changeFormState(1);
@@ -28,9 +27,8 @@ export function initialize(recordID) {
             } else {
                 preventEnterSubmit();
                 monitorFormUpdate();
-                loadIsProdDataRecord(recordID);
+                loadIsProdDataRecord(recordIdObject);
                 changeFormState(3);
-                console.log($('select#formState').val());
                 initiateFormControl(formReference);
             }
         }).catch(function(error) {
@@ -39,7 +37,7 @@ export function initialize(recordID) {
         });
 }
 
-function changeFormState(formStateCode) {
+export function changeFormState(formStateCode) {
     $('select#formState').val(formStateCode);
 }
 
@@ -60,7 +58,7 @@ function resetForm(formReference) {
         });
 }
 
-function initiateFormControl(formReference) {
+export function initiateFormControl(formReference) {
     formControlArray[formReference]($('select#formState').val());
 }
 

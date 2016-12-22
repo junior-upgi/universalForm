@@ -1,6 +1,12 @@
 import {
-    initialize
+    initialize,
+    changeFormState,
+    initiateFormControl
 } from '../appControl.js';
+
+import {
+    getAllUrlParams
+} from '../utility.js';
 
 export function isProdDataFormControl(formState) {
     switch (formState) {
@@ -120,7 +126,12 @@ export function isProdDataFormControl(formState) {
             });
             break;
         case '3':
-            console.log('pristine historical record');
+            $('input#machno').prop('readOnly', true);
+            $('input#prd_no').prop('readOnly', true);
+            $('input#schedate').prop('readOnly', true);
+            $('input#glassProdLineID').prop('readOnly', true);
+            $('input#mockProdReference').prop('readOnly', true);
+            $('input#orderQty').prop('readOnly', true);
             break;
         case '4':
             console.log('historical record with new data');
@@ -130,38 +141,45 @@ export function isProdDataFormControl(formState) {
             break;
     }
     $('select#glassRun').change(function() {
-        switch ($('select#formState').val()) {
-            case '0':
-                console.log('skeleton form');
-                break;
-            case '1':
-                console.log('new pristine record');
-                break;
-            case '2':
-                console.log('new record with data');
-                break;
-            case '3':
-                console.log('pristine historical record');
-                break;
-            case '4':
-                console.log('historical record with new data');
-                break;
-            default:
-                alert('[control.js] glassRun select control on click event handler failure: state process procedures not found for ' + formState);
-                break;
-        }
+        let currentSelection = $('select#glassRun option:selected');
+        initialize({
+            value: currentSelection.val(),
+            id: currentSelection.data('id'),
+            machno: currentSelection.data('machno'),
+            glassProdLineID: currentSelection.data('glassProdLineID'),
+            schedate: currentSelection.data('schedate'),
+            prd_no: currentSelection.data('prd_no'),
+            mockProdReference: currentSelection.data('PRDT_SNM'),
+            orderQty: currentSelection.data('orderQty'),
+            source: currentSelection.data('source'),
+            existingIsProdDataRecord: currentSelection.data('existingIsProdDataRecord')
+        });
     });
 }
 
-export function loadIsProdDataRecord(recordID) {
-    console.log('to do: implement record loading');
+export function loadIsProdDataRecord(recordIdObj) {
+    $('select#glassRun').val(recordIdObj.value);
+    if ((recordIdObj.existingIsProdDataRecord === 1) && (recordIdObj.source === 'generated')) {
+        console.log('load existing generated data');
+    } else if ((recordIdObj.existingIsProdDataRecord === 1) && (recordIdObj.source === 'tbmkno')) {
+        console.log('load existing tbmkno matched data');
+    } else {
+        $('input#machno').val(recordIdObj.machno);
+        $('input#prd_no').val(recordIdObj.prd_no);
+        $('input#schedate').val(recordIdObj.schedate);
+        $('input#glassProdLineID').val(recordIdObj.glassProdLineID);
+        $('input#mockProdReference').val(recordIdObj.mockProdReference);
+        $('input#orderQty').val(recordIdObj.orderQty);
+    }
+    changeFormState(3);
+    initiateFormControl(getAllUrlParams().formReference);
 }
 
 function deleteButtonHandler(formStateCode) {
     switch (formStateCode) {
         case '2':
             alert('自行新增記錄內容即將重置');
-            initialize();
+            initialize({});
             break;
         default:
             alert(`此頁面狀態 formStateCode: ${formStateCode} 尚未配置頁面淨空程式`);
