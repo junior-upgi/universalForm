@@ -120,7 +120,7 @@ export function isProdDataFormControl(formState) {
                 deleteButtonHandler('2');
             });
             $('button#printRecordButton').text('尚無內容').prop('disabled', true);
-            $('input#submitRecord').val('手動新增記錄').prop('disabled', false).on('click', function(event) {
+            $('input#submitRecord').val('新增記錄').prop('disabled', false).on('click', function(event) {
                 event.preventDefault();
                 submitButtonHandler('2');
             });
@@ -132,6 +132,10 @@ export function isProdDataFormControl(formState) {
             $('input#glassProdLineID').prop('readOnly', true);
             $('input#mockProdReference').prop('readOnly', true);
             $('input#orderQty').prop('readOnly', true);
+            $('button#deleteRecordButton').text('尚無內容').prop('disabled', true);
+            console.log('to do: print document');
+            $('button#printRecordButton').text('列印文件').prop('disabled', true);
+            $('input#submitRecord').val('尚無內容').prop('disabled', true);
             break;
         case '4':
             console.log('historical record with new data');
@@ -159,10 +163,9 @@ export function isProdDataFormControl(formState) {
 
 export function loadIsProdDataRecord(recordIdObj) {
     $('select#glassRun').val(recordIdObj.value);
-    if ((recordIdObj.existingIsProdDataRecord === 1) && (recordIdObj.source === 'generated')) {
-        console.log('load existing generated data');
-    } else if ((recordIdObj.existingIsProdDataRecord === 1) && (recordIdObj.source === 'tbmkno')) {
-        console.log('load existing tbmkno matched data');
+    if (recordIdObj.existingIsProdDataRecord === 1) {
+        console.log('to do: load existing generated data');
+        // $.ajax()
     } else {
         $('input#machno').val(recordIdObj.machno);
         $('input#prd_no').val(recordIdObj.prd_no);
@@ -171,8 +174,6 @@ export function loadIsProdDataRecord(recordIdObj) {
         $('input#mockProdReference').val(recordIdObj.mockProdReference);
         $('input#orderQty').val(recordIdObj.orderQty);
     }
-    changeFormState(3);
-    initiateFormControl(getAllUrlParams().formReference);
 }
 
 function deleteButtonHandler(formStateCode) {

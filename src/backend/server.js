@@ -125,6 +125,7 @@ app.get('/formControlData/formReference/:formReference', function(request, respo
 app.post('/productionHistory/isProdDataForm/createManualRecord', imageDirData.isProdData.configuration.upload.any(), function(request, response) {
     let primaryKey = uuid.v4();
     let uploadLocationObject = {};
+    let newRecordSelectValue = `${request.body.schedate} - ${request.body.glassProdLineID}[${request.body.mockProdReference}] ${numeral(request.body.orderQty).format('0,0')}`;
     if (request.files.length === 0) {
         return insertRecord(primaryKey, request.body, null);
     } else {
@@ -138,7 +139,7 @@ app.post('/productionHistory/isProdDataForm/createManualRecord', imageDirData.is
                 }
             });
         });
-        return insertRecord(primaryKey, request.body, uploadLocationObject);
+        insertRecord(primaryKey, request.body, uploadLocationObject);
     }
 
     function insertRecord(primaryKey, requestData, uploadLocationObject) {
@@ -153,6 +154,7 @@ app.post('/productionHistory/isProdDataForm/createManualRecord', imageDirData.is
                     return response.status(500).send('error inserting isProdData: ' + error);
                 }
                 return response.status(200).send({
+                    value: newRecordSelectValue,
                     id: primaryKey,
                     source: 'generated',
                     existingIsProdDataRecord: 1
@@ -160,6 +162,33 @@ app.post('/productionHistory/isProdDataForm/createManualRecord', imageDirData.is
             });
         });
     }
+});
+
+app.get('/productionHistory/isProdDataForm/recordID/:recordID', function(request, response) {
+    return response.status(200).end();
+    /*
+    if (request.params.recordID === 'all') {
+        database.executeQuery(queryString.getISProdDataRecordset, function(isProdDataRecordset, error) {
+            if (error) {
+                return response.status(500).json([]).end();
+            }
+            return response.status(200).json(isProdDataRecordset);
+        });
+    } else {
+        if (request.params.recordID) {
+            database.executeQuery(queryString.getISProdDataRecord(request.params.recordID), function(isProdDataRecord, error) {
+                if (error) {
+                    console.log('getISProdDataRecord() failed: ' + error);
+                    return response.status(500).json({}).end();
+                }
+                return response.status(200).json(isProdDataRecord[0]);
+            });
+        } else {
+            console.log('getISProdDataRecord()\'s recordID invalid');
+            return response.status(500).json({}).end();
+        }
+    }
+    */
 });
 
 app.listen(serverConfig.serverPort, function(error) { // start backend server
@@ -171,6 +200,16 @@ app.listen(serverConfig.serverPort, function(error) { // start backend server
 });
 
 /*
+
+app.get('/productionHistory/isProdDataForm/glassRun', function(request, response) {
+    database.executeQuery(queryString.getGlassRunRecordset, function(glassRunRecordset, error) {
+        if (error) {
+            return response.status(500).json([]).end();
+        }
+        return response.status(200).json(glassRunRecordset);
+    });
+});
+
 app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), function(request, response) {
     console.log(moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + ' received POST request on /glassRun');
     let primaryKey = utility.uuidGenerator();
@@ -205,15 +244,6 @@ app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fu
     }
 });
 
-app.get('/productionHistory/glassRun', function(request, response) {
-    database.executeQuery(queryString.getGlassRunRecordset, function(glassRunRecordset, error) {
-        if (error) {
-            return response.status(500).json([]).end();
-        }
-        return response.status(200).json(glassRunRecordset);
-    });
-});
-
 app.get('/productionHistory/isProdDataForm/deletePhoto/recordID/:recordID/fieldName/:fieldName', function(request, response) {
     console.log(request.params);
     database.executeQuery(queryString.deletePhoto(request.params.recordID, request.params.fieldName), function(error) {
@@ -227,30 +257,6 @@ app.get('/productionHistory/isProdDataForm/deletePhoto/recordID/:recordID/fieldN
             return response.status(200).end();
         });
     });
-});
-
-app.get('/productionHistory/isProdData/recordID/:recordID', function(request, response) {
-    if (request.params.recordID === 'all') {
-        database.executeQuery(queryString.getISProdDataRecordset, function(isProdDataRecordset, error) {
-            if (error) {
-                return response.status(500).json([]).end();
-            }
-            return response.status(200).json(isProdDataRecordset);
-        });
-    } else {
-        if (request.params.recordID) {
-            database.executeQuery(queryString.getISProdDataRecord(request.params.recordID), function(isProdDataRecord, error) {
-                if (error) {
-                    console.log('getISProdDataRecord() failed: ' + error);
-                    return response.status(500).json({}).end();
-                }
-                return response.status(200).json(isProdDataRecord[0]);
-            });
-        } else {
-            console.log('getISProdDataRecord()\'s recordID invalid');
-            return response.status(500).json({}).end();
-        }
-    }
 });
 
 app.put('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), function(request, response) {

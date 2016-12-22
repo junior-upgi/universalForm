@@ -65,10 +65,14 @@ let insertTbmknoRecord = function(primaryKey, requestData) {
     return `INSERT INTO productionHistory.dbo.tbmkno (${fieldString}) VALUES(${valueString});`;
 };
 
+let getISProdDataRecord = function(recordID) {
+    return 'SELECT * FROM productionHistory.dbo.isProdData WHERE id=\'' + recordID + '\';';
+};
+
 module.exports = {
     // deletePhoto: deletePhoto,
     getGlassRunRecordset: 'SELECT * FROM productionHistory.dbo.isProdDataGlassRun ORDER BY schedate DESC,PRDT_SNM;',
-    // getISProdDataRecord: getISProdDataRecord,
+    getISProdDataRecord: getISProdDataRecord,
     // getISProdDataRecordset: 'SELECT * FROM productionHistory.dbo.isProdData;',
     // updateGlassRunRecord: updateGlassRunRecord,
     insertIsProdDataRecord: insertIsProdDataRecord,
@@ -78,10 +82,6 @@ module.exports = {
 /*
 let deletePhoto = function(recordID, photoFieldName) {
     return 'UPDATE productionHistory.dbo.isProdData SET ' + photoFieldName + '=NULL WHERE id=\'' + recordID + '\';';
-};
-
-let getISProdDataRecord = function(recordID) {
-    return 'SELECT * FROM productionHistory.dbo.isProdData WHERE id=\'' + recordID + '\';';
 };
 
 
