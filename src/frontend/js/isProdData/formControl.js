@@ -1,12 +1,6 @@
 import {
-    initialize,
-    changeFormState,
-    initiateFormControl
+    initialize
 } from '../appControl.js';
-
-import {
-    getAllUrlParams
-} from '../utility.js';
 
 export function isProdDataFormControl(formState) {
     switch (formState) {
