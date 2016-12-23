@@ -29,41 +29,17 @@ export function initialize(recordIdObject) {
                 preventEnterSubmit();
                 monitorFormUpdate();
                 loadIsProdDataRecord(recordIdObject);
-                changeFormState(3);
+                if (recordIdObject.existingIsProdDataRecord === 1) {
+                    changeFormState(3);
+                } else {
+                    changeFormState(5);
+                }
                 initiateFormControl(formReference);
             }
         }).catch(function(error) {
             console.log(error);
             alert(error);
         });
-}
-
-function configureFormControlElement(formControlOptionData) {
-    for (let objectIndex in formControlOptionData) {
-        switch (objectIndex) {
-            case 'selectOptionListArray':
-                formControlOptionData[objectIndex].forEach(function(elementConfigurationData) {
-                    initializeSelectControl($('select#' + elementConfigurationData.id), elementConfigurationData.attribute, elementConfigurationData.optionList);
-                });
-                break;
-            case 'checkboxOptionArray':
-                formControlOptionData[objectIndex].forEach(function(elementConfigurationData) {
-                    initializeCheckboxControl($('div#' + elementConfigurationData.id), elementConfigurationData.optionList);
-                });
-                // monitor sets of checkbox's and make sure multiselection setting is enforced
-                $('input[type="checkbox"]').change(function() { // checks on every change to checkbox's
-                    let targetCheckboxSet = $(this).attr('name'); // save current checkbox's name for access
-                    if ($('input[name="' + targetCheckboxSet + '"]:checked').length > 1) {
-                        alert('不得複選，項目將自動重置歸零');
-                        $('input[name="' + targetCheckboxSet + '"]').prop('checked', false);
-                    }
-                });
-                break;
-            default:
-                alert(`[entry.js] configureFormControlElement error: \nfound control element types without valid processing method (${objectIndex})`);
-                break;
-        }
-    }
 }
 
 export function changeFormState(formStateCode) {
@@ -124,29 +100,113 @@ function markFormAsUpdated() {
     }
 }
 
-function initializeSelectControl(selectControlElement, attribute, optionDataArray) {
-    selectControlElement.append('<option value="" selected></option>');
-    optionDataArray.forEach(function(optionData) {
-        if (optionData.displayFlag === undefined || optionData.displayFlag === true) {
-            selectControlElement.append('<option class="current glassRun" value="' + optionData.value + '">' + optionData.text + '</option>');
-            if (attribute === true) {
-                delete optionData.value;
-                delete optionData.text;
-                for (let objectIndex in optionData) {
-                    $('option.current').data(objectIndex, optionData[objectIndex]);
-                }
-            }
-            $('option.current').removeClass('current');
+function configureFormControlElement(formControlOptionData) {
+    for (let objectIndex in formControlOptionData) {
+        switch (objectIndex) {
+            case 'selectOptionListArray':
+                formControlOptionData[objectIndex].forEach(function(elementConfigurationData) {
+                    let selectControlElement = $('select#' + elementConfigurationData.id);
+                    let attribute = elementConfigurationData.attribute;
+                    let optionDataArray = elementConfigurationData.optionList;
+                    selectControlElement.append('<option value="" selected disabled></option>');
+                    optionDataArray.forEach(function(optionData) {
+                        if (optionData.displayFlag === undefined || optionData.displayFlag === true) {
+                            selectControlElement.append('<option class="current glassRun" value="' + optionData.value + '">' + optionData.text + '</option>');
+                            if (attribute === true) {
+                                delete optionData.value;
+                                delete optionData.text;
+                                for (let objectIndex in optionData) {
+                                    $('option.current').data(objectIndex, optionData[objectIndex]);
+                                }
+                            }
+                            $('option.current').removeClass('current');
+                        }
+                    });
+                });
+                break;
+            case 'checkboxOptionArray':
+                formControlOptionData[objectIndex].forEach(function(elementConfigurationData) {
+                    let checkboxControlContainer = $('div#' + elementConfigurationData.id);
+                    let checkboxDataArray = elementConfigurationData.optionList;
+                    checkboxDataArray.forEach(function(optionData) {
+                        checkboxControlContainer.append(`<input name="${checkboxControlContainer.attr('id')}" type="checkbox" value="${optionData.value}" class="dataField current" tabindex="" />&nbsp;${optionData.text} &nbsp`);
+                        if (optionData.default === true) {
+                            $('input.current').prop('checked', true);
+                        }
+                        $('input.current').removeClass('current');
+                    });
+                });
+                // monitor sets of checkbox's and make sure multiselection setting is enforced
+                $('input[type="checkbox"]').change(function() { // checks on every change to checkbox's
+                    let targetCheckboxSet = $(this).attr('name'); // save current checkbox's name for access
+                    if ($('input[name="' + targetCheckboxSet + '"]:checked').length > 1) {
+                        alert('不得複選，項目將自動重置歸零');
+                        $('input[name="' + targetCheckboxSet + '"]').prop('checked', false);
+                    }
+                });
+                break;
+            case 'textAutocompleteOptionArray':
+                formControlOptionData[objectIndex].forEach(function(elementConfigurationData) {
+                    let controlHandle = $('input#' + elementConfigurationData.id);
+                    let optionArray;
+                    if (typeof elementConfigurationData.optionList === 'object') {
+                        optionArray = elementConfigurationData.optionList;
+                    } else {
+                        optionArray = function(request, response) {
+                            $.getJSON(elementConfigurationData.optionList, {
+                                term: request.term
+                            }, function(dataArray) {
+                                response(dataArray);
+                            });
+                        };
+                    }
+                    let mirrorTargetHandle = $('input#' + elementConfigurationData.mirrorTarget);
+                    if (elementConfigurationData.optionList === null) {
+                        controlHandle.autocomplete({
+                            source: optionArray,
+                            minLength: elementConfigurationData.minLength
+                        });
+                    } else {
+                        controlHandle.autocomplete({
+                            source: optionArray,
+                            minLength: elementConfigurationData.minLength,
+                            change: function(event, ui) {
+                                event.preventDefault();
+                                if (ui.item === null) {
+                                    controlHandle.val('');
+                                    mirrorTargetHandle.val('');
+                                } else {
+                                    controlHandle.val(ui.item.label);
+                                    mirrorTargetHandle.val(ui.item.value);
+                                }
+                            },
+                            select: function(event, ui) {
+                                event.preventDefault();
+                                if (ui.item === null) {
+                                    controlHandle.val('');
+                                    mirrorTargetHandle.val('');
+                                } else {
+                                    controlHandle.val(ui.item.label);
+                                    mirrorTargetHandle.val(ui.item.value);
+                                }
+                            },
+                            focus: function(event, ui) {
+                                event.preventDefault();
+                                if (ui.item === null) {
+                                    controlHandle.val('');
+                                    mirrorTargetHandle.val('');
+                                } else {
+                                    controlHandle.val(ui.item.label);
+                                    mirrorTargetHandle.val(ui.item.value);
+                                }
+                            }
+                        });
+                    }
+                });
+                break;
+            default:
+                alert(`[entry.js] configureFormControlElement error: \nfound control element types without valid processing method (${objectIndex})`);
+                break;
         }
-    });
-}
-
-function initializeCheckboxControl(checkboxControlContainer, checkboxDataArray) {
-    checkboxDataArray.forEach(function(optionData) {
-        checkboxControlContainer.append('<input name="' + checkboxControlContainer.attr('id') + '" type="checkbox" value="' + optionData.value + '" class="dataField current" tabindex="" />&nbsp;' + optionData.text + '&nbsp;');
-        if (optionData.default === true) {
-            $('input.current').prop('checked', true);
-        }
-        $('input.current').removeClass('current');
-    });
+    }
 }

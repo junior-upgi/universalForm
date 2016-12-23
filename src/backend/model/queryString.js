@@ -1,6 +1,10 @@
-let moment = require('moment-timezone');
+const moment = require('moment-timezone');
 
-let insertIsProdDataRecord = function(primaryKey, requestData, uploadLocationObject) {
+const erpPrdt = function(searchString) {
+    return `SELECT SNM AS label,PRD_NO AS value FROM DB_U105.dbo.PRDT WHERE PRD_NO LIKE 'B[0-9][0-9][0-9][0-9][0-9]__' AND PRD_NO LIKE 'B${searchString}%';`;
+};
+
+const insertIsProdDataRecord = function(primaryKey, requestData, uploadLocationObject) {
     let currentDatetime = moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
     let firstPart = 'INSERT INTO productionHistory.dbo.isProdData (';
     let fieldList = '';
@@ -43,7 +47,7 @@ let insertIsProdDataRecord = function(primaryKey, requestData, uploadLocationObj
     return firstPart + fieldList + thirdPart + valueList + endPart;
 };
 
-let insertTbmknoRecord = function(primaryKey, requestData) {
+const insertTbmknoRecord = function(primaryKey, requestData) {
     let currentDatetime = moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
     if (requestData.sampling === 'on' || requestData.sampling === '1' || requestData.sampling === 1) {
         requestData.sampling = 1;
@@ -65,14 +69,25 @@ let insertTbmknoRecord = function(primaryKey, requestData) {
     return `INSERT INTO productionHistory.dbo.tbmkno (${fieldString}) VALUES(${valueString});`;
 };
 
-let getISProdDataRecord = function(recordID) {
+const getExistingIsProdDataRecord = function(recordID) {
+    return `SELECT a.*,b.orderQty,c.PRDT_SNM AS mockProdReference FROM productionHistory.dbo.isProdData a LEFT JOIN productionHistory.dbo.tbmkno b ON a.id=b.id LEFT JOIN productionHistory.dbo.isProdDataGlassRun c ON a.id=c.id WHERE a.id='${recordID}';`;
+};
+
+const getISProdDataRecord = function(recordID) {
     return 'SELECT * FROM productionHistory.dbo.isProdData WHERE id=\'' + recordID + '\';';
+};
+
+const getTbmknoRecord = function(recordID) {
+    return 'SELECT * FROM productionHistory.dbo.tbmkno WHERE id=\'' + recordID + '\';';
 };
 
 module.exports = {
     // deletePhoto: deletePhoto,
+    erpPrdt: erpPrdt,
+    getExistingIsProdDataRecord: getExistingIsProdDataRecord,
     getGlassRunRecordset: 'SELECT * FROM productionHistory.dbo.isProdDataGlassRun ORDER BY schedate DESC,PRDT_SNM;',
     getISProdDataRecord: getISProdDataRecord,
+    getTbmknoRecord: getTbmknoRecord,
     // getISProdDataRecordset: 'SELECT * FROM productionHistory.dbo.isProdData;',
     // updateGlassRunRecord: updateGlassRunRecord,
     insertIsProdDataRecord: insertIsProdDataRecord,

@@ -20,7 +20,6 @@ let formControlData = {
 let imageDirData = {
     isProdData: require('./model/isProdData/imageDir.js')
 };
-let glassProdLine = require('./model/glassProdLine.js');
 let queryString = require('./model/queryString.js');
 
 let app = express();
@@ -62,7 +61,7 @@ app.use('/productionHistory/isProdDataForm', express.static('./public')); // ser
 app.use('/productionHistory/isProdDataForm/bower_components', express.static('./bower_components')); // serve static files
 
 app.get('/erp/prdt', function(request, response) { // serve erp DB_U105.dbo.PRDT data
-    database.executeQuery(`SELECT SNM AS label,PRD_NO AS value FROM DB_U105.dbo.PRDT WHERE PRD_NO LIKE 'B[0-9][0-9][0-9][0-9][0-9]__' AND PRD_NO LIKE 'B${request.query.term}%';`, function(prdtData, error) {
+    database.executeQuery(queryString.erpPrdt(request.query.term), function(prdtData, error) {
         if (error) {
             utility.alertSystemError('universalForm', 'route /erp/prdt', error);
             return response.status(500).json([{}]);
@@ -71,11 +70,8 @@ app.get('/erp/prdt', function(request, response) { // serve erp DB_U105.dbo.PRDT
     });
 });
 
-app.get('/data/glassProdLine', function(request, response) {
-    return response.status(200).json(glassProdLine.list);
-});
-
 app.get('/formControlData/formReference/:formReference', function(request, response) { // serve form control configuration data
+    // load and create form control option data for <select> id: glassRun
     database.executeQuery(queryString.getGlassRunRecordset, function(glassRunRecordset, error) {
         if (error) {
             utility.alertSystemError('univeralForm/isProdDataForm', 'controlConfiguration/getGlassRun', error);
@@ -165,30 +161,31 @@ app.post('/productionHistory/isProdDataForm/createManualRecord', imageDirData.is
 });
 
 app.get('/productionHistory/isProdDataForm/recordID/:recordID', function(request, response) {
-    return response.status(200).end();
-    /*
-    if (request.params.recordID === 'all') {
-        database.executeQuery(queryString.getISProdDataRecordset, function(isProdDataRecordset, error) {
-            if (error) {
-                return response.status(500).json([]).end();
-            }
-            return response.status(200).json(isProdDataRecordset);
-        });
-    } else {
-        if (request.params.recordID) {
-            database.executeQuery(queryString.getISProdDataRecord(request.params.recordID), function(isProdDataRecord, error) {
-                if (error) {
-                    console.log('getISProdDataRecord() failed: ' + error);
-                    return response.status(500).json({}).end();
-                }
-                return response.status(200).json(isProdDataRecord[0]);
-            });
-        } else {
-            console.log('getISProdDataRecord()\'s recordID invalid');
-            return response.status(500).json({}).end();
-        }
+    if ((request.params.recordID === null) || (request.params.recordID === undefined) || (request.params.recordID === '')) {
+        console.log('recordID not specified');
+        return response.status(500).json({});
     }
-    */
+    let recordID = request.params.recordID;
+    database.executeQuery(queryString.getExistingIsProdDataRecord(recordID), function(existingIsProdDataRecord, error) {
+        if (error) {
+            console.log('database operation failure on isProdData/tbmkno lookup: ' + error);
+            return response.status(500).json([{}]);
+        }
+        for (let objectIndex in existingIsProdDataRecord[0]) {
+            if (existingIsProdDataRecord[0][objectIndex] === null) {
+                delete existingIsProdDataRecord[0][objectIndex];
+            }
+            delete existingIsProdDataRecord[0]['created'];
+            delete existingIsProdDataRecord[0]['modified'];
+            if (existingIsProdDataRecord[0]['recordDate'] !== null) {
+                existingIsProdDataRecord[0]['recordDate'] = moment(existingIsProdDataRecord[0]['recordDate'], 'YYYY-MM-DDTHH:mm:ss.SSSZ').format('YYYY-MM-DD');
+            }
+            if (existingIsProdDataRecord[0]['schedate'] !== null) {
+                existingIsProdDataRecord[0]['schedate'] = moment(existingIsProdDataRecord[0]['schedate'], 'YYYY-MM-DDTHH:mm:ss.SSSZ').format('YYYY-MM-DD');
+            }
+        }
+        return response.status(200).json(existingIsProdDataRecord);
+    });
 });
 
 app.listen(serverConfig.serverPort, function(error) { // start backend server

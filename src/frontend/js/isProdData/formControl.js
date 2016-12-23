@@ -2,101 +2,20 @@ import {
     initialize
 } from '../appControl.js';
 
+import {
+    serverUrl
+} from '../config.js';
+
 export function isProdDataFormControl(formState) {
     switch (formState) {
-        case '0':
-            console.log('skeleton form');
-            break;
         case '1':
             $('select#glassRun').prop('required', false);
             $('input#machno').prop('readonly', true);
             $('input#schedate').prop('required', true);
             $('input#prd_no').prop('readonly', true);
             $('input#submitNewRecord').prop('disabled', false);
-            $('input#mockProdReference').autocomplete({
-                minLength: 2,
-                source: function(request, response) {
-                    $.getJSON('../../erp/prdt', {
-                        term: request.term
-                    }, function(dataArray) {
-                        response(dataArray);
-                    });
-                },
-                change: function(event, ui) {
-                    event.preventDefault();
-                    if (ui.item === null) {
-                        $(this).val('');
-                        $('input#prd_no').val('');
-                    } else {
-                        $(this).val(ui.item.label);
-                        $('input#prd_no').val(ui.item.value);
-                    }
-                },
-                select: function(event, ui) {
-                    event.preventDefault();
-                    if (ui.item === null) {
-                        $(this).val('');
-                        $('input#prd_no').val('');
-                    } else {
-                        $(this).val(ui.item.label);
-                        $('input#prd_no').val(ui.item.value);
-                    }
-                },
-                focus: function(event, ui) {
-                    event.preventDefault();
-                    if (ui.item === null) {
-                        $(this).val('');
-                        $('input#prd_no').val('');
-                    } else {
-                        $(this).val(ui.item.label);
-                        $('input#prd_no').val(ui.item.value);
-                    }
-                }
-            }).prop('required', true);
-            $('input#glassProdLineID').autocomplete({
-                source: function(request, response) {
-                    $.getJSON('../../data/glassProdLine', function(dataArray) {
-                        let mappedDataArray = [];
-                        dataArray.forEach(function(dataEntry) {
-                            mappedDataArray.push({
-                                label: dataEntry.reference,
-                                value: dataEntry.tbmknoRef
-                            });
-                        });
-                        response(mappedDataArray);
-                    });
-                },
-                change: function(event, ui) {
-                    event.preventDefault();
-                    if (ui.item === null) {
-                        $(this).val('');
-                        $('input#machno').val('');
-                    } else {
-                        $(this).val(ui.item.label);
-                        $('input#machno').val(ui.item.value);
-                    }
-                },
-                select: function(event, ui) {
-                    event.preventDefault();
-                    if (ui.item === null) {
-                        $(this).val('');
-                        $('input#machno').val('');
-                    } else {
-                        $(this).val(ui.item.label);
-                        $('input#machno').val(ui.item.value);
-                    }
-                },
-                focus: function(event, ui) {
-                    event.preventDefault();
-                    if (ui.item === null) {
-                        $(this).val('');
-                        $('input#machno').val('');
-                    } else {
-                        $(this).val(ui.item.label);
-                        $('input#machno').val(ui.item.value);
-                    }
-                }
-            }).prop('required', true);
+            $('input#mockProdReference').prop('required', true);
+            $('input#glassProdLineID').prop('required', true);
             $('input#sampling').change(function() {
                 if ($(this).prop('checked') === true) {
                     $('input#allscheqty').val(0).prop('readonly', true).prop('required', false);
@@ -104,19 +23,21 @@ export function isProdDataFormControl(formState) {
                     $('input#allscheqty').val('').prop('readonly', false).prop('required', true);
                 }
             });
+            $('input#submitRecord').val('尚無內容').prop('disabled', true);
             $('button#deleteRecordButton').text('尚無內容').prop('disabled', true);
             $('button#printRecordButton').text('尚無內容').prop('disabled', true);
-            $('input#submitRecord').val('尚無內容').prop('disabled', true);
             break;
         case '2':
             $('form#isProdDataForm').attr('action', './createManualRecord').attr('method', 'post');
-            $('button#deleteRecordButton').text('清除內容').prop('disabled', false).on('click', function() {
-                deleteButtonHandler('2');
-            });
-            $('button#printRecordButton').text('尚無內容').prop('disabled', true);
             $('input#submitRecord').val('新增記錄').prop('disabled', false).on('click', function(event) {
                 event.preventDefault();
-                submitButtonHandler('2');
+                submitButtonHandler(formState);
+            });
+            $('button#deleteRecordButton').text('刪除記錄').prop('disabled', false).on('click', function() {
+                deleteButtonHandler(formState);
+            });
+            $('button#printRecordButton').text('列印文件').prop('disabled', false).on('click', function() {
+                alert('文件尚未儲存，無法列印');
             });
             break;
         case '3':
@@ -126,13 +47,41 @@ export function isProdDataFormControl(formState) {
             $('input#glassProdLineID').prop('readOnly', true);
             $('input#mockProdReference').prop('readOnly', true);
             $('input#orderQty').prop('readOnly', true);
-            $('button#deleteRecordButton').text('尚無內容').prop('disabled', true);
-            console.log('to do: print document');
-            $('button#printRecordButton').text('列印文件').prop('disabled', true);
-            $('input#submitRecord').val('尚無內容').prop('disabled', true);
+            $('input#submitRecord').val('儲存記錄').prop('disabled', false).on('click', function(event) {
+                event.preventDefault();
+                alert('仍為空白文件，不須儲存');
+            });
+            $('button#deleteRecordButton').text('刪除記錄').prop('disabled', false).on('click', function() {
+                deleteButtonHandler(formState);
+            });
+            $('button#printRecordButton').text('列印文件').prop('disabled', false).on('click', function() {
+                printButtonHandler(formState);
+            });
             break;
         case '4':
-            console.log('historical record with new data');
+            $('input#submitRecord').val('儲存記錄').prop('disabled', false).on('click', function(event) {
+                event.preventDefault();
+                submitButtonHandler(formState);
+            });
+            $('button#deleteRecordButton').text('刪除記錄').prop('disabled', false).on('click', function() {
+                deleteButtonHandler(formState);
+            });
+            $('button#printRecordButton').text('列印文件').prop('disabled', false).on('click', function() {
+                alert('文件尚未儲存，無法列印');
+            });
+            break;
+        case '5':
+            // $('form#isProdDataForm').attr('action', './createManualRecord').attr('method', 'post');
+            $('input#submitRecord').val('儲存記錄').prop('disabled', false).on('click', function(event) {
+                event.preventDefault();
+                submitButtonHandler(formState);
+            });
+            $('button#deleteRecordButton').text('刪除記錄').prop('disabled', false).on('click', function() {
+                alert('仍為空白文件，無法刪除');
+            });
+            $('button#printRecordButton').text('列印文件').prop('disabled', false).on('click', function() {
+                alert('仍為空白文件，無法列印');
+            });
             break;
         default:
             alert('[control.js] formController failure: state process procedures not found for ' + formState);
@@ -155,11 +104,21 @@ export function isProdDataFormControl(formState) {
     });
 }
 
+function printButtonHandler(formStateCode) {
+    console.log('to do: print document');
+}
+
 export function loadIsProdDataRecord(recordIdObj) {
     $('select#glassRun').val(recordIdObj.value);
     if (recordIdObj.existingIsProdDataRecord === 1) {
         console.log('to do: load existing generated data');
-        // $.ajax()
+        $.ajax(`/productionHistory/isProdDataForm/recordID/${recordIdObj.id}`)
+            .done(function(data) {
+                fillRecordData(data[0]);
+            })
+            .fail(function(error) {
+                alert('[formControl.js/loadIsProdDataRecord] 資料讀取發生錯誤: ' + error);
+            });
     } else {
         $('input#machno').val(recordIdObj.machno);
         $('input#prd_no').val(recordIdObj.prd_no);
@@ -170,12 +129,67 @@ export function loadIsProdDataRecord(recordIdObj) {
     }
 }
 
+function fillRecordData(record) {
+    for (let objectIndex in record) {
+        if (objectIndex !== 'id') {
+            switch ($('#' + objectIndex).get(0).tagName) {
+                case 'INPUT':
+                    if (($('input#' + objectIndex).attr('type') === 'text') ||
+                        ($('input#' + objectIndex).attr('type') === 'number') ||
+                        ($('input#' + objectIndex).attr('type') === 'date')) {
+                        $('input#' + objectIndex).val(record[objectIndex]);
+                        break;
+                    }
+                    if ($('input#' + objectIndex).attr('type') === 'file') {
+                        // put existing photo on the form and add a delete button
+                        $('div.imageHolder.' + objectIndex)
+                            .append('<img class="' + objectIndex + '" src="' + serverUrl + '/productionHistory/' + record[objectIndex] + '" height="160" width="160" />')
+                            .append('<button class="' + objectIndex + ' hideWhenPrint" type="button" onclick="deletePhoto(\'' + objectIndex + '\')">刪除</button>');
+                        // hide the original upload control
+                        $('input#' + objectIndex).hide();
+                        break;
+                    }
+                    if ($('input#' + objectIndex).attr('type') === 'checkbox') {
+                        if ((record[objectIndex] === true) || (record[objectIndex] === 1)) {
+                            $('input#' + objectIndex).prop('checked', true);
+                        }
+                        break;
+                    }
+                    alert('資料查詢顯示發生錯誤，請與IT聯繫 (input type not checked: ' + objectIndex + ')');
+                    break;
+                case 'SELECT':
+                    $('select#' + objectIndex).val(record[objectIndex]);
+                    break;
+                case 'TEXTAREA':
+                    $('textarea#' + objectIndex).val(record[objectIndex]);
+                    break;
+                case 'DIV':
+                    if ($('div#' + objectIndex).hasClass('checkboxControlContainer')) {
+                        $(`input:checkbox[name="${objectIndex}"][value=${record[objectIndex]}]`).prop('checked', true);
+                        break;
+                    } else {
+                        alert('資料查詢顯示發生錯誤，請與IT聯繫 (unknown control in DIV: ' + objectIndex + ')');
+                        break;
+                    }
+                default:
+                    alert('資料查詢顯示發生錯誤，請與IT聯繫 (unknown control type: ' + objectIndex + ')');
+                    break;
+            }
+        }
+    }
+}
+
 function deleteButtonHandler(formStateCode) {
     switch (formStateCode) {
         case '2':
-            alert('自行新增記錄內容即將重置');
+            alert('記錄內容即將重置');
             initialize({});
             break;
+            /*
+        case '3':
+            alert('記錄內容即將重置');
+            initialize({});
+            break;*/
         default:
             alert(`此頁面狀態 formStateCode: ${formStateCode} 尚未配置頁面淨空程式`);
             break;

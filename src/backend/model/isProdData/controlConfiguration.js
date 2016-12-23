@@ -1,4 +1,6 @@
-let selectOptionListArray = [{ // list to hold select control option data
+const serverConfig = require('../../module/serverConfig.js');
+
+const selectOptionListArray = [{ // list to hold select control option data
     id: 'bmHolder',
     optionList: [{
         value: 'NO.1 SG',
@@ -1287,33 +1289,70 @@ let selectOptionListArray = [{ // list to hold select control option data
     }]
 }];
 
-let checkboxOptionArray = [{ // list to hold checkbox control option data
+const checkboxOptionArray = [{ // list to hold checkbox control option data
     id: 'conveyorHeating',
     multiSelect: false,
     optionList: [{
-        value: 1,
+        value: true,
         text: '有',
         default: false
     }, {
-        value: 0,
+        value: false,
         text: '無',
-        default: true
+        default: false
     }]
 }, {
     id: 'crossBridgeHeating',
     multiSelect: false,
     optionList: [{
-        value: 1,
+        value: true,
         text: '有',
         default: false
     }, {
-        value: 0,
+        value: false,
         text: '無',
-        default: true
+        default: false
     }]
 }];
 
+const textAutocompleteOptionArray = [{
+    id: 'glassProdLineID',
+    mirrorTarget: 'machno',
+    minLength: 0,
+    optionList: [{
+        label: 'L1-1',
+        value: '1-1 1-1線'
+    }, {
+        label: 'L1',
+        value: '01 1線'
+    }, {
+        label: 'L2',
+        value: '02 2線'
+    }, {
+        label: 'L3',
+        value: '03 3線'
+    }, {
+        label: 'L5',
+        value: '04 5線'
+    }, {
+        label: 'L6',
+        value: '05 6線'
+    }, {
+        label: 'L7',
+        value: '06 7線'
+    }, {
+        label: 'L8',
+        value: '07 8線'
+    }]
+}, {
+    id: 'mockProdReference',
+    mirrorTarget: 'prd_no',
+    minLength: 2,
+    optionList: serverConfig.publicServerUrl + '/erp/prdt'
+}];
+
 module.exports = {
+    checkboxOptionArray: checkboxOptionArray,
     selectOptionListArray: selectOptionListArray,
-    checkboxOptionArray: checkboxOptionArray
+    textAutocompleteOptionArray: textAutocompleteOptionArray
 };
