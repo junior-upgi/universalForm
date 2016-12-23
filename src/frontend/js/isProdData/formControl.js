@@ -6,6 +6,10 @@ import {
     serverUrl
 } from '../config.js';
 
+import {
+    getAllUrlParams
+} from '../utility.js';
+
 export function isProdDataFormControl(formState) {
     switch (formState) {
         case '1':
@@ -30,10 +34,12 @@ export function isProdDataFormControl(formState) {
         case '2':
             $('form#isProdDataForm').attr('action', './createManualRecord').attr('method', 'post');
             $('input#submitRecord').val('新增記錄').prop('disabled', false).on('click', function(event) {
-                event.preventDefault();
+                if (!$('form#' + getAllUrlParams().formReference).checkValidity()) {
+                    event.preventDefault();
+                }
                 submitButtonHandler(formState);
             });
-            $('button#deleteRecordButton').text('刪除記錄').prop('disabled', false).on('click', function() {
+            $('button#deleteRecordButton').text('清除輸入資料').prop('disabled', false).on('click', function() {
                 deleteButtonHandler(formState);
             });
             $('button#printRecordButton').text('列印文件').prop('disabled', false).on('click', function() {
@@ -60,7 +66,9 @@ export function isProdDataFormControl(formState) {
             break;
         case '4':
             $('input#submitRecord').val('儲存記錄').prop('disabled', false).on('click', function(event) {
-                event.preventDefault();
+                if (!$('form#' + getAllUrlParams().formReference).checkValidity()) {
+                    event.preventDefault();
+                }
                 submitButtonHandler(formState);
             });
             $('button#deleteRecordButton').text('刪除記錄').prop('disabled', false).on('click', function() {
@@ -73,7 +81,9 @@ export function isProdDataFormControl(formState) {
         case '5':
             // $('form#isProdDataForm').attr('action', './createManualRecord').attr('method', 'post');
             $('input#submitRecord').val('儲存記錄').prop('disabled', false).on('click', function(event) {
-                event.preventDefault();
+                if (!$('form#' + getAllUrlParams().formReference).checkValidity()) {
+                    event.preventDefault();
+                }
                 submitButtonHandler(formState);
             });
             $('button#deleteRecordButton').text('刪除記錄').prop('disabled', false).on('click', function() {
@@ -233,10 +243,12 @@ function submitButtonHandler(formStateCode) {
                 success: function(response) {
                     alert('資料新增成功');
                     initialize(response);
+                    return false;
                 },
                 error: function(error) {
                     alert('資料更新失敗，請聯繫IT檢視');
                     console.log(error);
+                    return false;
                 }
             });
             break;

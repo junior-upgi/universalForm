@@ -14,32 +14,37 @@ const formControlArray = {
 export function initialize(recordIdObject) {
     changeFormState(0);
     let formReference = getAllUrlParams().formReference;
-    getFormBody(formReference)
-        .then(function(formHtml) {
-            $('body').empty().append(formHtml);
-            return resetForm(formReference);
-        }).then(function(formControlOptionData) {
-            configureFormControlElement(formControlOptionData); // setup the form controls according to data received
-            if ($.isEmptyObject(recordIdObject)) {
-                preventEnterSubmit();
-                monitorFormUpdate();
-                changeFormState(1);
-                initiateFormControl(formReference);
-            } else {
-                preventEnterSubmit();
-                monitorFormUpdate();
-                loadIsProdDataRecord(recordIdObject);
-                if (recordIdObject.existingIsProdDataRecord === 1) {
-                    changeFormState(3);
+    if ((formReference !== null) && (formReference !== undefined) && (formReference !== '')) {
+        getFormBody(formReference)
+            .then(function(formHtml) {
+                $('body').empty().append(formHtml);
+                return resetForm(formReference);
+            }).then(function(formControlOptionData) {
+                configureFormControlElement(formControlOptionData); // setup the form controls according to data received
+                if ($.isEmptyObject(recordIdObject)) {
+                    preventEnterSubmit();
+                    monitorFormUpdate();
+                    changeFormState(1);
+                    initiateFormControl(formReference);
                 } else {
-                    changeFormState(5);
+                    preventEnterSubmit();
+                    monitorFormUpdate();
+                    loadIsProdDataRecord(recordIdObject);
+                    if (recordIdObject.existingIsProdDataRecord === 1) {
+                        changeFormState(3);
+                    } else {
+                        changeFormState(5);
+                    }
+                    initiateFormControl(formReference);
                 }
-                initiateFormControl(formReference);
-            }
-        }).catch(function(error) {
-            console.log(error);
-            alert(error);
-        });
+            }).catch(function(error) {
+                console.log(error);
+                alert(error);
+            });
+    } else {
+        alert('網址錯誤');
+        document.write('<a href="http://upgi.ddns.net/">返回統義入口網站</a>');
+    }
 }
 
 export function changeFormState(formStateCode) {

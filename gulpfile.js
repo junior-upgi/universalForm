@@ -76,6 +76,12 @@ gulp.task('transpile', function() {
         .pipe(gulp.dest(destDir));
 });
 
+gulp.task('scriptTransfer', function() {
+    let source = './src/frontend/js/**/*.js';
+    let destDir = './public/js';
+    return gulp.src(source).pipe(gulp.dest(destDir));
+});
+
 gulp.task('staticHtml', function() {
     log('processing static HTML files');
     let destDir = './public';
