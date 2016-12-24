@@ -1,80 +1,17 @@
-const babelify = require('babelify');
-const browserify = require('browserify');
-const browserSync = require('browser-sync');
-const del = require('del');
 const gulp = require('gulp');
+const requireDir = require('require-dir');
+
+const browserSync = require('browser-sync');
 const $ = require('gulp-load-plugins')({
     lazy: true,
     camelize: true
 });
-const vinylBuffer = require('vinyl-buffer');
-const vinylSourceStream = require('vinyl-source-stream');
-const yargs = require('yargs').argv;
 
 const serverConfig = require('./src/backend/module/serverConfig.js');
 
+requireDir('./gulpTask');
+
 gulp.task('help', $.taskListing);
-
-gulp.task('removePublic', function() {
-    let dir = './public';
-    log('cleaning: ' + $.util.colors.blue(dir));
-    return del.sync(dir);
-});
-
-gulp.task('removeBuild', function() {
-    let dir = './build';
-    log('cleaning: ' + $.util.colors.blue(dir));
-    return del.sync(dir);
-});
-
-gulp.task('removeTemp', function() {
-    let dir = './temp';
-    log('cleaning: ' + $.util.colors.blue(dir));
-    return del.sync(dir);
-});
-
-gulp.task('cleanUp', ['removePublic', 'removeBuild', 'removeTemp'], function() {
-    return;
-});
-
-gulp.task('lint', function() {
-    log('code analysation with Eslint and JSCS');
-    fileList = [
-        './src/**/*.js',
-        './*.js'
-    ];
-    return gulp
-        .src(fileList)
-        .pipe($.if(yargs.verbose, $.print()))
-        .pipe($.jscs())
-        .pipe($.jscsStylish())
-        .pipe($.jscs.reporter('fail'))
-        .pipe($.eslint())
-        .pipe($.eslint.format())
-        .pipe($.eslint.failAfterError());
-});
-
-gulp.task('transpile', function() {
-    log('transpile frontend javascript');
-    let entryScript = './src/frontend/js/entry.js';
-    let destDir = './public/js';
-    return browserify(entryScript, {
-            debug: true
-    })
-        .transform(babelify, {
-            presets: ['es2015'],
-            sourceMaps: true
-        })
-        .bundle()
-        .pipe(vinylSourceStream('bundle.js'))
-        .pipe(vinylBuffer())
-        .pipe($.sourcemaps.init({
-            loadMaps: true
-        }))
-        .pipe($.uglify())
-        .pipe($.sourcemaps.write('./'))
-        .pipe(gulp.dest(destDir));
-});
 
 gulp.task('scriptTransfer', function() {
     let source = './src/frontend/js/**/*.js';
@@ -126,7 +63,7 @@ gulp.task('buildBackend', function() {
         .pipe(gulp.dest('./build'));
 });
 
-gulp.task('startServer', ['cleanUp', 'buildBackend', 'startWatcher'], function() {
+gulp.task('startServer', ['clear4Rebuild', 'buildBackend', 'startWatcher'], function() {
     let nodemonOption = {
         script: './build/server.js',
         delayTime: 1,

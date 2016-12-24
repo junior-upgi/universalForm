@@ -91,6 +91,7 @@
             "error",
             "always"
         ],
+        "block-spacing": ["warn", "always"],
         "space-before-blocks": [
             "error",
             "always"

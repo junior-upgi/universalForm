@@ -3,122 +3,85 @@ import {
 } from '../appControl.js';
 
 import {
-    serverUrl
+    // serverUrl
 } from '../config.js';
 
 import {
-    getAllUrlParams
+    // getAllUrlParams
 } from '../utility.js';
 
-export function isProdDataFormControl(formState) {
-    switch (formState) {
-        case '1':
-            $('select#glassRun').prop('required', false);
-            $('input#machno').prop('readonly', true);
-            $('input#schedate').prop('required', true);
-            $('input#prd_no').prop('readonly', true);
-            $('input#submitNewRecord').prop('disabled', false);
-            $('input#mockProdReference').prop('required', true);
-            $('input#glassProdLineID').prop('required', true);
-            $('input#sampling').change(function() {
-                if ($(this).prop('checked') === true) {
-                    $('input#allscheqty').val(0).prop('readonly', true).prop('required', false);
-                } else {
-                    $('input#allscheqty').val('').prop('readonly', false).prop('required', true);
-                }
-            });
-            $('input#submitRecord').val('尚無內容').prop('disabled', true);
-            $('button#deleteRecordButton').text('尚無內容').prop('disabled', true);
-            $('button#printRecordButton').text('尚無內容').prop('disabled', true);
-            break;
-        case '2':
-            $('form#isProdDataForm').attr('action', './createManualRecord').attr('method', 'post');
-            $('input#submitRecord').val('新增記錄').prop('disabled', false).on('click', function(event) {
-                if (!$('form#' + getAllUrlParams().formReference).checkValidity()) {
-                    event.preventDefault();
-                }
-                submitButtonHandler(formState);
-            });
-            $('button#deleteRecordButton').text('清除輸入資料').prop('disabled', false).on('click', function() {
-                deleteButtonHandler(formState);
-            });
-            $('button#printRecordButton').text('列印文件').prop('disabled', false).on('click', function() {
-                alert('文件尚未儲存，無法列印');
-            });
-            break;
-        case '3':
-            $('input#machno').prop('readOnly', true);
-            $('input#prd_no').prop('readOnly', true);
-            $('input#schedate').prop('readOnly', true);
-            $('input#glassProdLineID').prop('readOnly', true);
-            $('input#mockProdReference').prop('readOnly', true);
-            $('input#orderQty').prop('readOnly', true);
-            $('input#submitRecord').val('儲存記錄').prop('disabled', false).on('click', function(event) {
-                event.preventDefault();
-                alert('仍為空白文件，不須儲存');
-            });
-            $('button#deleteRecordButton').text('刪除記錄').prop('disabled', false).on('click', function() {
-                deleteButtonHandler(formState);
-            });
-            $('button#printRecordButton').text('列印文件').prop('disabled', false).on('click', function() {
-                printButtonHandler(formState);
-            });
-            break;
-        case '4':
-            $('input#submitRecord').val('儲存記錄').prop('disabled', false).on('click', function(event) {
-                if (!$('form#' + getAllUrlParams().formReference).checkValidity()) {
-                    event.preventDefault();
-                }
-                submitButtonHandler(formState);
-            });
-            $('button#deleteRecordButton').text('刪除記錄').prop('disabled', false).on('click', function() {
-                deleteButtonHandler(formState);
-            });
-            $('button#printRecordButton').text('列印文件').prop('disabled', false).on('click', function() {
-                alert('文件尚未儲存，無法列印');
-            });
-            break;
-        case '5':
-            // $('form#isProdDataForm').attr('action', './createManualRecord').attr('method', 'post');
-            $('input#submitRecord').val('儲存記錄').prop('disabled', false).on('click', function(event) {
-                if (!$('form#' + getAllUrlParams().formReference).checkValidity()) {
-                    event.preventDefault();
-                }
-                submitButtonHandler(formState);
-            });
-            $('button#deleteRecordButton').text('刪除記錄').prop('disabled', false).on('click', function() {
-                alert('仍為空白文件，無法刪除');
-            });
-            $('button#printRecordButton').text('列印文件').prop('disabled', false).on('click', function() {
-                alert('仍為空白文件，無法列印');
-            });
-            break;
-        default:
-            alert('[control.js] formController failure: state process procedures not found for ' + formState);
-            break;
+module.exports = {
+    formBodyHtmlSource: './view/isProdData/FormBody.html',
+    changeFormState: changeFormState
+};
+
+function changeFormState(formState) {
+    console.log('changing form state to: ' + formState);
+    $('select#formState').val(formState);
+    isProdDataFormControl(formState);
+}
+
+function markFormAsUpdated() {
+    console.log('marking form as updated');
+    console.log('     original state: ' + $('select#formState').val());
+    if (($('select#formState').val(formState) === '1') || ($('select#formState').val(formState) === '3')) {
+        changeFormState((parseInt($('select#formState').val()) + 1));
     }
-    $('select#glassRun').change(function() {
-        let currentSelection = $('select#glassRun option:selected');
-        initialize({
-            value: currentSelection.val(),
-            id: currentSelection.data('id'),
-            machno: currentSelection.data('machno'),
-            glassProdLineID: currentSelection.data('glassProdLineID'),
-            schedate: currentSelection.data('schedate'),
-            prd_no: currentSelection.data('prd_no'),
-            mockProdReference: currentSelection.data('PRDT_SNM'),
-            orderQty: currentSelection.data('orderQty'),
-            source: currentSelection.data('source'),
-            existingIsProdDataRecord: currentSelection.data('existingIsProdDataRecord')
+    console.log('     new state: ' + $('select#formState').val());
+}
+
+function monitorFormUpdate() {
+    console.log('execute monitor form update');
+    $('input.dataField,select.dataField,textarea.dataField').change(function() {
+        markFormAsUpdated();
+    });
+    $('input.autocompleteDataField')
+        .on('autocompletechange', function(event, ui) {
+            event.preventDefault();
+            if (ui.item !== null) {
+                markFormAsUpdated();
+            }
+        })
+        .on('autocompleteselect', function(event, ui) {
+            event.preventDefault();
+            if (ui.item !== null) {
+                markFormAsUpdated();
+            }
         });
+    $('select#glassRun').change(function() {
+        let newSelection = $('select#glassRun option:selected');
+        if (newSelection.data('existingIsProdDataRecord') === 1) {
+            initialize({
+                value: newSelection.val(),
+                id: newSelection.data('id'),
+                machno: newSelection.data('machno'),
+                glassProdLineID: newSelection.data('glassProdLineID'),
+                schedate: newSelection.data('schedate'),
+                prd_no: newSelection.data('prd_no'),
+                mockProdReference: newSelection.data('PRDT_SNM'),
+                orderQty: newSelection.data('orderQty'),
+                source: newSelection.data('source'),
+                existingIsProdDataRecord: newSelection.data('existingIsProdDataRecord')
+            });
+        } else {
+            changeFormState(1);
+            $('input#machno').val(newSelection.data('machno')).prop('readonly', true);
+            $('input#prd_no').val(newSelection.data('prd_no')).prop('readonly', true);
+            $('input#schedate').val(newSelection.data('schedate')).prop('readonly', true);
+            $('input#glassProdLineID').val(newSelection.data('glassProdLineID')).prop('readonly', true);
+            $('input#mockProdReference').val(newSelection.data('PRDT_SNM')).prop('readonly', true);
+            $('input#sampling').prop('checked', newSelection.data('sampling')).on('click', function(event) {
+                // 'readonly' property does not work on <input type="checkbox">
+                event.preventDefault();
+                return false;
+            });
+            $('input#orderQty').val(newSelection.data('orderQty')).prop('readonly', true);
+        }
     });
 }
 
-function printButtonHandler(formStateCode) {
-    console.log('to do: print document');
-}
-
-export function loadIsProdDataRecord(recordIdObj) {
+/*
+function loadIsProdDataRecord(recordIdObj) {
     $('select#glassRun').val(recordIdObj.value);
     if (recordIdObj.existingIsProdDataRecord === 1) {
         console.log('to do: load existing generated data');
@@ -137,8 +100,118 @@ export function loadIsProdDataRecord(recordIdObj) {
         $('input#mockProdReference').val(recordIdObj.mockProdReference);
         $('input#orderQty').val(recordIdObj.orderQty);
     }
+}*/
+
+function isProdDataFormControl(formState) {
+    switch (formState) {
+        case 0:
+            break;
+        case 1:
+            monitorFormUpdate();
+            $('input#recordDate').val(moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD'));
+            $('select#glassRun').prop('required', false);
+            $('input#machno').prop('readonly', true);
+            $('input#schedate').prop('required', true);
+            $('input#prd_no').prop('readonly', true);
+            $('input#submitNewRecord').prop('disabled', false);
+            $('input#mockProdReference').prop('required', true);
+            $('input#glassProdLineID').prop('required', true);
+            $('input#sampling').change(function() {
+                if ($(this).prop('checked') === true) {
+                    $('input#allscheqty').val(0).prop('readonly', true).prop('required', false);
+                } else {
+                    $('input#allscheqty').val('').prop('readonly', false).prop('required', true);
+                }
+            });
+            $('input#submitRecord').val('新增記錄').prop('disabled', false).on('click', function(event) {
+                event.preventDefault();
+                alert('空白文件無可寫入內容');
+            });
+            $('button#deleteRecordButton').text('清除頁面').prop('disabled', false).on('click', function() {
+                alert('已是空白文件');
+            });
+            $('button#printRecordButton').text('列印文件').prop('disabled', false).on('click', function() {
+                alert('文件尚未儲存，無法列印');
+            });
+            break;
+            /*
+            case 2:
+                $('form#isProdDataForm').attr('action', './createManualRecord').attr('method', 'post');
+                $('input#submitRecord').val('新增記錄').prop('disabled', false).on('click', function(event) {
+                    if (!$('form#' + getAllUrlParams().formReference).checkValidity()) {
+                        event.preventDefault();
+                    }
+                    submitButtonHandler(formState);
+                });
+                $('button#deleteRecordButton').text('清除頁面').prop('disabled', false).on('click', function() {
+                    deleteButtonHandler(formState);
+                });
+                $('button#printRecordButton').text('列印文件').prop('disabled', false).on('click', function() {
+                    alert('文件尚未儲存，無法列印');
+                });
+                break;
+            case 3:
+            monitorFormUpdate();
+                $('input#machno').prop('readOnly', true);
+                $('input#prd_no').prop('readOnly', true);
+                $('input#schedate').prop('readOnly', true);
+                $('input#glassProdLineID').prop('readOnly', true);
+                $('input#mockProdReference').prop('readOnly', true);
+                $('input#orderQty').prop('readOnly', true);
+                $('input#submitRecord').val('儲存記錄').prop('disabled', false).on('click', function(event) {
+                    event.preventDefault();
+                    alert('仍為空白文件，不須儲存');
+                });
+                $('button#deleteRecordButton').text('刪除記錄').prop('disabled', false).on('click', function() {
+                    deleteButtonHandler(formState);
+                });
+                $('button#printRecordButton').text('列印文件').prop('disabled', false).on('click', function() {
+                    printButtonHandler(formState);
+                });
+                break;
+            case 4:
+            monitorFormUpdate();
+                $('input#submitRecord').val('儲存記錄').prop('disabled', false).on('click', function(event) {
+                    if (!$('form#' + getAllUrlParams().formReference).checkValidity()) {
+                        event.preventDefault();
+                    }
+                    submitButtonHandler(formState);
+                });
+                $('button#deleteRecordButton').text('刪除記錄').prop('disabled', false).on('click', function() {
+                    deleteButtonHandler(formState);
+                });
+                $('button#printRecordButton').text('列印文件').prop('disabled', false).on('click', function() {
+                    alert('文件尚未儲存，無法列印');
+                });
+                break;
+            case 5:
+                // $('form#isProdDataForm').attr('action', './createManualRecord').attr('method', 'post');
+                $('input#submitRecord').val('儲存記錄').prop('disabled', false).on('click', function(event) {
+                    if (!$('form#' + getAllUrlParams().formReference).checkValidity()) {
+                        event.preventDefault();
+                    }
+                    submitButtonHandler(formState);
+                });
+                $('button#deleteRecordButton').text('刪除記錄').prop('disabled', false).on('click', function() {
+                    alert('仍為空白文件，無法刪除');
+                });
+                $('button#printRecordButton').text('列印文件').prop('disabled', false).on('click', function() {
+                    alert('仍為空白文件，無法列印');
+                });
+                break;
+            */
+        default:
+            alert('[control.js] formController failure: state process procedures not found for ' + formState);
+            break;
+    }
 }
 
+/*
+function printButtonHandler(formState) {
+    console.log('to do: print document');
+}*/
+
+/*
 function fillRecordData(record) {
     for (let objectIndex in record) {
         if (objectIndex !== 'id') {
@@ -187,31 +260,31 @@ function fillRecordData(record) {
             }
         }
     }
-}
+}*/
 
-function deleteButtonHandler(formStateCode) {
-    switch (formStateCode) {
+/*
+function deleteButtonHandler(formState) {
+    switch (formState) {
         case '2':
             alert('記錄內容即將重置');
             initialize({});
             break;
-            /*
         case '3':
             alert('記錄內容即將重置');
             initialize({});
-            break;*/
+            break;
         default:
-            alert(`此頁面狀態 formStateCode: ${formStateCode} 尚未配置頁面淨空程式`);
+            alert(`此頁面狀態 formState: ${formState} 尚未配置頁面淨空程式`);
             break;
     }
-    /*
-    if (formStateCode === '2') {
+
+    if (formState === '2') {
         alert('自行新增記錄內容即將重置');
         initialize();
     } else {
-        alert(`此頁面狀態 formStateCode: ${formStateCode} 尚未配置程式`);
-    }*/
-    /*
+        alert(`此頁面狀態 formState: ${formState} 尚未配置程式`);
+    }
+    // below code should be commented and reexamined before use
     $('button#deleteRecordButton').click(function() {
         $.ajax({
             url: serverUrl + '/isProdData',
@@ -228,11 +301,12 @@ function deleteButtonHandler(formStateCode) {
                 console.log(error);
             }
         });
-    });*/
-}
+    });
+}*/
 
-function submitButtonHandler(formStateCode) {
-    switch (formStateCode) {
+/*
+function submitButtonHandler(formState) {
+    switch (formState) {
         case '2':
             $.ajax({
                 url: $('form#isProdDataForm').attr('action'),
@@ -253,10 +327,10 @@ function submitButtonHandler(formStateCode) {
             });
             break;
         default:
-            alert(`此頁面狀態 formStateCode: ${formStateCode} 尚未配置記錄資料傳送程式`);
+            alert(`此頁面狀態 formState: ${formState} 尚未配置記錄資料傳送程式`);
             break;
     }
-    /*
+    // below code should be commented and reexamined before use
     function submitUpdatedRecord() {
         let updatedFormData = new FormData($('form#isProdDataForm')[0]);
         $.ajax({
@@ -275,8 +349,8 @@ function submitButtonHandler(formStateCode) {
             }
         });
     }
-    */
 }
+*/
 
 /*
 let isProdDataFormInitialization = function(originalGlassRunValue) {

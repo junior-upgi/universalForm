@@ -13,14 +13,7 @@
                 <input id="machno" name="machno" class="restoreData" type="text" size="10" tabindex="" />
                 <span>ERP 產品編號:</span>
                 <input id="prd_no" name="prd_no" class="restoreData" type="text" size="10" tabindex="" />
-                <select id="formState" name="formState" tabindex="">
-                    <option value="0" selected>0 - 空單</option>
-                    <option value="1">1 - 空白記錄</option>
-                    <option value="5">5 - 歷史記錄(待新增)</option>
-                    <option value="2">2 - 新記錄(待儲存)</option>
-                    <option value="3">3 - 歷史記錄</option>
-                    <option value="4">4 - 歷史記錄(待儲存)</option>
-                </select>
+                <select id="formState" name="formState" tabindex=""></select>
             </div>
         </div>
         <br class="noPrint">
@@ -299,7 +292,7 @@
         <div class="row noPrint">
             <div class="col-xs-12 formProcessButtonHolder">
                 <input id="submitRecord" type="submit" value="新增記錄" tabindex="" disabled /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button id="printRecordButton" type="button" tabindex="" disabled>列印文件</button>
+                <button id="printRecordButton" type="button" tabindex="" disabled>列印文件</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <button id="deleteRecordButton" type="button" tabindex="" disabled>刪除記錄</button>
             </div>
         </div>

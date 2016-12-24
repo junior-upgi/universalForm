@@ -1,6 +1,24 @@
 const serverConfig = require('../../module/serverConfig.js');
 
-const selectOptionListArray = [{ // list to hold select control option data
+const selectOptionListArray = [{
+    id: 'formState',
+    optionList: [{
+        value: 0,
+        text: '待初始化'
+    }, {
+        value: 1,
+        text: '空白記錄'
+    }, {
+        value: 2,
+        text: '新建記錄(待儲存)'
+    }, {
+        value: 3,
+        text: '歷史記錄'
+    }, {
+        value: 4,
+        text: '歷史記錄(待儲存)'
+    }]
+}, { // list to hold select control option data
     id: 'bmHolder',
     optionList: [{
         value: 'NO.1 SG',
