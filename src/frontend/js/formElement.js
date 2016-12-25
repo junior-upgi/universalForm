@@ -1,7 +1,9 @@
 export function configureFormControlElement(formControlOptionData) { // form control setup
+    console.log('configure form control elements');
     for (let objectIndex in formControlOptionData) { // loop through the data set
         switch (objectIndex) { // check index'ed data's type
             case 'selectOptionListArray': // <select> with an option list
+                console.log('setting up select controls');
                 formControlOptionData[objectIndex].forEach(function(elementConfigurationData) {
                     let selectControlElement = $('select#' + elementConfigurationData.id);
                     let attribute = elementConfigurationData.attribute;
@@ -27,6 +29,7 @@ export function configureFormControlElement(formControlOptionData) { // form con
                 });
                 break;
             case 'checkboxOptionArray': // checkbox set within a <div> that has the same id
+                console.log('setting up checkbox sets');
                 formControlOptionData[objectIndex].forEach(function(elementConfigurationData) {
                     let checkboxControlContainer = $('div#' + elementConfigurationData.id);
                     let checkboxDataArray = elementConfigurationData.optionList;
@@ -40,6 +43,7 @@ export function configureFormControlElement(formControlOptionData) { // form con
                 });
                 break;
             case 'textAutocompleteOptionArray': // process jquery ui autocomplete enabled <input type="text"> elements
+                console.log('setting up jquery ui autocomplete fields');
                 formControlOptionData[objectIndex].forEach(function(elementConfigurationData) {
                     let controlHandle = $('input#' + elementConfigurationData.id);
                     let optionArray;

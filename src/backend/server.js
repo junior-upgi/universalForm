@@ -119,9 +119,9 @@ app.get('/formControlData/formReference/:formReference', function(request, respo
 });
 
 app.post('/productionHistory/isProdDataForm/createManualRecord', imageDirData.isProdData.configuration.upload.any(), function(request, response) {
-    let primaryKey = uuid.v4();
+    let primaryKey = uuid.v4().toUpperCase();
     let uploadLocationObject = {};
-    let newRecordSelectValue = `${request.body.schedate} - ${request.body.glassProdLineID}[${request.body.mockProdReference}] ${numeral(request.body.orderQty).format('0,0')}`;
+    let newRecordSelectValue = `${request.body.schedate} ${request.body.glassProdLineID} ${request.body.mockProdReference}`;
     if (request.files.length === 0) {
         return insertRecord(primaryKey, request.body, null);
     } else {
@@ -188,6 +188,28 @@ app.get('/productionHistory/isProdDataForm/recordID/:recordID', function(request
     });
 });
 
+app.delete('/productionHistory/isProdDataForm/recordID/:recordID', function(request, response) {
+    // delete from isProdData table
+    database.executeQuery(queryString.deleteIsProdDataRecord(request.params.recordID), function(error) {
+        if (error) {
+            return response.status(500).send('error deleting isProdData record: ' + error).end();
+        }
+        imageDirData.isProdData.configuration.pathList.forEach(function(path) {
+            if (!utility.fileRemoval(path + '/' + request.params.recordID + '.JPG')) {
+                console.log('error removing photos...');
+            }
+        });
+        // delete the record from tbmkno where id is in the parameter and not found in 'productionHistory.dbo.productionHistory'
+        database.executeQuery(queryString.deleteTbmknoRecord(request.params.recordID), function(error) {
+            if (error) {
+                return response.status(500).send('error deleting tbmkno record: ' + error).end();
+            }
+            console.log('record deleted...');
+            return response.status(200).end('success');
+        });
+    });
+});
+
 app.listen(serverConfig.serverPort, function(error) { // start backend server
     if (error) {
         console.log('error starting universalForm server: ' + error);
@@ -197,7 +219,6 @@ app.listen(serverConfig.serverPort, function(error) { // start backend server
 });
 
 /*
-
 app.get('/productionHistory/isProdDataForm/glassRun', function(request, response) {
     database.executeQuery(queryString.getGlassRunRecordset, function(glassRunRecordset, error) {
         if (error) {
@@ -296,21 +317,6 @@ app.put('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fun
                 return response.status(200).send(serverConfig.publicServerUrl + '/productionHistory/isProdDataForm');
             });
     }
-});
-
-app.delete('/productionHistory/isProdData', function(request, response) {
-    database.executeQuery('DELETE FROM productionHistory.dbo.isProdData WHERE id=\'' + request.body.recordID + '\';', function(error) {
-        if (error) {
-            return response.status(500).send('error deleting isProdData record: ' + error).end();
-        }
-        imageDirectoryList[0].pathList.forEach(function(path) {
-            if (!utility.fileRemoval(path + '/' + request.body.recordID + '.JPG')) {
-                console.log('error removing photos...');
-            }
-        });
-        console.log('record deleted...');
-        response.status(200).send(serverConfig.publicServerUrl + '/productionHistory/isProdDataForm');
-    });
 });
 
 app.use('/productionHistory/isProdDataForm/favicon', express.static(__dirname + '/public/image')); // serve static image

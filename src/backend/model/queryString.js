@@ -81,8 +81,18 @@ const getTbmknoRecord = function(recordID) {
     return 'SELECT * FROM productionHistory.dbo.tbmkno WHERE id=\'' + recordID + '\';';
 };
 
+const deleteIsProdDataRecord = function(recordID) {
+    return `DELETE FROM productionHistory.dbo.isProdData WHERE id='${recordID}';`;
+};
+
+const deleteTbmknoRecord = function(recordID) {
+    return `DELETE a FROM productionHistory.dbo.tbmkno a LEFT JOIN productionHistory.dbo.productionHistory b ON a.id=b.id WHERE a.id='${recordID}' AND b.id IS NULL;`;
+};
+
 module.exports = {
     // deletePhoto: deletePhoto,
+    deleteIsProdDataRecord: deleteIsProdDataRecord,
+    deleteTbmknoRecord: deleteTbmknoRecord,
     erpPrdt: erpPrdt,
     getExistingIsProdDataRecord: getExistingIsProdDataRecord,
     getGlassRunRecordset: 'SELECT * FROM productionHistory.dbo.isProdDataGlassRun ORDER BY schedate DESC,PRDT_SNM;',

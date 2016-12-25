@@ -12,15 +12,18 @@ import {
 } from './formElement.js';
 
 function getFormBody(formReference) { // ajax for a clean copy of the form html
+    console.log('getting form body HTML');
     return $.get(formBodyHtmlSource);
 }
 
-function resetForm(formReference) { // ajax custom form control init data
+function getFormControlConfigData(formReference) { // ajax custom form control init data
+    console.log('getting form control configuration data');
     return $.get('../../formControlData/formReference/' + formReference);
 }
 
 // prevent form being submitted through user press of the 'enter' key
 function preventEnterSubmit() {
+    console.log('disable \'enter\' press, to prevent default submit form action');
     $('input,select').off('keydown').keydown(function(event) {
         if (event.keyCode === 13) {
             let inputs = $(this).parents('form').eq(0).find(':input');
@@ -35,6 +38,7 @@ function preventEnterSubmit() {
 
 // monitor sets of checkbox's and make sure multiselection setting is enforced
 function preventMultiSelect() {
+    console.log('enforce multiselection prevention on checkboxes');
     $('input[type="checkbox"]').off('change').change(function() { // checks on every change to checkbox's
         let targetCheckboxSet = $(this).attr('name'); // save current checkbox's name for access
         if ($('input[name="' + targetCheckboxSet + '"]:checked').length > 1) {
@@ -45,22 +49,24 @@ function preventMultiSelect() {
 }
 
 export function initialize(deferred) {
+    // console.clear();
+    console.log('initialize app...');
     let formReference = getAllUrlParams().formReference;
     if ((formReference !== null) && (formReference !== undefined) && (formReference !== '')) {
         getFormBody(formReference)
             .then(function(formHtml) {
                 $('body').empty().append(formHtml);
-                return resetForm(formReference);
+                return getFormControlConfigData(formReference);
             }).then(function(formControlOptionData) {
                 configureFormControlElement(formControlOptionData); // setup the form controls according to data received
                 if ($.isEmptyObject(deferred)) {
+                    preventEnterSubmit();
+                    preventMultiSelect();
                     changeFormState('1');
-                    preventEnterSubmit();
-                    preventMultiSelect();
                 } else {
-                    changeFormState('3');
                     preventEnterSubmit();
                     preventMultiSelect();
+                    changeFormState('3');
                     deferred.deferred.resolve();
                 }
             }).catch(function(error) {
