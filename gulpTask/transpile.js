@@ -30,12 +30,13 @@ gulp.task('transpile', function() {
         .pipe($.sourcemaps.init({
             loadMaps: true
         }))
+        /*
         .pipe($.uglify({
             mangle: false,
             compress: {
                 sequences: false
             }
-        }))
+        }))*/
         .pipe($.sourcemaps.write('./', {
             sourceRoot: './src/frontend'
         }))

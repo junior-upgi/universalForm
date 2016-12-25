@@ -38,14 +38,6 @@ export function configureFormControlElement(formControlOptionData) { // form con
                         $('input.current').removeClass('current');
                     });
                 });
-                // monitor sets of checkbox's and make sure multiselection setting is enforced
-                $('input[type="checkbox"]').change(function() { // checks on every change to checkbox's
-                    let targetCheckboxSet = $(this).attr('name'); // save current checkbox's name for access
-                    if ($('input[name="' + targetCheckboxSet + '"]:checked').length > 1) {
-                        alert('不得複選，項目將自動重置歸零');
-                        $('input[name="' + targetCheckboxSet + '"]').prop('checked', false);
-                    }
-                });
                 break;
             case 'textAutocompleteOptionArray': // process jquery ui autocomplete enabled <input type="text"> elements
                 formControlOptionData[objectIndex].forEach(function(elementConfigurationData) {
