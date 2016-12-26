@@ -348,29 +348,22 @@ function submitButtonHandler(formState) {
             // check if the new data matches existing entry in the glassRun list
             if (matchingGlassRunOption.val() !== undefined) {
                 if ((matchingGlassRunOption.data('existingIsProdDataRecord') === 0) && (matchingGlassRunOption.data('source') === 'generated')) {
-                    console.log('TODO generated write to isProdData only with existing id, then return to the hist record page'); // /////////////////////////////////////////////
-                    console.log(matchingGlassRunOption.data('id')); // ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    $('form#isProdDataForm').attr('action', './createRecord').attr('method', 'post'); // /////////////////////////////////////////////////////////////////////////
                     $.ajax({
                         url: isProdDataInsertUrl + matchingGlassRunOption.data('id'),
                         type: 'post',
                         data: new FormData($('form#isProdDataForm')[0]),
                         processData: false,
                         contentType: false,
-                        success: function(response) {
+                        success: function(data, textStatus, jqXHR) {
+                            console.log(data);
                             alert('資料新增成功');
-                            console.clear();
-                            console.log('to do: problem dealing with after new record insert, doesnt return to the correct page');
-                            console.log(response);
-                            $('select#glassRun').append(`<option class="glassRun newRecord" value="${response.value}">${response.value}</option>`);
-                            $('select#glassRun option.newRecord').data('id', response.id).data('existingIsProdDataRecord', response.existingIsProdDataRecord);
-                            $('select#glassRun').val(response.value);
+                            $('select#glassRun').val(data.value);
+                            $('select#glassRun option:selected').data('existingIsProdDataRecord', 1);
                             reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
                         },
-                        error: function(error) {
-                            alert('資料新增失敗，請聯繫IT檢視');
-                            console.log(error);
-                            return false;
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            alert('資料新增失敗，請聯繫IT檢視(' + textStatus + '): ' + errorThrown);
+                            console.log(textStatus + ': ' + errorThrown);
                         }
                     });
                 } else if ((matchingGlassRunOption.data('existingIsProdDataRecord') === 0) && (matchingGlassRunOption.data('source') === 'tbmkno')) {
@@ -431,47 +424,22 @@ function submitButtonHandler(formState) {
                     processData: false,
                     contentType: false
                 });
-                tbmknoInsert
-                    .done(function() {
-                        return isProdDataInsert;
-                    }).done(function(response) {
-                        alert('資料新增成功');
-                        console.log('to do: problem dealing with after new record insert, doesnt return to the correct page');
-                        console.log(response);
-                        $('select#glassRun').append(`<option class="glassRun newRecord" value="${response.value}">${response.value}</option>`);
-                        $('select#glassRun option.newRecord').data('id', response.id).data('existingIsProdDataRecord', response.existingIsProdDataRecord);
-                        $('select#glassRun').val(response.value);
-                        reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
-                    }).fail(function(error) {
-                        alert('資料新增失敗，請聯繫IT檢視');
-                        console.log(error);
-                    });
+                $.when(tbmknoInsert, isProdDataInsert).done(function(response1, response2) {
+                    alert('資料新增成功');
+                    $('select#glassRun').append(`<option class="glassRun newRecord" value="${response2[0].value}">${response2[0].value}</option>`);
+                    $('select#glassRun option.newRecord').data('id', response2[0].id).data('existingIsProdDataRecord', 1);
+                    $('select#glassRun').val(response2[0].value);
+                    reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
+                }).fail(function(error) {
+                    alert('資料新增失敗，請聯繫IT檢視');
+                    console.log(error);
+                });
             }
             break;
         default:
             alert(`此頁面狀態 formState: ${formState} 尚未配置記錄資料傳送程式`);
             break;
     }
-    /*
-    // below code should be commented and reexamined before use
-    function submitUpdatedRecord() {
-        let updatedFormData = new FormData($('form#isProdDataForm')[0]);
-        $.ajax({
-            url: $('form#isProdDataForm').attr('action'),
-            type: 'put',
-            data: updatedFormData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                alert('資料更新成功');
-                // window.location.href = response;
-            },
-            error: function(error) {
-                alert('資料更新失敗，請聯繫IT檢視');
-                console.log(error);
-            }
-        });
-    }*/
 }
 
 /*

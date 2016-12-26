@@ -123,7 +123,8 @@ app.post('/productionHistory/isProdDataForm/insertRecord/tableReference/isProdDa
     let uploadLocationObject = {};
     let newRecordSelectValue = `${request.body.schedate} ${request.body.glassProdLineID} ${request.body.mockProdReference}`;
     if (request.files.length === 0) {
-        return insertRecord(primaryKey, request.body, null);
+        console.log('come on!!!!');
+        insertRecord(primaryKey, request.body, null);
     } else {
         request.files.forEach(function(file) {
             uploadLocationObject[file.fieldname] = file.destination + file.fieldname + '/' + primaryKey + '.JPG';
@@ -139,11 +140,13 @@ app.post('/productionHistory/isProdDataForm/insertRecord/tableReference/isProdDa
     }
 
     function insertRecord(primaryKey, requestData, uploadLocationObject) {
+        console.log('come on 2!!!!');
         database.executeQuery(queryString.insertIsProdDataRecord(primaryKey, requestData, uploadLocationObject), function(data, error) {
             if (error) {
                 alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord isProdData', error);
                 return response.status(500).send('error inserting isProdData: ' + error);
             }
+            console.log('come on 3!!!!');
             return response.status(200).send({
                 value: newRecordSelectValue,
                 id: primaryKey
