@@ -65,7 +65,6 @@ const insertTbmknoRecord = function(primaryKey, requestData) {
     });
     fieldString += ',created,modified';
     valueString += ',\'' + currentDatetime + '\',\'' + currentDatetime + '\'';
-    console.log(`INSERT INTO productionHistory.dbo.tbmkno (${fieldString}) VALUES(${valueString});`);
     return `INSERT INTO productionHistory.dbo.tbmkno (${fieldString}) VALUES(${valueString});`;
 };
 
@@ -89,8 +88,13 @@ const deleteTbmknoRecord = function(recordID) {
     return `DELETE a FROM productionHistory.dbo.tbmkno a LEFT JOIN productionHistory.dbo.productionHistory b ON a.id=b.id WHERE a.id='${recordID}' AND b.id IS NULL;`;
 };
 
+const checkTbmknoAvailability = function(machno, prd_no, schedate) {
+    return `SELECT * FROM productionHistory.dbo.isProdDataGlassRun WHERE machno='${machno}' AND prd_no='${prd_no}' AND schedate='${schedate}';`;
+};
+
 module.exports = {
     // deletePhoto: deletePhoto,
+    checkTbmknoAvailability: checkTbmknoAvailability,
     deleteIsProdDataRecord: deleteIsProdDataRecord,
     deleteTbmknoRecord: deleteTbmknoRecord,
     erpPrdt: erpPrdt,

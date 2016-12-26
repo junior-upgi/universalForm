@@ -8,7 +8,7 @@ let moment = require('moment-timezone');
 let multer = require('multer');
 let numeral = require('numeral');
 let favicon = require('serve-favicon');
-let uuid = require('uuid');
+// let uuid = require('uuid/v4');
 
 let database = require('./module/database.js');
 let serverConfig = require('./module/serverConfig.js');
@@ -118,8 +118,8 @@ app.get('/formControlData/formReference/:formReference', function(request, respo
     });
 });
 
-app.post('/productionHistory/isProdDataForm/createManualRecord', imageDirData.isProdData.configuration.upload.any(), function(request, response) {
-    let primaryKey = uuid.v4().toUpperCase();
+app.post('/productionHistory/isProdDataForm/insertRecord/tableReference/isProdData/id/:id', imageDirData.isProdData.configuration.upload.any(), function(request, response) {
+    let primaryKey = request.params.id;
     let uploadLocationObject = {};
     let newRecordSelectValue = `${request.body.schedate} ${request.body.glassProdLineID} ${request.body.mockProdReference}`;
     if (request.files.length === 0) {
@@ -130,7 +130,7 @@ app.post('/productionHistory/isProdDataForm/createManualRecord', imageDirData.is
             fs.rename(file.path, uploadLocationObject[file.fieldname], function(error) {
                 if (error) {
                     console.log('photo upload failure: ' + error);
-                    alertSystemError('universalForm/isProdDataForm', 'createManualRecord/photoUpload', error);
+                    alertSystemError('universalForm/isProdDataForm', 'createRecord/photoUpload isProdData', error);
                     return response.status(500).send('photo upload failure: ' + error);
                 }
             });
@@ -139,26 +139,73 @@ app.post('/productionHistory/isProdDataForm/createManualRecord', imageDirData.is
     }
 
     function insertRecord(primaryKey, requestData, uploadLocationObject) {
-        database.executeQuery(queryString.insertTbmknoRecord(primaryKey, requestData), function(error) {
+        database.executeQuery(queryString.insertIsProdDataRecord(primaryKey, requestData, uploadLocationObject), function(data, error) {
             if (error) {
-                alertSystemError('universalForm/isProdDataForm', 'createManualRecord/insertRecord', error);
-                return response.status(500).send('error inserting tbmkno data: ' + error);
+                alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord isProdData', error);
+                return response.status(500).send('error inserting isProdData: ' + error);
             }
-            database.executeQuery(queryString.insertIsProdDataRecord(primaryKey, requestData, uploadLocationObject), function(error) {
-                if (error) {
-                    alertSystemError('universalForm/isProdDataForm', 'createManualRecord/insertRecord', error);
-                    return response.status(500).send('error inserting isProdData: ' + error);
-                }
-                return response.status(200).send({
-                    value: newRecordSelectValue,
-                    id: primaryKey,
-                    source: 'generated',
-                    existingIsProdDataRecord: 1
-                });
+            return response.status(200).send({
+                value: newRecordSelectValue,
+                id: primaryKey
             });
         });
     }
 });
+
+app.post('/productionHistory/isProdDataForm/insertRecord/tableReference/tbmkno/id/:id', function(request, response) {
+    console.log(request.body);
+    database.executeQuery(queryString.insertTbmknoRecord(request.params.id, request.body), function(data, error) {
+        if (error) {
+            alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord tbmkno', error);
+            return response.status(500).send('error inserting tbmkno: ' + error);
+        }
+        return response.status(200).send('tbmkno insert success');
+    });
+});
+
+/*
+    database.executeQuery(queryString.checkTbmknoAvailability(requestData.machno, requestData.prd_no, requestData.schedate), function(data, error) {
+        if (error) {
+            alertSystemError('insertRecord', 'checkTbmknoAvailability', error);
+            return response.status(500).send('error checking if record exists in the ERP tbmkno: ' + error);
+        }
+        if (data.length === 1) { // found one single record
+            if (data[0].existingIsProdDataRecord !== 0) {
+                if (data[0].source === 'generated') { // non-existing record with generated source
+
+                } else { // non-existing record with original ERP tbmkno as source
+                }
+            } else { // error, an existing record exists
+                alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord existing record found', error);
+                return response.status(500).send('trying to create record when it already exists: ' + error);
+            }
+        } else if (data.length === 0) { // nothing is found (brand new record)
+            // insert data into both tbmkno and isProdData
+            database.executeQuery(queryString.insertTbmknoRecord(primaryKey, requestData), function(data, error) {
+                if (error) {
+                    alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord', error);
+                    return response.status(500).send('error inserting tbmkno data: ' + error);
+                }
+                database.executeQuery(queryString.insertIsProdDataRecord(primaryKey, requestData, uploadLocationObject), function(data, error) {
+                    if (error) {
+                        alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord', error);
+                        return response.status(500).send('error inserting isProdData: ' + error);
+                    }
+                    return response.status(200).send({
+                        value: newRecordSelectValue,
+                        id: primaryKey,
+                        source: 'generated',
+                        existingIsProdDataRecord: 1
+                    });
+                });
+            });
+        } else { // more than one record is found
+            alertSystemError('insertRecord', 'checkTbmknoAvailability', error);
+            return response.status(500).send('more than one match found from ERP tbmkno: ' + error);
+        }
+    });
+}
+*/
 
 app.get('/productionHistory/isProdDataForm/recordID/:recordID', function(request, response) {
     if ((request.params.recordID === null) || (request.params.recordID === undefined) || (request.params.recordID === '')) {

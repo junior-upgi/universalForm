@@ -249,11 +249,17 @@ const selectOptionListArray = [{
 }, {
     id: 'plPositioner',
     optionList: [{
-        value: 'B/B',
-        text: 'B/B'
+        value: 'B/B SG',
+        text: 'B/B SG'
     }, {
-        value: 'P/B',
-        text: 'P/B'
+        value: 'B/B DG',
+        text: 'B/B DG'
+    }, {
+        value: 'P/B SG',
+        text: 'P/B SG'
+    }, {
+        value: 'P/B DG',
+        text: 'P/B DG'
     }]
 }, {
     id: 'scoop',

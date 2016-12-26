@@ -3,12 +3,16 @@ import {
 } from '../appControl.js';
 
 import {
-    serverUrl
+    serverUrl,
+    isProdDataInsertUrl,
+    tbmknoInsertUrl
 } from '../config.js';
 
 import {
     getAllUrlParams
 } from '../utility.js';
+
+import uuid from 'uuid/v4';
 
 module.exports = {
     changeFormState: changeFormState,
@@ -143,7 +147,6 @@ function isProdDataFormControl(formState) {
             break;
         case '2':
             console.log(`initiating form control for ${formState}`);
-            $('form#isProdDataForm').attr('action', './createManualRecord').attr('method', 'post');
             $('input#submitRecord').val('新增記錄').prop('disabled', false).off('click').on('click', function(event) {
                 if ($('form#' + getAllUrlParams().formReference + 'Form')[0].checkValidity()) {
                     event.preventDefault();
@@ -201,7 +204,7 @@ function isProdDataFormControl(formState) {
             $('button#printRecordButton').text('列印文件').prop('disabled', false).off('click').on('click', function() {
                 alert('文件尚未儲存，無法列印');
             });
-            // $('form#isProdDataForm').attr('action', './createManualRecord').attr('method', 'post');
+            // $('form#isProdDataForm').attr('action', './createRecord').attr('method', 'post');
             $('input#submitRecord').val('儲存記錄').prop('disabled', false).off('click').on('click', function(event) {
                 if (!$('form#' + getAllUrlParams().formReference).checkValidity()) {
                     event.preventDefault();
@@ -289,6 +292,7 @@ function deleteButtonHandler(formState) {
                 url: serverUrl + '/productionHistory/isProdDataForm/recordID/' + $('select#glassRun option:selected').data('id'),
                 type: 'delete',
                 success: function(response) {
+                    console.log('to do: deleting tbmkno record still has problem');
                     alert('歷史資料刪除成功');
                     initialize({});
                 },
@@ -320,29 +324,129 @@ function deletePhoto(recordIndex) {
 }
 */
 
+function checkTbmknoAvailability() {
+    let selectedGlassRun = $('selected#glassRun option:selected');
+    let schedate = $('input#schedate').val();
+    let glassProdLineID = $('input#glassProdLineID').val();
+    let mockProdReference = $('input#mockProdReference').val();
+    if (selectedGlassRun.val() === undefined) {
+        let existingGlassRunOption = $('select#glassRun option.glassRun').filter(function() {
+            return $(this).val() === `${schedate} ${glassProdLineID} ${mockProdReference}`;
+        });
+        return existingGlassRunOption;
+    } else {
+        return undefined;
+    }
+}
+
 function submitButtonHandler(formState) {
+    let matchingGlassRunOption = checkTbmknoAvailability();
+    let generatedUuid = uuid().toUpperCase();
     switch (formState) {
         case '2':
             console.log(`submit button triggered on ${formState}`);
-            $.ajax({
-                url: $('form#isProdDataForm').attr('action'),
-                type: $('form#isProdDataForm').attr('method'),
-                data: new FormData($('form#isProdDataForm')[0]),
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    alert('資料新增成功');
-                    $('select#glassRun').append(`<option class="glassRun newRecord" value="${response.value}">${response.value}</option>`);
-                    $('select#glassRun option.newRecord').data('id', response.id).data('existingIsProdDataRecord', response.existingIsProdDataRecord);
-                    $('select#glassRun').val(response.value);
-                    reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
-                },
-                error: function(error) {
-                    alert('資料更新失敗，請聯繫IT檢視');
-                    console.log(error);
+            // check if the new data matches existing entry in the glassRun list
+            if (matchingGlassRunOption.val() !== undefined) {
+                if ((matchingGlassRunOption.data('existingIsProdDataRecord') === 0) && (matchingGlassRunOption.data('source') === 'generated')) {
+                    console.log('TODO generated write to isProdData only with existing id, then return to the hist record page'); // /////////////////////////////////////////////
+                    console.log(matchingGlassRunOption.data('id')); // ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    $('form#isProdDataForm').attr('action', './createRecord').attr('method', 'post'); // /////////////////////////////////////////////////////////////////////////
+                    $.ajax({
+                        url: isProdDataInsertUrl + matchingGlassRunOption.data('id'),
+                        type: 'post',
+                        data: new FormData($('form#isProdDataForm')[0]),
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            alert('資料新增成功');
+                            console.clear();
+                            console.log('to do: problem dealing with after new record insert, doesnt return to the correct page');
+                            console.log(response);
+                            $('select#glassRun').append(`<option class="glassRun newRecord" value="${response.value}">${response.value}</option>`);
+                            $('select#glassRun option.newRecord').data('id', response.id).data('existingIsProdDataRecord', response.existingIsProdDataRecord);
+                            $('select#glassRun').val(response.value);
+                            reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
+                        },
+                        error: function(error) {
+                            alert('資料新增失敗，請聯繫IT檢視');
+                            console.log(error);
+                            return false;
+                        }
+                    });
+                } else if ((matchingGlassRunOption.data('existingIsProdDataRecord') === 0) && (matchingGlassRunOption.data('source') === 'tbmkno')) {
+                    console.log('TODO tbmkno write to both isProdData and tbmkno with generated UUID, then return to the hist record page'); // ///////
+                    let generatedUuid = uuid().toUpperCase(); // //////////////////////////////////////////////////////////////////////////////////////
+                    console.log(generatedUuid); // ////////////////////////////////////////////////////////////////////////////////////////////////////
+                    $.ajax({
+                        url: isProdDataInsertUrl + matchingGlassRunOption.data('id'),
+                        type: 'post',
+                        data: new FormData($('form#isProdDataForm')[0]),
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            alert('資料新增成功');
+                            console.clear();
+                            console.log('to do: problem dealing with after new record insert, doesnt return to the correct page');
+                            console.log(response);
+                            $('select#glassRun').append(`<option class="glassRun newRecord" value="${response.value}">${response.value}</option>`);
+                            $('select#glassRun option.newRecord').data('id', response.id).data('existingIsProdDataRecord', response.existingIsProdDataRecord);
+                            $('select#glassRun').val(response.value);
+                            reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
+                        },
+                        error: function(error) {
+                            alert('資料新增失敗，請聯繫IT檢視');
+                            console.log(error);
+                            return false;
+                        }
+                    });
+                } else if (matchingGlassRunOption.data('existingIsProdDataRecord') === 1) {
+                    alert('新輸入資料與歷史資料發現有重複狀況，頁面將轉至該筆歷史資料');
+                    $('select#glassRun').val(matchingGlassRunOption.val());
+                    let newSelection = $('select#glassRun option:selected');
+                    let newSelectionValue = matchingGlassRunOption.val();
+                    reinitializeWithData(newSelection, newSelectionValue);
+                } else {
+                    alert('新資料建立前置作業失敗，發現異常資料狀態。頁面即將重置');
+                    initialize({});
                     return false;
                 }
-            });
+            } else { // no matches found either in ERP tbmkno or generated tbmkno
+                let tbmknoInsert = $.ajax({
+                    url: tbmknoInsertUrl + generatedUuid,
+                    type: 'post',
+                    data: JSON.stringify({
+                        sampling: $('input#sampling').prop('checked') ? 1 : 0,
+                        machno: $('input#machno').val(),
+                        glassProdLineID: $('input#glassProdLineID').val(),
+                        schedate: $('input#schedate').val(),
+                        prd_no: $('input#prd_no').val(),
+                        orderQty: $('input#orderQty').val()
+                    }),
+                    contentType: 'application/json'
+                });
+                let isProdDataInsert = $.ajax({
+                    url: isProdDataInsertUrl + generatedUuid,
+                    type: 'post',
+                    data: new FormData($('form#isProdDataForm')[0]),
+                    processData: false,
+                    contentType: false
+                });
+                tbmknoInsert
+                    .done(function() {
+                        return isProdDataInsert;
+                    }).done(function(response) {
+                        alert('資料新增成功');
+                        console.log('to do: problem dealing with after new record insert, doesnt return to the correct page');
+                        console.log(response);
+                        $('select#glassRun').append(`<option class="glassRun newRecord" value="${response.value}">${response.value}</option>`);
+                        $('select#glassRun option.newRecord').data('id', response.id).data('existingIsProdDataRecord', response.existingIsProdDataRecord);
+                        $('select#glassRun').val(response.value);
+                        reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
+                    }).fail(function(error) {
+                        alert('資料新增失敗，請聯繫IT檢視');
+                        console.log(error);
+                    });
+            }
             break;
         default:
             alert(`此頁面狀態 formState: ${formState} 尚未配置記錄資料傳送程式`);
