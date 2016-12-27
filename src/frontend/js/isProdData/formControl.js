@@ -5,6 +5,7 @@ import {
 import {
     serverUrl,
     isProdDataInsertUrl,
+    isProdDataUpdateUrl,
     tbmknoInsertUrl,
     deletePhotoUrl
 } from '../config.js';
@@ -196,34 +197,18 @@ function isProdDataFormControl(formState) {
             break;
         case '4':
             console.log(`initiating form control for ${formState}`);
-            console.log('to do: implement isProdDataFormControl for 4');
-            $('button#deleteRecordButton').text('取消修改').prop('disabled', false).off('click').on('click', function() {
-                deleteButtonHandler(formState);
-            });
-            /*
-            $('input#submitRecord').val('儲存記錄').prop('disabled', false).off('click').on('click', function(event) {
-                if (!$('form#' + getAllUrlParams().formReference).checkValidity()) {
+            $('input#submitRecord').val('修改記錄').prop('disabled', false).off('click').on('click', function(event) {
+                if ($('form#' + getAllUrlParams().formReference + 'Form')[0].checkValidity()) {
                     event.preventDefault();
+                    submitButtonHandler(formState);
                 }
-                submitButtonHandler(formState);
             });
-            $('button#deleteRecordButton').text('刪除記錄').prop('disabled', false).off('click').on('click', function() {
+            $('button#deleteRecordButton').text('取消修改').prop('disabled', false).off('click').on('click', function() {
                 deleteButtonHandler(formState);
             });
             $('button#printRecordButton').text('列印文件').prop('disabled', false).off('click').on('click', function() {
                 alert('文件尚未儲存，無法列印');
             });
-            // $('form#isProdDataForm').attr('action', './createRecord').attr('method', 'post');
-            $('input#submitRecord').val('儲存記錄').prop('disabled', false).off('click').on('click', function(event) {
-                if (!$('form#' + getAllUrlParams().formReference).checkValidity()) {
-                    event.preventDefault();
-                }
-                submitButtonHandler(formState);
-            });
-            $('button#printRecordButton').text('列印文件').prop('disabled', false).off('click').on('click', function() {
-                alert('仍為空白文件，無法列印');
-            });
-            */
             break;
         default:
             alert('[control.js] formController failure: state process procedures not found for ' + formState);
@@ -305,7 +290,7 @@ function deleteButtonHandler(formState) {
     switch (formState) {
         case '2':
             console.log(`delete button triggered on ${formState}`);
-            alert('記錄內容即將重置');
+            alert('記錄內容修改即將取消並重置');
             reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
             break;
         case '3':
@@ -468,6 +453,24 @@ function submitButtonHandler(formState) {
                 });
             }
             break;
+        case '4':
+            $.ajax({
+                url: isProdDataUpdateUrl($('select#glassRun option:selected').data('id')),
+                type: 'put',
+                data: new FormData($('form#isProdDataForm')[0]),
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log(response);
+                    alert('資料更新成功');
+                    reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
+                },
+                error: function(error) {
+                    alert('資料更新失敗，請聯繫IT檢視');
+                    console.log(error);
+                }
+            });
+            break;
         default:
             alert(`此頁面狀態 formState: ${formState} 尚未配置記錄資料傳送程式`);
             break;
@@ -475,111 +478,6 @@ function submitButtonHandler(formState) {
 }
 
 /*
-
-function prepareTaskListForm(originalGlassRunValue) {
-    $.get('http://localhost:9005/taskList', {
-        recordID: originalGlassRunValue
-    }, function(taskListHTMLSource) {
-        $('form#isProdDataForm').before(taskListHTMLSource);
-    });
-}
-
-function prepareISProdDataForm(originalGlassRunValue) {
-    // auto fill form input date
-    $('input#recordDate').val(moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD'));
-    $('input#machno').hide(); // hide field that user does not need to see
-    $('input#schedate').hide(); // hide field that user does not need to see
-    $('input#prd_no').hide(); // hide field that user does not need to see
-    // ajax ERP extension's database for glass run record
-    $.get(serverUrl + '/glassRun', function(recordset) {
-        // fill in the select control so user can choose production run
-        $('select#glassRun').append('<option value="" disabled selected></option>');
-        recordset.forEach(function(record, index) { // loop through production run record
-            // create option from the record data
-            $('select#glassRun').append('<option class="glassRun current" value="' +
-                moment(record.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD') + ' ' +
-                record.glassProdLineID + '[' + record.PRDT_SNM + ']">' +
-                moment(record.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD') + ' -  ' +
-                record.glassProdLineID + '[' + record.PRDT_SNM + '] ' +
-                numeral(record.orderQty).format('0,0') + ' ' + '</option>');
-            // add 'data' and 'class' attributes to each options
-            $('option.current').data('schedate',
-                moment(record.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD')).addClass(
-                moment(record.schedate, 'YYYY/MM/DD').format('YYYY-MM-DD'));
-            $('option.current').data('machno', record.machno).addClass(record.machno);
-            $('option.current').data('glassProdLineID', record.glassProdLineID).addClass(record.glassProdLineID);
-            $('option.current').data('prd_no', record.prd_no).addClass(record.prd_no);
-            $('option.current').data('mockProdReference', record.PRDT_SNM);
-            $('option.current').removeClass('current'); // remove the temporary identification class attrib
-        });
-        // ajax for existing IS production data records
-        $.get(serverUrl + '/isProdData/recordID/all', function(recordset) {
-            // label glassRun options with appropriate class and value to ID existing records
-            recordset.forEach(function(record) {
-                $('option.glassRun.' + record.glassProdLineID + '.' +
-                    moment(record.schedate, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD') + '.' +
-                    record.prd_no).append('<span class="existingData">*</span>').addClass('existingData').val(record.id);
-            });
-            // place the original selection back into the control
-            if (originalGlassRunValue !== '') { // must execute at this position of the callback
-                $('select#glassRun').val(originalGlassRunValue);
-            }
-            if (checkISProdDataExistence()) { // if selected glassRun has existing data
-                loadExistingISProdData();
-            }
-        });
-    });
-}
-
-function glassRunSelectHandler() {
-    $('select#glassRun').change(function() { // function to handel event of glassRun control change
-        // check if a previous selection is made
-        if ($('input#machno').val() === '') { // first selection since starting the application
-            $('input#machno').val($('select#glassRun option:selected').data('machno'));
-            $('input#schedate').val($('select#glassRun option:selected').data('schedate'));
-            $('input#prd_no').val($('select#glassRun option:selected').data('prd_no'));
-            $('input#mockProdReference').val($('select#glassRun option:selected').data('mockProdReference'));
-            $('input#glassProdLineID').val($('select#glassRun option:selected').data('glassProdLineID'));
-            if (checkISProdDataExistence()) { // if selected glassRun has existing isProdData
-                loadExistingISProdData();
-            } else { // if no existing isProdData
-                // set form up for record insert by POST
-                $('form#isProdDataForm').attr('action', serverUrl + '/isProdData').attr('method', 'post');
-                // disable the delete button since the page is setup for insert at this point of the code
-                $('button#deleteRecordButton').prop('disabled', true);
-                $('input#submitNewRecord').prop('disabled', false);
-            }
-        } else { // already exists a previous selection
-            let newGlassRunSelection = { // save the current selected value and data
-                id: ($('select option:selected').val() === '') ? undefined : $('select option:selected').val(),
-                machno: $('select option:selected').data('machno'),
-                schedate: $('select option:selected').data('schedate'),
-                prd_no: $('select option:selected').data('prd_no'),
-                mockProdReference: $('select option:selected').data('mockProdReference'),
-                glassProdLineID: $('select option:selected').data('glassProdLineID')
-            };
-            $('body').empty(); // remove the html page
-            // ajax for a clean copy of the form
-            $.get(serverUrl + '/isProdDataForm/reload', function(formHTML) {
-                $('body').append(formHTML); // place a clean copy of the form back into the webpage
-                // insert the original values back into the form
-                $('input#machno').val(newGlassRunSelection.machno);
-                $('input#schedate').val(newGlassRunSelection.schedate);
-                $('input#prd_no').val(newGlassRunSelection.prd_no);
-                $('input#mockProdReference').val(newGlassRunSelection.mockProdReference);
-                $('input#glassProdLineID').val(newGlassRunSelection.glassProdLineID);
-                // reinitialize the form controls
-                initialize(isProdDataFormInitialization, newGlassRunSelection.id);
-                // set form up for record insert by POST
-                $('form#isProdDataForm').attr('action', serverUrl + '/isProdData').attr('method', 'post');
-                // disable the delete button since the page is setup for insert at this point of the code
-                $('button#deleteRecordButton').prop('disabled', true);
-                $('input#submitNewRecord').prop('disabled', false);
-            });
-        }
-    });
-}
-
 function printForm() {
     $('.hideWhenPrint').hide(); // hide elements that should not appear on the printed page
     // prepare elements for printing

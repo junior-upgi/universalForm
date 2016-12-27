@@ -118,6 +118,51 @@ app.get('/formControlData/formReference/:formReference', function(request, respo
     });
 });
 
+app.put('/productionHistory/isProdDataForm/id/:id', imageDirData.isProdData.configuration.upload.any(), function(request, response) {
+    let primaryKey = request.params.id;
+    let uploadLocationObject = {};
+    let recordSelectValue = `${request.body.schedate} ${request.body.glassProdLineID} ${request.body.mockProdReference}`;
+    if (request.files.length === 0) {
+        console.log('no file upload received...');
+        return updateRecord(primaryKey, request.body, null);
+    } else {
+        request.files.forEach(function(file) {
+            uploadLocationObject[file.fieldname] = file.destination + file.fieldname + '/' + primaryKey + '.JPG';
+            fs.rename(file.path, uploadLocationObject[file.fieldname], function(error) {
+                if (error) {
+                    console.log('photo upload failure: ' + error);
+                    alertSystemError('universalForm/isProdDataForm', 'updateRecord/photoUpload isProdData', error);
+                    return response.status(500).send('photo upload failure: ' + error);
+                } else {
+                    console.log('photo uploaded');
+                }
+            });
+        });
+        return updateRecord(primaryKey, request.body, uploadLocationObject);
+    }
+
+    function updateRecord(primaryKeyString, requestData, uploadPathObject) {
+        // problem with javascript 'formData' object not sending unchecked boxes any value
+        // causing problems with update, manually insert a blank value for the checkbox controls
+        if (requestData.conveyorHeating === undefined) {
+            requestData['conveyorHeating'] = '';
+        }
+        if (requestData.crossBridgeHeating === undefined) {
+            requestData['crossBridgeHeating'] = '';
+        }
+        database.executeQuery(queryString.updateIsProdDataRecord(primaryKeyString, requestData, uploadPathObject), function(data, error) {
+            if (error) {
+                return response.status(500).send('error updating isProdData: ' + error).end();
+            }
+            console.log('isProdDataFrom update completed...');
+            return response.status(200).send({
+                value: recordSelectValue,
+                id: primaryKey
+            });
+        });
+    }
+});
+
 app.post('/productionHistory/isProdDataForm/insertRecord/tableReference/isProdData/id/:id', imageDirData.isProdData.configuration.upload.any(), function(request, response) {
     let primaryKey = request.params.id;
     let uploadLocationObject = {};
@@ -132,6 +177,8 @@ app.post('/productionHistory/isProdDataForm/insertRecord/tableReference/isProdDa
                     console.log('photo upload failure: ' + error);
                     alertSystemError('universalForm/isProdDataForm', 'createRecord/photoUpload isProdData', error);
                     return response.status(500).send('photo upload failure: ' + error);
+                } else {
+                    console.log('photo uploaded');
                 }
             });
         });
@@ -144,6 +191,7 @@ app.post('/productionHistory/isProdDataForm/insertRecord/tableReference/isProdDa
                 alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord isProdData', error);
                 return response.status(500).send('error inserting isProdData: ' + error);
             }
+            console.log('isProdDataFrom insert completed...');
             return response.status(200).send({
                 value: newRecordSelectValue,
                 id: primaryKey
@@ -241,101 +289,3 @@ app.listen(serverConfig.serverPort, function(error) { // start backend server
         console.log('universalForm server in operation... (' + serverConfig.serverUrl + ')');
     }
 });
-
-/*
-app.get('/productionHistory/isProdDataForm/glassRun', function(request, response) {
-    database.executeQuery(queryString.getGlassRunRecordset, function(glassRunRecordset, error) {
-        if (error) {
-            return response.status(500).json([]).end();
-        }
-        return response.status(200).json(glassRunRecordset);
-    });
-});
-
-app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), function(request, response) {
-    console.log(moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + ' received POST request on /glassRun');
-    let primaryKey = utility.uuidGenerator();
-    let uploadLocationObject = {};
-    if (request.files.length === 0) {
-        console.log('no file upload received...');
-        return insertRecord(primaryKey, request.body, null);
-    } else {
-        request.files.forEach(function(file) {
-            uploadLocationObject[file.fieldname] = file.destination + file.fieldname + '/' + primaryKey + '.JPG';
-            fs.rename(file.path, uploadLocationObject[file.fieldname], function(error) {
-                if (error) {
-                    console.log('photo upload failure: ' + error);
-                    return response.status(500).send('photo upload failure: ' + error);
-                } else {
-                    console.log('photo uploaded');
-                }
-            });
-        });
-        return insertRecord(primaryKey, request.body, uploadLocationObject);
-    }
-
-    function insertRecord(primaryKeyString, requestData, uploadPathObject) {
-        database.executeQuery(queryString.insertGlassRunRecord(primaryKeyString, requestData, uploadPathObject),
-            function(error) {
-                if (error) {
-                    return response.status(500).send('error inserting isProdData: ' + error).end();
-                }
-                console.log('isProdDataFrom insert completed...');
-                return response.status(200).redirect(serverConfig.publicServerUrl + '/productionHistory/isProdDataForm');
-            });
-    }
-});
-
-app.put('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), function(request, response) {
-    console.log(moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + ' received PUT request on /glassRun');
-    let primaryKey = request.body.glassRun;
-    let uploadLocationObject = {};
-    if (request.files.length === 0) {
-        console.log('no file upload received...');
-        return updateRecord(primaryKey, request.body, null);
-    } else {
-        request.files.forEach(function(file) {
-            uploadLocationObject[file.fieldname] = file.destination + file.fieldname + '/' + primaryKey + '.JPG';
-            fs.rename(file.path, uploadLocationObject[file.fieldname], function(error) {
-                if (error) {
-                    console.log('photo upload failure: ' + error);
-                    return response.status(500).send('photo upload failure: ' + error);
-                } else {
-                    console.log('photo uploaded');
-                }
-            });
-        });
-        return updateRecord(primaryKey, request.body, uploadLocationObject);
-    }
-
-    function updateRecord(primaryKeyString, requestData, uploadPathObject) {
-        // problem with javascript 'formData' object not sending unchecked boxes any value
-        // causing problems with update, manually insert a blank value for the checkbox controls
-        if (requestData.conveyorHeating === undefined) {
-            requestData['conveyorHeating'] = '';
-        }
-        if (requestData.crossBridgeHeating === undefined) {
-            requestData['crossBridgeHeating'] = '';
-        }
-        database.executeQuery(queryString.updateGlassRunRecord(primaryKeyString, requestData, uploadPathObject),
-            function(data, error) {
-                if (error) {
-                    return response.status(500).send('error updating isProdData: ' + error).end();
-                }
-                console.log('isProdDataFrom update completed...');
-                return response.status(200).send(serverConfig.publicServerUrl + '/productionHistory/isProdDataForm');
-            });
-    }
-});
-
-app.use('/productionHistory/isProdDataForm/favicon', express.static(__dirname + '/public/image')); // serve static image
-app.use('/productionHistory/isProdDataForm/css', express.static(__dirname + '/public/css')); // serve static image
-app.use('/productionHistory/isProdDataForm/js', express.static(__dirname + '/public/js')); // serve frontend javascript
-app.get('/productionHistory/isProdDataForm', function(request, response) { // serve form
-    response.status(200).sendFile(__dirname + '/view/isProdDataForm.html');
-});
-app.get('/productionHistory/isProdDataForm/reload', function(request, response) { // serve fresh copy of the form html code
-    let formHTML = fs.readFileSync(__dirname + '/view/isProdDataFormBody.html');
-    response.status(200).send(formHTML);
-});
-*/

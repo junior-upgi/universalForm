@@ -8,3 +8,6 @@ export const tbmknoInsertUrl = serverUrl + '/productionHistory/isProdDataForm/in
 export function deletePhotoUrl(recordID, photoType) {
     return `${serverUrl}/productionHistory/isProdDataForm/deletePhoto/recordID/${recordID}/photoType/${photoType}`;
 }
+export function isProdDataUpdateUrl(recordID) {
+    return `${serverUrl}/productionHistory/isProdDataForm/id/${recordID}`;
+}

@@ -4,6 +4,37 @@ const erpPrdt = function(searchString) {
     return `SELECT SNM AS label,PRD_NO AS value FROM DB_U105.dbo.PRDT WHERE PRD_NO LIKE 'B[0-9][0-9][0-9][0-9][0-9]__' AND PRD_NO LIKE 'B${searchString}%';`;
 };
 
+let updateIsProdDataRecord = function(primaryKeyString, requestData, uploadPathObject) {
+    let updateString = 'UPDATE productionHistory.dbo.isProdData ';
+    let setString = 'SET ';
+    let fieldList = [];
+    let conditionString = 'WHERE id=\'' + primaryKeyString + '\';';
+    delete requestData.glassRun;
+    delete requestData.mockProdReference;
+    delete requestData.orderQty;
+    delete requestData.formState;
+    for (let key in requestData) {
+        if (requestData[key] !== '') {
+            fieldList += key + '=\'' + requestData[key] + '\',';
+        } else {
+            fieldList += key + '=NULL,';
+        }
+    }
+    if (uploadPathObject !== null) {
+        if (uploadPathObject.bmCoolingStack !== undefined) {
+            fieldList += 'bmCoolingStack=\'' + uploadPathObject.bmCoolingStack + '\',';
+        }
+        if (uploadPathObject.fmCoolingStack !== undefined) {
+            fieldList += 'fmCoolingStack=\'' + uploadPathObject.fmCoolingStack + '\',';
+        }
+        if (uploadPathObject.gobShape !== undefined) {
+            fieldList += 'gobShape=\'' + uploadPathObject.gobShape + '\',';
+        }
+    }
+    fieldList += 'modified=\'' + moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + '\' ';
+    return updateString + setString + fieldList + conditionString;
+};
+
 const insertIsProdDataRecord = function(primaryKey, requestData, uploadLocationObject) {
     let currentDatetime = moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
     let firstPart = 'INSERT INTO productionHistory.dbo.isProdData (';
@@ -97,7 +128,6 @@ const deleteIsProdDataPhoto = function(recordID, photoType) {
 };
 
 module.exports = {
-    // deletePhoto: deletePhoto,
     checkTbmknoAvailability: checkTbmknoAvailability,
     deleteIsProdDataRecord: deleteIsProdDataRecord,
     deleteTbmknoRecord: deleteTbmknoRecord,
@@ -107,41 +137,7 @@ module.exports = {
     getGlassRunRecordset: 'SELECT * FROM productionHistory.dbo.isProdDataGlassRun ORDER BY schedate DESC,PRDT_SNM;',
     getISProdDataRecord: getISProdDataRecord,
     getTbmknoRecord: getTbmknoRecord,
-    // getISProdDataRecordset: 'SELECT * FROM productionHistory.dbo.isProdData;',
-    // updateGlassRunRecord: updateGlassRunRecord,
     insertIsProdDataRecord: insertIsProdDataRecord,
+    updateIsProdDataRecord: updateIsProdDataRecord,
     insertTbmknoRecord: insertTbmknoRecord
 };
-
-/*
-
-
-let updateGlassRunRecord = function(primaryKeyString, requestData, uploadPathObject) {
-    let updateString = 'UPDATE productionHistory.dbo.isProdData ';
-    let setString = 'SET ';
-    let fieldList = [];
-    let conditionString = 'WHERE id=\'' + primaryKeyString + '\';';
-    delete requestData.glassRun;
-    delete requestData.mockProdReference;
-    for (let key in requestData) {
-        if (requestData[key] !== '') {
-            fieldList += key + '=\'' + requestData[key] + '\',';
-        } else {
-            fieldList += key + '=NULL,';
-        }
-    }
-    if (uploadPathObject !== null) {
-        if (uploadPathObject.bmCoolingStack !== undefined) {
-            fieldList += 'bmCoolingStack=\'' + uploadPathObject.bmCoolingStack + '\',';
-        }
-        if (uploadPathObject.fmCoolingStack !== undefined) {
-            fieldList += 'fmCoolingStack=\'' + uploadPathObject.fmCoolingStack + '\',';
-        }
-        if (uploadPathObject.gobShape !== undefined) {
-            fieldList += 'gobShape=\'' + uploadPathObject.gobShape + '\',';
-        }
-    }
-    fieldList += 'modified=\'' + moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss') + '\' ';
-    return updateString + setString + fieldList + conditionString;
-};
-*/
