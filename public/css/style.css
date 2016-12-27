@@ -6,3 +6,7 @@ div.bordered.heightControl {
 div.bordered {
     border: 1px solid gray;
 }
+
+.abc {
+    font-size: 6px;
+}

@@ -281,11 +281,6 @@ function fillRecordData(record) {
     });
 }
 
-function printButtonHandler(formState) {
-    console.log(`print button triggered on ${formState}`);
-    console.log('to do: print document');
-}
-
 function deleteButtonHandler(formState) {
     switch (formState) {
         case '2':
@@ -477,16 +472,19 @@ function submitButtonHandler(formState) {
     }
 }
 
-/*
-function printForm() {
+function printButtonHandler(formState) {
     $('.hideWhenPrint').hide(); // hide elements that should not appear on the printed page
     // prepare elements for printing
-    $('input.prepareToPrint').each(function() {
+    $('input.preparePrint').each(function() {
         $(this).after('<span class="removeAfterPrint">' + $(this).val() + '</span>');
         $(this).hide();
     });
-    $('select.prepareToPrint').each(function() {
-        $(this).after('<span class="removeAfterPrint">' + $(this).val() + '</span>');
+    $('select.preparePrint').each(function() {
+        if ($(this).val() === null) {
+            $(this).after('<span class="removeAfterPrint"></span>');
+        } else {
+            $(this).after('<span class="removeAfterPrint">' + $(this).val() + '</span>');
+        }
         $(this).hide();
     });
     $('div.bordered.heightControl').css('height', 28); // compress cells a bit
@@ -494,6 +492,5 @@ function printForm() {
     $('div.bordered.heightControl').css('height', 30); // restore cell height
     $('span.removeAfterPrint').remove(); // remove items that were prepared for printing
     $('.hideWhenPrint').show(); // show elements that were hidden while printing
-    $('.prepareToPrint').show(); // show elements that were hidden after prepared for print
+    $('.preparePrint').show(); // show elements that were hidden after prepared for print
 }
-*/
