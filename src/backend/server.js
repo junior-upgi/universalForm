@@ -52,7 +52,7 @@ if (fileStructureValidated !== true) {
 
 app.get('/status', function(request, response) { // serve system status information
     return response.status(200).json({
-        system: serverConfig.systsem,
+        system: serverConfig.systemReference,
         status: 'online'
     });
 });

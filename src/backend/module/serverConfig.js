@@ -1,4 +1,4 @@
-const system = 'universalForm';
+const systemReference = 'universalForm';
 
 const development = true;
 const serverHost = 'http://127.0.0.1';
@@ -14,7 +14,7 @@ const smtpTransportAccount = 'smtps://junior.upgi@gmail.com:cHApPPZV@smtp.gmail.
 const workingTimezone = 'Asia/Taipei';
 
 module.exports = {
-    systsem: system,
+    systemReference: systemReference,
     development: development,
     serverHost: serverHost,
     serverPort: serverPort,
