@@ -292,6 +292,8 @@ app.get('/productionHistory/isProdDataForm/document/recordID/:recordID', functio
     });
 });
 
+utility.statusReport.start();
+
 app.listen(serverConfig.serverPort, function(error) { // start backend server
     if (error) {
         console.log('error starting universalForm server: ' + error);
