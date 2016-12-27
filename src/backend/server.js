@@ -3,7 +3,7 @@ let cors = require('cors');
 let clone = require('clone');
 let express = require('express');
 let fs = require('fs');
-let morgan = require('morgan');
+// let morgan = require('morgan');
 let moment = require('moment-timezone');
 let multer = require('multer');
 let numeral = require('numeral');
@@ -24,7 +24,7 @@ let queryString = require('./model/queryString.js');
 
 let app = express();
 app.use(cors()); // allow cross origin request
-app.use(morgan('dev')); // log request and result to console
+// app.use(morgan('dev')); // log request and result to console
 app.use(bodyParser.urlencoded({
     extended: true
 })); // parse application/x-www-form-urlencoded

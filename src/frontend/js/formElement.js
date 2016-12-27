@@ -1,9 +1,7 @@
 export function configureFormControlElement(formControlOptionData) { // form control setup
-    console.log('configure form control elements');
     for (let objectIndex in formControlOptionData) { // loop through the data set
         switch (objectIndex) { // check index'ed data's type
             case 'selectOptionListArray': // <select> with an option list
-                console.log('setting up select controls');
                 formControlOptionData[objectIndex].forEach(function(elementConfigurationData) {
                     let selectControlElement = $('select#' + elementConfigurationData.id);
                     let attribute = elementConfigurationData.attribute;
@@ -29,7 +27,6 @@ export function configureFormControlElement(formControlOptionData) { // form con
                 });
                 break;
             case 'checkboxOptionArray': // checkbox set within a <div> that has the same id
-                console.log('setting up checkbox sets');
                 formControlOptionData[objectIndex].forEach(function(elementConfigurationData) {
                     let checkboxControlContainer = $('div#' + elementConfigurationData.id);
                     let checkboxDataArray = elementConfigurationData.optionList;
@@ -42,9 +39,7 @@ export function configureFormControlElement(formControlOptionData) { // form con
                     });
                 });
                 // monitor sets of checkbox's and make sure multiselection setting is enforced
-                console.log('enforce multiselection prevention on checkboxes');
                 $('input[type="checkbox"][name="' + objectIndex + '"]').off('change').change(function() { // checks on every change to checkbox's
-                    console.log('checkbox operated');
                     if ($('input[name="' + objectIndex + '"]:checked').length > 1) {
                         alert('不得複選，項目將自動重置歸零');
                         $('input[name="' + objectIndex + '"]').prop('checked', false);
@@ -52,7 +47,6 @@ export function configureFormControlElement(formControlOptionData) { // form con
                 });
                 break;
             case 'textAutocompleteOptionArray': // process jquery ui autocomplete enabled <input type="text"> elements
-                console.log('setting up jquery ui autocomplete fields');
                 formControlOptionData[objectIndex].forEach(function(elementConfigurationData) {
                     let controlHandle = $('input#' + elementConfigurationData.id);
                     let optionArray;
