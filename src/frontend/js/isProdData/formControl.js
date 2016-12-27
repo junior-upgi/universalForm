@@ -22,20 +22,17 @@ module.exports = {
 };
 
 function changeFormState(formState) {
-    console.log(`change form state from ${$('select#formState').val()} to ${formState}`);
     $('select#formState').val(formState);
     isProdDataFormControl($('select#formState').val());
 }
 
 function markFormAsUpdated() {
-    console.log('marking form as dirty');
     if (($('select#formState').val() === '1') || ($('select#formState').val() === '3')) {
         changeFormState((parseInt($('select#formState').val()) + 1).toString());
     }
 }
 
 function monitorFormUpdate() {
-    console.log('form update being monitored');
     $('input:not([type="checkbox"]).dataField,select.dataField,textarea.dataField').off('change').change(function() {
         markFormAsUpdated();
     });
@@ -129,10 +126,8 @@ function isProdDataFormControl(formState) {
     let currentGlassRunSelection = $('select#glassRun option:selected');
     switch (formState) {
         case '0':
-            console.log(`initiating form control for ${formState}`);
             break;
         case '1':
-            console.log(`initiating form control for ${formState}`);
             $('input#recordDate').val(moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD'));
             if (currentGlassRunSelection.val() === '') { // if not glassRun is selected
                 $('input#machno').prop('readonly', true);
@@ -174,7 +169,6 @@ function isProdDataFormControl(formState) {
             monitorFormUpdate();
             break;
         case '2':
-            console.log(`initiating form control for ${formState}`);
             $('input#submitRecord').val('新增記錄').prop('disabled', false).off('click').on('click', function(event) {
                 if ($('form#' + getAllUrlParams().formReference + 'Form')[0].checkValidity()) {
                     event.preventDefault();
@@ -189,7 +183,6 @@ function isProdDataFormControl(formState) {
             });
             break;
         case '3':
-            console.log(`initiating form control for ${formState}`);
             $('input#machno').prop('readOnly', true);
             $('input#glassProdLineID').prop('readOnly', true);
             $('input#prd_no').prop('readOnly', true);
@@ -214,7 +207,6 @@ function isProdDataFormControl(formState) {
             monitorFormUpdate();
             break;
         case '4':
-            console.log(`initiating form control for ${formState}`);
             $('input#submitRecord').val('修改記錄').prop('disabled', false).off('click').on('click', function(event) {
                 if ($('form#' + getAllUrlParams().formReference + 'Form')[0].checkValidity()) {
                     event.preventDefault();
@@ -235,7 +227,6 @@ function isProdDataFormControl(formState) {
 }
 
 function fillRecordData(record) {
-    console.log('fill historical data into form');
     for (let objectIndex in record) {
         if (objectIndex !== 'id') {
             switch ($('#' + objectIndex).get(0).tagName) {
@@ -302,18 +293,15 @@ function fillRecordData(record) {
 function deleteButtonHandler(formState) {
     switch (formState) {
         case '2':
-            console.log(`delete button triggered on ${formState}`);
             alert('記錄內容修改即將取消並重置');
             reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
             break;
         case '3':
-            console.log(`delete button triggered on ${formState}`);
             alert('即將刪除歷史資料');
             $.ajax({
                 url: serverUrl + '/productionHistory/isProdDataForm/recordID/' + $('select#glassRun option:selected').data('id'),
                 type: 'delete',
                 success: function(response) {
-                    console.log('to do: deleting tbmkno record still has problem');
                     alert('歷史資料刪除成功');
                     initialize({});
                 },
@@ -324,7 +312,6 @@ function deleteButtonHandler(formState) {
             });
             break;
         case '4':
-            console.log(`delete button triggered on ${formState}`);
             alert('記錄內容修改即將取消並重置');
             reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
             break;
@@ -354,7 +341,6 @@ function submitButtonHandler(formState) {
     let generatedUuid = uuid().toUpperCase();
     switch (formState) {
         case '2':
-            console.log(`submit button triggered on ${formState}`);
             // check if the new data matches existing entry in the glassRun list
             if (matchingGlassRunOption.val() !== undefined) { // if match is found
                 // heading data comes from another form
@@ -474,7 +460,6 @@ function submitButtonHandler(formState) {
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    console.log(response);
                     alert('資料更新成功');
                     reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
                 },

@@ -12,18 +12,14 @@ import {
 } from './formElement.js';
 
 function getFormBody(formReference) { // ajax for a clean copy of the form html
-    console.log('getting form body HTML');
     return $.get(formBodyHtmlSource);
 }
 
 function getFormControlConfigData(formReference) { // ajax custom form control init data
-    console.log('getting form control configuration data');
     return $.get('../../formControlData/formReference/' + formReference);
 }
 
 export function initialize(deferred) {
-    // console.clear();
-    console.log('initialize app...');
     let formReference = getAllUrlParams().formReference;
     if ((formReference !== null) && (formReference !== undefined) && (formReference !== '')) {
         getFormBody(formReference)
@@ -56,7 +52,6 @@ export function initialize(deferred) {
 
 // prevent form being submitted through user press of the 'enter' key
 function preventEnterSubmit() {
-    console.log('disable \'enter\' press, to prevent default submit form action');
     // make sure that .off('keydown') isn't set, otherwise autocomplete cannot be operated by arrow keys
     $('input,select') /* .off('keydown')*/
         .keydown(function(event) {
