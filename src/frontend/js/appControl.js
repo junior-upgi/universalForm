@@ -36,12 +36,10 @@ export function initialize(deferred) {
                     changeFormState('1');
                     // change state must be set first (breaks either formState monitor/multiselection check)
                     preventEnterSubmit();
-                    preventMultiSelect();
                 } else {
                     changeFormState('3');
                     // change state must be set first (breaks either formState monitor/multiselection check)
                     preventEnterSubmit();
-                    preventMultiSelect();
                     deferred.deferred.resolve();
                 }
             }).catch(function(error) {
@@ -69,20 +67,6 @@ function preventEnterSubmit() {
                 }
                 event.preventDefault();
                 return false;
-            }
-        });
-}
-
-// monitor sets of checkbox's and make sure multiselection setting is enforced
-function preventMultiSelect() {
-    console.log('enforce multiselection prevention on checkboxes');
-    // make sure the .off('change') isn't set, breaks formState monitor function
-    $('input[type="checkbox"]') /* .off('change')*/
-        .change(function() { // checks on every change to checkbox's
-            let targetCheckboxSet = $(this).attr('name'); // save current checkbox's name for access
-            if ($('input[name="' + targetCheckboxSet + '"]:checked').length > 1) {
-                alert('不得複選，項目將自動重置歸零');
-                $('input[name="' + targetCheckboxSet + '"]').prop('checked', false);
             }
         });
 }

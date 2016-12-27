@@ -5,3 +5,6 @@ const serverPort = '9004';
 export const serverUrl = serverHost + ':' + serverPort;
 export const isProdDataInsertUrl = serverUrl + '/productionHistory/isProdDataForm/insertRecord/tableReference/isProdData/id/';
 export const tbmknoInsertUrl = serverUrl + '/productionHistory/isProdDataForm/insertRecord/tableReference/tbmkno/id/';
+export function deletePhotoUrl(recordID, photoType) {
+    return `${serverUrl}/productionHistory/isProdDataForm/deletePhoto/recordID/${recordID}/photoType/${photoType}`;
+}

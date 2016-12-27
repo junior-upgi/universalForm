@@ -92,11 +92,16 @@ const checkTbmknoAvailability = function(machno, prd_no, schedate) {
     return `SELECT * FROM productionHistory.dbo.isProdDataGlassRun WHERE machno='${machno}' AND prd_no='${prd_no}' AND schedate='${schedate}';`;
 };
 
+const deleteIsProdDataPhoto = function(recordID, photoType) {
+    return `UPDATE productionHistory.dbo.isProdData SET ${photoType}=NULL WHERE id='${recordID}';`;
+};
+
 module.exports = {
     // deletePhoto: deletePhoto,
     checkTbmknoAvailability: checkTbmknoAvailability,
     deleteIsProdDataRecord: deleteIsProdDataRecord,
     deleteTbmknoRecord: deleteTbmknoRecord,
+    deleteIsProdDataPhoto: deleteIsProdDataPhoto,
     erpPrdt: erpPrdt,
     getExistingIsProdDataRecord: getExistingIsProdDataRecord,
     getGlassRunRecordset: 'SELECT * FROM productionHistory.dbo.isProdDataGlassRun ORDER BY schedate DESC,PRDT_SNM;',
@@ -109,9 +114,6 @@ module.exports = {
 };
 
 /*
-let deletePhoto = function(recordID, photoFieldName) {
-    return 'UPDATE productionHistory.dbo.isProdData SET ' + photoFieldName + '=NULL WHERE id=\'' + recordID + '\';';
-};
 
 
 let updateGlassRunRecord = function(primaryKeyString, requestData, uploadPathObject) {

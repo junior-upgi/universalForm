@@ -5,7 +5,8 @@ import {
 import {
     serverUrl,
     isProdDataInsertUrl,
-    tbmknoInsertUrl
+    tbmknoInsertUrl,
+    deletePhotoUrl
 } from '../config.js';
 
 import {
@@ -34,7 +35,15 @@ function markFormAsUpdated() {
 
 function monitorFormUpdate() {
     console.log('form update being monitored');
-    $('input.dataField,select.dataField,textarea.dataField').off('change').change(function() {
+    $('input:not([type="checkbox"]).dataField,select.dataField,textarea.dataField').off('change').change(function() {
+        markFormAsUpdated();
+    });
+    $('input[type="checkbox"].dataField').off('change').change(function() {
+        let targetCheckboxSet = $(this).attr('name'); // save current checkbox's name for access
+        if ($('input[name="' + targetCheckboxSet + '"]:checked').length > 1) {
+            alert('不得複選，項目將自動重置歸零');
+            $('input[name="' + targetCheckboxSet + '"]').prop('checked', false);
+        }
         markFormAsUpdated();
     });
     $('input.autocompleteDataField')
@@ -237,8 +246,8 @@ function fillRecordData(record) {
                     if ($('input#' + objectIndex).attr('type') === 'file') {
                         // put existing photo on the form and add a delete button
                         $('div.imageHolder.' + objectIndex)
-                            .append('<img class="' + objectIndex + '" src="' + serverUrl + '/productionHistory/' + record[objectIndex] + '" height="160" width="160" />')
-                            .append('<button class="' + objectIndex + ' hideWhenPrint" type="button" onclick="deletePhoto(\'' + objectIndex + '\')">刪除</button>');
+                            .append(`<img class="${objectIndex}" src="${serverUrl + '/productionHistory/' + record[objectIndex]}" height="120" width="160" />`)
+                            .append(`<button name="${objectIndex}" class="${objectIndex} photoDeleteButton hidenWhenPrint" type="button">刪除</button>`);
                         // hide the original upload control
                         $('input#' + objectIndex).hide();
                         break;
@@ -271,6 +280,20 @@ function fillRecordData(record) {
             }
         }
     }
+    // start event monitor for photo delete button
+    $('button.photoDeleteButton').off('click').on('click', function() {
+        alert('圖片將即將刪除');
+        let photoType = $(this).attr('name');
+        $.get(deletePhotoUrl($('select#glassRun option:selected').data('id'), photoType), function(result) {
+            if (!result.success) {
+                alert(`圖片刪除發生錯誤，請與IT聯繫(${result.error})`);
+                return false;
+            }
+            $('img.' + photoType).remove(); // remove the img element
+            $('button.' + photoType).remove(); // remove the removal button
+            $('input#' + photoType).show(); // show the original upload control
+        });
+    });
 }
 
 function printButtonHandler(formState) {
@@ -283,7 +306,7 @@ function deleteButtonHandler(formState) {
         case '2':
             console.log(`delete button triggered on ${formState}`);
             alert('記錄內容即將重置');
-            initialize({});
+            reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
             break;
         case '3':
             console.log(`delete button triggered on ${formState}`);
@@ -313,17 +336,6 @@ function deleteButtonHandler(formState) {
     }
 }
 
-/*
-function deletePhoto(recordIndex) {
-    $.get(serverUrl + '/isProdDataForm/deletePhoto/recordID/' + $('select#glassRun').val() + '/fieldName/' + recordIndex, function() {
-        $('img.' + recordIndex).remove(); // remove the img element
-        $('button.' + recordIndex).remove(); // remove the removal button
-        $('input#' + recordIndex).show(); // show the original upload control
-        alert('圖片已刪除');
-    });
-}
-*/
-
 function checkTbmknoAvailability() {
     let selectedGlassRun = $('selected#glassRun option:selected');
     let schedate = $('input#schedate').val();
@@ -346,8 +358,12 @@ function submitButtonHandler(formState) {
         case '2':
             console.log(`submit button triggered on ${formState}`);
             // check if the new data matches existing entry in the glassRun list
-            if (matchingGlassRunOption.val() !== undefined) {
-                if ((matchingGlassRunOption.data('existingIsProdDataRecord') === 0) && (matchingGlassRunOption.data('source') === 'generated')) {
+            if (matchingGlassRunOption.val() !== undefined) { // if match is found
+                // heading data comes from another form
+                // use the id already presented and write to isProdData only
+                // reinitialize with the new record
+                if ((matchingGlassRunOption.data('existingIsProdDataRecord') === 0) &&
+                    (matchingGlassRunOption.data('source') === 'generated')) {
                     $.ajax({
                         url: isProdDataInsertUrl + matchingGlassRunOption.data('id'),
                         type: 'post',
@@ -355,7 +371,7 @@ function submitButtonHandler(formState) {
                         processData: false,
                         contentType: false,
                         success: function(data, textStatus, jqXHR) {
-                            console.log(data);
+                            // change glassRun to the existing selection and make it existing, then reinitialize
                             alert('資料新增成功');
                             $('select#glassRun').val(data.value);
                             $('select#glassRun option:selected').data('existingIsProdDataRecord', 1);
@@ -366,44 +382,59 @@ function submitButtonHandler(formState) {
                             console.log(textStatus + ': ' + errorThrown);
                         }
                     });
-                } else if ((matchingGlassRunOption.data('existingIsProdDataRecord') === 0) && (matchingGlassRunOption.data('source') === 'tbmkno')) {
-                    console.log('TODO tbmkno write to both isProdData and tbmkno with generated UUID, then return to the hist record page'); // ///////
-                    let generatedUuid = uuid().toUpperCase(); // //////////////////////////////////////////////////////////////////////////////////////
-                    console.log(generatedUuid); // ////////////////////////////////////////////////////////////////////////////////////////////////////
-                    $.ajax({
-                        url: isProdDataInsertUrl + matchingGlassRunOption.data('id'),
+                } else if ((matchingGlassRunOption.data('existingIsProdDataRecord') === 0) &&
+                    (matchingGlassRunOption.data('source') === 'tbmkno')) {
+                    // heading data comes from the erp production planning system (Z_DB_U105.dbo.tbmkno)
+                    // generate a UUID and write to both isProdData and productionHistory.dbo.tbmkno
+                    // reinitialize with the new record
+                    let tbmknoInsert = $.ajax({
+                        url: tbmknoInsertUrl + generatedUuid,
+                        type: 'post',
+                        data: JSON.stringify({
+                            sampling: $('input#sampling').prop('checked') ? 1 : 0,
+                            machno: $('input#machno').val(),
+                            glassProdLineID: $('input#glassProdLineID').val(),
+                            schedate: $('input#schedate').val(),
+                            prd_no: $('input#prd_no').val(),
+                            orderQty: $('input#orderQty').val()
+                        }),
+                        contentType: 'application/json'
+                    });
+                    let isProdDataInsert = $.ajax({
+                        url: isProdDataInsertUrl + generatedUuid,
                         type: 'post',
                         data: new FormData($('form#isProdDataForm')[0]),
                         processData: false,
-                        contentType: false,
-                        success: function(response) {
-                            alert('資料新增成功');
-                            console.clear();
-                            console.log('to do: problem dealing with after new record insert, doesnt return to the correct page');
-                            console.log(response);
-                            $('select#glassRun').append(`<option class="glassRun newRecord" value="${response.value}">${response.value}</option>`);
-                            $('select#glassRun option.newRecord').data('id', response.id).data('existingIsProdDataRecord', response.existingIsProdDataRecord);
-                            $('select#glassRun').val(response.value);
-                            reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
-                        },
-                        error: function(error) {
-                            alert('資料新增失敗，請聯繫IT檢視');
-                            console.log(error);
-                            return false;
-                        }
+                        contentType: false
+                    });
+                    $.when(tbmknoInsert, isProdDataInsert).done(function(response1, response2) {
+                        // change glassRun to the existing selection and make it existing, then reinitialize
+                        alert('資料新增成功');
+                        $('select#glassRun').val(response2[0].value);
+                        $('select#glassRun option:selected').data('existingIsProdDataRecord', 1);
+                        reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
+                    }).fail(function(error) {
+                        alert('資料新增失敗，請聯繫IT檢視');
+                        console.log(error);
                     });
                 } else if (matchingGlassRunOption.data('existingIsProdDataRecord') === 1) {
+                    // heading data matches and an existing record is found
+                    // do not write and reinitialize with the existing record
                     alert('新輸入資料與歷史資料發現有重複狀況，頁面將轉至該筆歷史資料');
                     $('select#glassRun').val(matchingGlassRunOption.val());
                     let newSelection = $('select#glassRun option:selected');
                     let newSelectionValue = matchingGlassRunOption.val();
                     reinitializeWithData(newSelection, newSelectionValue);
                 } else {
+                    // something else is wrong, display error and initialize an empty page
                     alert('新資料建立前置作業失敗，發現異常資料狀態。頁面即將重置');
                     initialize({});
                     return false;
                 }
-            } else { // no matches found either in ERP tbmkno or generated tbmkno
+            } else {
+                // no matches found either in ERP tbmkno or generated tbmkno
+                // generate an UUID and write to both productionHistory.dbo.tbmkno and isProdData table
+                // reinitialize to the new record
                 let tbmknoInsert = $.ajax({
                     url: tbmknoInsertUrl + generatedUuid,
                     type: 'post',
@@ -425,6 +456,7 @@ function submitButtonHandler(formState) {
                     contentType: false
                 });
                 $.when(tbmknoInsert, isProdDataInsert).done(function(response1, response2) {
+                    // make a temporary selection option on glassRun, then reinitialize
                     alert('資料新增成功');
                     $('select#glassRun').append(`<option class="glassRun newRecord" value="${response2[0].value}">${response2[0].value}</option>`);
                     $('select#glassRun option.newRecord').data('id', response2[0].id).data('existingIsProdDataRecord', 1);

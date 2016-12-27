@@ -123,7 +123,6 @@ app.post('/productionHistory/isProdDataForm/insertRecord/tableReference/isProdDa
     let uploadLocationObject = {};
     let newRecordSelectValue = `${request.body.schedate} ${request.body.glassProdLineID} ${request.body.mockProdReference}`;
     if (request.files.length === 0) {
-        console.log('come on!!!!');
         insertRecord(primaryKey, request.body, null);
     } else {
         request.files.forEach(function(file) {
@@ -140,13 +139,11 @@ app.post('/productionHistory/isProdDataForm/insertRecord/tableReference/isProdDa
     }
 
     function insertRecord(primaryKey, requestData, uploadLocationObject) {
-        console.log('come on 2!!!!');
         database.executeQuery(queryString.insertIsProdDataRecord(primaryKey, requestData, uploadLocationObject), function(data, error) {
             if (error) {
                 alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord isProdData', error);
                 return response.status(500).send('error inserting isProdData: ' + error);
             }
-            console.log('come on 3!!!!');
             return response.status(200).send({
                 value: newRecordSelectValue,
                 id: primaryKey
@@ -165,50 +162,6 @@ app.post('/productionHistory/isProdDataForm/insertRecord/tableReference/tbmkno/i
         return response.status(200).send('tbmkno insert success');
     });
 });
-
-/*
-    database.executeQuery(queryString.checkTbmknoAvailability(requestData.machno, requestData.prd_no, requestData.schedate), function(data, error) {
-        if (error) {
-            alertSystemError('insertRecord', 'checkTbmknoAvailability', error);
-            return response.status(500).send('error checking if record exists in the ERP tbmkno: ' + error);
-        }
-        if (data.length === 1) { // found one single record
-            if (data[0].existingIsProdDataRecord !== 0) {
-                if (data[0].source === 'generated') { // non-existing record with generated source
-
-                } else { // non-existing record with original ERP tbmkno as source
-                }
-            } else { // error, an existing record exists
-                alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord existing record found', error);
-                return response.status(500).send('trying to create record when it already exists: ' + error);
-            }
-        } else if (data.length === 0) { // nothing is found (brand new record)
-            // insert data into both tbmkno and isProdData
-            database.executeQuery(queryString.insertTbmknoRecord(primaryKey, requestData), function(data, error) {
-                if (error) {
-                    alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord', error);
-                    return response.status(500).send('error inserting tbmkno data: ' + error);
-                }
-                database.executeQuery(queryString.insertIsProdDataRecord(primaryKey, requestData, uploadLocationObject), function(data, error) {
-                    if (error) {
-                        alertSystemError('universalForm/isProdDataForm', 'createRecord/insertRecord', error);
-                        return response.status(500).send('error inserting isProdData: ' + error);
-                    }
-                    return response.status(200).send({
-                        value: newRecordSelectValue,
-                        id: primaryKey,
-                        source: 'generated',
-                        existingIsProdDataRecord: 1
-                    });
-                });
-            });
-        } else { // more than one record is found
-            alertSystemError('insertRecord', 'checkTbmknoAvailability', error);
-            return response.status(500).send('more than one match found from ERP tbmkno: ' + error);
-        }
-    });
-}
-*/
 
 app.get('/productionHistory/isProdDataForm/recordID/:recordID', function(request, response) {
     if ((request.params.recordID === null) || (request.params.recordID === undefined) || (request.params.recordID === '')) {
@@ -249,13 +202,34 @@ app.delete('/productionHistory/isProdDataForm/recordID/:recordID', function(requ
                 console.log('error removing photos...');
             }
         });
-        // delete the record from tbmkno where id is in the parameter and not found in 'productionHistory.dbo.productionHistory'
+        // delete the record from tbmkno where id is in the parameter is not found in 'productionHistory.dbo.productionHistory'
         database.executeQuery(queryString.deleteTbmknoRecord(request.params.recordID), function(error) {
             if (error) {
                 return response.status(500).send('error deleting tbmkno record: ' + error).end();
             }
             console.log('record deleted...');
             return response.status(200).end('success');
+        });
+    });
+});
+
+app.get('/productionHistory/isProdDataForm/deletePhoto/recordID/:recordID/photoType/:photoType', function(request, response) {
+    database.executeQuery(queryString.deleteIsProdDataPhoto(request.params.recordID, request.params.photoType), function(error) {
+        if (error) {
+            console.log('photo data reference removal failure: ' + error);
+            return response.status(500).json({
+                photoType: request.params.photoType,
+                success: false,
+                error: error
+            });
+        }
+        let imageFilePath = 'image/isProdDataForm/' + request.params.photoType + '/';
+        utility.fileRemoval(imageFilePath + request.params.recordID + '.JPG', function() {
+            console.log('photo deleted');
+            return response.status(200).json({
+                photoType: request.params.photoType,
+                success: true
+            });
         });
     });
 });
@@ -310,21 +284,6 @@ app.post('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), fu
                 return response.status(200).redirect(serverConfig.publicServerUrl + '/productionHistory/isProdDataForm');
             });
     }
-});
-
-app.get('/productionHistory/isProdDataForm/deletePhoto/recordID/:recordID/fieldName/:fieldName', function(request, response) {
-    console.log(request.params);
-    database.executeQuery(queryString.deletePhoto(request.params.recordID, request.params.fieldName), function(error) {
-        if (error) {
-            console.log('photo data reference removal failure: ' + error);
-            return response.status(500).end();
-        }
-        let imageFilePath = 'image/isProdDataForm/' + request.params.fieldName + '/';
-        utility.fileRemoval(imageFilePath + request.params.recordID + '.JPG', function() {
-            console.log('photo deleted');
-            return response.status(200).end();
-        });
-    });
 });
 
 app.put('/productionHistory/isProdData', imageDirectoryList[0].upload.any(), function(request, response) {
