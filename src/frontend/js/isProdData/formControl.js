@@ -18,7 +18,7 @@ import uuid from 'uuid/v4';
 
 module.exports = {
     changeFormState: changeFormState,
-    formBodyHtmlSource: './view/isProdData/FormBody.html'
+    formBodyHtmlSource: './view/isProdData/formBody.html'
 };
 
 function changeFormState(formState) {
@@ -232,7 +232,7 @@ function fillRecordData(record) {
                         // put existing photo on the form and add a delete button
                         $('div.imageHolder.' + objectIndex)
                             .append(`<img class="${objectIndex}" src="${serverUrl + '/productionHistory/' + record[objectIndex]}" height="120" width="160" />`)
-                            .append(`<button name="${objectIndex}" class="${objectIndex} photoDeleteButton hidenWhenPrint" type="button">刪除</button>`);
+                            .append(`<button name="${objectIndex}" class="${objectIndex} photoDeleteButton hideWhenPrint" type="button">刪除</button>`);
                         // hide the original upload control
                         $('input#' + objectIndex).hide();
                         break;
@@ -488,8 +488,11 @@ function printButtonHandler(formState) {
         $(this).hide();
     });
     $('div.bordered.heightControl').css('height', 28); // compress cells a bit
+    let originalHeight = $('div.resizeToPrint').css('height');
+    $('div.resizeToPrint').css('height', 160);
     print(); // print page
     $('div.bordered.heightControl').css('height', 30); // restore cell height
+    $('div.resizeToPrint').removeAttr('style') // restore cell height
     $('span.removeAfterPrint').remove(); // remove items that were prepared for printing
     $('.hideWhenPrint').show(); // show elements that were hidden while printing
     $('.preparePrint').show(); // show elements that were hidden after prepared for print
