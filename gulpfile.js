@@ -43,7 +43,7 @@ gulp.task('favicon', function() {
     return gulp.src('./src/frontend/*.png').pipe(gulp.dest(destDir));
 });
 
-gulp.task('staticFrontendFiles', ['staticCss', 'staticView', 'staticHtml', 'favicon'], function() {
+gulp.task('staticFrontendFiles', ['staticCss', 'processTemplate', 'staticView', 'staticHtml', 'favicon'], function() {
     return;
 });
 

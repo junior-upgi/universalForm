@@ -282,6 +282,16 @@ app.get('/productionHistory/isProdDataForm/deletePhoto/recordID/:recordID/photoT
     });
 });
 
+app.get('/productionHistory/isProdDataForm/document/recordID/:recordID', function(request, response) {
+    database.executeQuery(queryString.getExistingIsProdDataRecord(request.params.recordID), function(data, error) {
+        if (error) {
+            return response.status(500).send(`<p>資料編號 ${request.params.recordID} 讀取發生錯誤:</p><p>${error}</p>`);
+        }
+        console.log(data);
+        return response.status(200).sendFile(__dirname + '/view/isProdDataForm.html');
+    });
+});
+
 app.listen(serverConfig.serverPort, function(error) { // start backend server
     if (error) {
         console.log('error starting universalForm server: ' + error);

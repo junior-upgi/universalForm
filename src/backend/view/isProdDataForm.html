@@ -1,4 +1,4 @@
-<form id="isProdDataForm" name="isProdDataForm" action="" method="" enctype="multipart/form-data">
+<body>
     <div class="container-fluid">
         <div class="row text-center">
             <h2 id="title">統義玻璃工業股份有限公司</h2>
@@ -263,20 +263,23 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-4 bordered resizeToPrint">
+            <div class="col-xs-4 bordered">
                 <div>初模冷卻風箱</div>
-                <div class="bmCoolingStack imageHolder"></div>
-                <input id="bmCoolingStack" name="bmCoolingStack" class="restoreData hideWhenPrint dataField" type="file" accept="image/*" tabindex="" />
+                <div class="bmCoolingStack">
+                    <img id="bmCoolingStack" height="120" width="160" />
+                </div>
             </div>
-            <div class="col-xs-4 bordered resizeToPrint">
+            <div class="col-xs-4 bordered">
                 <div>成模冷卻風箱</div>
-                <div class="fmCoolingStack imageHolder"></div>
-                <input id="fmCoolingStack" name="fmCoolingStack" class="restoreData hideWhenPrint dataField" type="file" accept="image/*" tabindex="" />
+                <div class="fmCoolingStack">
+                    <img id="fmCoolingStack" height="120" width="160" />
+                </div>
             </div>
-            <div class="col-xs-4 bordered resizeToPrint">
+            <div class="col-xs-4 bordered">
                 <div>GOB 形狀</div>
-                <div class="gobShape imageHolder"></div>
-                <input id="gobShape" name="gobShape" class="restoreData hideWhenPrint dataField" type="file" accept="image/*" tabindex="" />
+                <div class="gobShape">
+                    <img id="gobShape" height="120" width="160" />
+                </div>
             </div>
         </div>
         &nbsp;
@@ -286,22 +289,5 @@
             <div class="col-xs-3">製造課長</div>
             <div class="col-xs-3">填表</div>
         </div>
-        &nbsp;
-        <div class="row hideWhenPrint">
-            <div class="col-xs-10 formProcessButtonHolder">
-                <input id="submitRecord" type="submit" value="新增記錄" tabindex="" disabled /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button id="printRecordButton" type="button" tabindex="" disabled>列印文件</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button id="deleteRecordButton" type="button" tabindex="" disabled>刪除記錄</button>
-            </div>
-            <div class="col-xs-2">
-                <button type="button" tabindex="" onclick="returnToProductionHistorySite()">返回生產履歷網頁</button>
-            </div>
-        </div>
     </div>
-</form>
-
-<script>
-    function returnToProductionHistorySite() {
-        window.location.replace('http://upgi.ddns.net/productionHistory/Duty/DutyList');
-    }
-</script>
+</body>
