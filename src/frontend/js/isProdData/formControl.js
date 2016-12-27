@@ -66,13 +66,32 @@ function monitorFormUpdate() {
         if (newSelection.val() === '') {
             initialize({});
             return;
-        }
-        if (newSelection.data('existingIsProdDataRecord') === 1) {
+        } else if (newSelection.data('existingIsProdDataRecord') === 1) {
             reinitializeWithData(newSelection, newSelectionValue);
         } else {
-            changeFormState('1');
+            reinitializeWithoutData(newSelection, newSelectionValue);
         }
     });
+}
+
+function reinitializeWithoutData(selectedOption, selectedValue) {
+    // wrap initialize with promise
+    let reinitialize = function() {
+            let deferred = new $.Deferred();
+            initialize({
+                deferred: deferred
+            });
+            return deferred.promise();
+        }
+        // call initialize using promise to get execution sequenced correctly
+    reinitialize()
+        .done(function() {
+            $('select#glassRun').val(selectedValue);
+            changeFormState('1');
+        })
+        .fail(function(error) {
+            alert('歷史資料頁面建立失敗: ' + error);
+        });
 }
 
 function reinitializeWithData(selectedOption, selectedValue) {
@@ -107,7 +126,6 @@ function reinitializeWithData(selectedOption, selectedValue) {
 }
 
 function isProdDataFormControl(formState) {
-    $('select#glassRun option[value=""]').prop('disabled', false);
     let currentGlassRunSelection = $('select#glassRun option:selected');
     switch (formState) {
         case '0':
@@ -491,9 +509,5 @@ function printButtonHandler(formState) {
     let originalHeight = $('div.resizeToPrint').css('height');
     $('div.resizeToPrint').css('height', 160);
     print(); // print page
-    $('div.bordered.heightControl').css('height', 30); // restore cell height
-    $('div.resizeToPrint').removeAttr('style') // restore cell height
-    $('span.removeAfterPrint').remove(); // remove items that were prepared for printing
-    $('.hideWhenPrint').show(); // show elements that were hidden while printing
-    $('.preparePrint').show(); // show elements that were hidden after prepared for print
+    reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
 }

@@ -9,7 +9,7 @@ export function configureFormControlElement(formControlOptionData) { // form con
                     let attribute = elementConfigurationData.attribute;
                     let optionDataArray = elementConfigurationData.optionList;
                     // always start with an empty option in the list
-                    selectControlElement.append('<option value="" selected disabled></option>');
+                    selectControlElement.append('<option value="" selected></option>');
                     optionDataArray.forEach(function(optionData) { // loop through the attached option list
                         // check if the option should/shouldn't be displayed for use
                         if (optionData.displayFlag === undefined || optionData.displayFlag === true) {
