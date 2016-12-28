@@ -3,6 +3,7 @@
         "eslint:recommended",
         "eslint-config-google"
     ],
+    "root": true,
     "parser": "babel-eslint",
     "parserOptions": {
         "sourceType": "module"
@@ -46,6 +47,7 @@
             "always"
         ],
         "guard-for-in": "off",
+        /*
         "indent": [
             "error",
             4, {
@@ -71,6 +73,7 @@
                 }
             }
         ],
+        */
         "max-len": "off",
         "no-console": "off",
         "no-invalid-this": "off",

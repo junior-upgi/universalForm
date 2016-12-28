@@ -1,18 +1,20 @@
 let bodyParser = require('body-parser');
-let cors = require('cors');
-let clone = require('clone');
-let express = require('express');
-let fs = require('fs');
-// let morgan = require('morgan');
-let moment = require('moment-timezone');
-let multer = require('multer');
-let numeral = require('numeral');
-let favicon = require('serve-favicon');
-// let uuid = require('uuid/v4');
+const CronJob = require('cron').CronJob;
+const cors = require('cors');
+const clone = require('clone');
+const express = require('express');
+const fs = require('fs');
+// const morgan = require('morgan');
+const moment = require('moment-timezone');
+const multer = require('multer');
+const numeral = require('numeral');
+const httpRequest = require('request-promise');
+const favicon = require('serve-favicon');
+const uuid = require('uuid/v4');
 
-let database = require('./module/database.js');
-let serverConfig = require('./module/serverConfig.js');
-let utility = require('./module/utility.js');
+const database = require('./module/database.js');
+const serverConfig = require('./module/serverConfig.js');
+const utility = require('./module/utility.js');
 
 let formControlData = {
     isProdData: require('./model/isProdData/controlConfiguration.js')
@@ -45,7 +47,7 @@ if (fileStructureValidated !== true) {
             }
             app.use(imageDirData[objectIndex].configuration.publicUrl + path, express.static('./' + path)); // serve static image files
         });
-        console.log('directory created for: ' + imageDirData[objectIndex].configuration.id);
+        console.log('directory processed for: ' + imageDirData[objectIndex].configuration.id);
     }
     fileStructureValidated = true;
 }
@@ -53,7 +55,8 @@ if (fileStructureValidated !== true) {
 app.get('/status', function(request, response) { // serve system status information
     return response.status(200).json({
         system: serverConfig.systemReference,
-        status: 'online'
+        status: 'online',
+        timestamp: moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss')
     });
 });
 
@@ -291,8 +294,6 @@ app.get('/productionHistory/isProdDataForm/document/recordID/:recordID', functio
         return response.status(200).sendFile(__dirname + '/view/isProdDataForm.html');
     });
 });
-
-utility.statusReport.start();
 
 app.listen(serverConfig.serverPort, function(error) { // start backend server
     if (error) {

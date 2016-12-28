@@ -10,7 +10,7 @@ module.exports = {
                 let mssqlRequest = new mssql.Request(mssqlConnection);
                 mssqlRequest.query(queryString)
                     .then(function(recordset) {
-                        console.log(queryString);
+                        // console.log(queryString);
                         mssqlConnection.close();
                         callback(recordset);
                     })
