@@ -1,5 +1,5 @@
-// const CronJob = require('cron').CronJob;
 const fs = require('fs');
+const cron = require('node-cron')
 const moment = require('moment-timezone');
 const httpRequest = require('request-promise');
 const uuid = require('uuid/v4');
@@ -9,6 +9,28 @@ const serverConfig = require('./serverConfig.js');
 
 const telegramUser = require('../model/telegramUser.js');
 const telegramBot = require('../model/telegramBot.js');
+
+let statusReport = cron.schedule('0 0,30 0,6-23 * * *', function() {
+    logger.info(`${serverConfig.systemReference} reporting mechanism triggered`);
+    let issuedDatetime = moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
+    let message = `${issuedDatetime} ${serverConfig.systemReference} server reporting in from ${serverConfig.serverHostname}`;
+    httpRequest({
+        method: 'post',
+        uri: serverConfig.botAPIUrl + telegramBot.getToken('upgiITBot') + '/sendMessage',
+        body: {
+            chat_id: telegramUser.getUserID('蔡佳佑'),
+            text: `${message}`,
+            token: telegramBot.getToken('upgiITBot')
+        },
+        json: true
+    }).then(function(response) {
+        logger.verbose(`${message}`);
+        return logger.info(`${serverConfig.systemReference} reporting mechanism completed`);
+    }).catch(function(error) {
+        // alertSystemError('statusReport', error);
+        return logger.error(`${serverConfig.systemReference} reporting mechanism failure ${error}`);
+    });
+}, false);
 
 function alertSystemError(systemReference, functionReference, errorMessage) {
     let currentDatetime = moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
@@ -59,4 +81,5 @@ function fileRemoval(completeFilePath, callback) {
 module.exports = {
     alertSystemError: alertSystemError,
     fileRemoval: fileRemoval,
+    statusReport: statusReport
 };

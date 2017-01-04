@@ -1,5 +1,4 @@
 let bodyParser = require('body-parser');
-const CronJob = require('cron').CronJob;
 const cors = require('cors');
 const clone = require('clone');
 const express = require('express');
@@ -302,3 +301,5 @@ app.listen(serverConfig.serverPort, function(error) { // start backend server
         console.log('universalForm server in operation... (' + serverConfig.serverUrl + ')');
     }
 });
+
+utility.statusReport.start(); // start the server status reporting function
