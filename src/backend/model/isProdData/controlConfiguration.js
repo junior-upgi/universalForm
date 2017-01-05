@@ -39,6 +39,9 @@ const selectOptionListArray = [{
         value: 'NO.6 SG',
         text: 'NO.6 SG'
     }, {
+        value: 'NO.8 SG',
+        text: 'NO.8 SG'
+    }, {
         value: 'NO.1-1 SG (DG 尺寸)',
         text: 'NO.1-1 SG (DG 尺寸)'
     }, {
@@ -65,6 +68,9 @@ const selectOptionListArray = [{
     }, {
         value: 'NO.7 SG (DG 尺寸)',
         text: 'NO.7 SG (DG 尺寸)'
+    }, {
+        value: 'NO.8 SG (DG 尺寸)',
+        text: 'NO.8 SG (DG 尺寸)'
     }, {
         value: 'NO.12 SG (DG 尺寸)',
         text: 'NO.12 SG (DG 尺寸)'
@@ -104,6 +110,9 @@ const selectOptionListArray = [{
     }, {
         value: 'NO.7 DG',
         text: 'NO.7 DG'
+    }, {
+        value: 'NO.8 DG',
+        text: 'NO.8 DG'
     }, {
         value: 'Φ108 DG',
         text: 'Φ108 DG'
@@ -129,6 +138,9 @@ const selectOptionListArray = [{
         value: 'NO.6 SG',
         text: 'NO.6 SG'
     }, {
+        value: 'NO.8 SG',
+        text: 'NO.8 SG'
+    }, {
         value: 'NO.1-1 SG (DG 尺寸)',
         text: 'NO.1-1 SG (DG 尺寸)'
     }, {
@@ -155,6 +167,9 @@ const selectOptionListArray = [{
     }, {
         value: 'NO.7 SG (DG 尺寸)',
         text: 'NO.7 SG (DG 尺寸)'
+    }, {
+        value: 'NO.8 SG (DG 尺寸)',
+        text: 'NO.8 SG (DG 尺寸)'
     }, {
         value: 'NO.12 SG (DG 尺寸)',
         text: 'NO.12 SG (DG 尺寸)'
@@ -194,6 +209,9 @@ const selectOptionListArray = [{
     }, {
         value: 'NO.7 DG',
         text: 'NO.7 DG'
+    }, {
+        value: 'NO.8 DG',
+        text: 'NO.8 DG'
     }, {
         value: 'Φ108 DG',
         text: 'Φ108 DG'
