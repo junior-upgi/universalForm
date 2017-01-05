@@ -2,7 +2,12 @@
 -- a. source - whether the data originated from 天心排程外掛, or manually generated
 -- b. existingIsProDataRecord
 SELECT
-	a.id
+	CASE
+		WHEN b.id IS NOT NULL AND c.id IS NULL THEN b.id
+		WHEN b.id IS NOT NULL AND b.id=c.id THEN b.id
+		WHEN b.id IS NULL AND c.id IS NULL THEN NULL
+		WHEN b.id IS NULL AND c.id IS NOT NULL THEN c.id
+	END AS id
 	,a.sampling
 	,a.machno
 	,a.glassProdLineID

@@ -74,13 +74,13 @@ function monitorFormUpdate() {
 function reinitializeWithoutData(selectedOption, selectedValue) {
     // wrap initialize with promise
     let reinitialize = function() {
-            let deferred = new $.Deferred();
-            initialize({
-                deferred: deferred
-            });
-            return deferred.promise();
-        }
-        // call initialize using promise to get execution sequenced correctly
+        let deferred = new $.Deferred();
+        initialize({
+            deferred: deferred
+        });
+        return deferred.promise();
+    }
+    // call initialize using promise to get execution sequenced correctly
     reinitialize()
         .done(function() {
             $('select#glassRun').val(selectedValue);
@@ -321,28 +321,72 @@ function deleteButtonHandler(formState) {
     }
 }
 
-function checkTbmknoAvailability() {
-    let selectedGlassRun = $('selected#glassRun option:selected');
-    let schedate = $('input#schedate').val();
-    let glassProdLineID = $('input#glassProdLineID').val();
-    let mockProdReference = $('input#mockProdReference').val();
-    if (selectedGlassRun.val() === undefined) {
-        let existingGlassRunOption = $('select#glassRun option.glassRun').filter(function() {
-            return $(this).val() === `${schedate} ${glassProdLineID} ${mockProdReference}`;
-        });
-        return existingGlassRunOption;
-    } else {
-        return undefined;
-    }
-}
-
 function submitButtonHandler(formState) {
     let matchingGlassRunOption = checkTbmknoAvailability();
     let generatedUuid = uuid().toUpperCase();
+    let schedate = $('input#schedate').val();
+    let glassProdLineID = $('input#glassProdLineID').val();
+    let mockProdReference = $('input#mockProdReference').val();
+    let valueString = `${schedate} ${glassProdLineID} ${mockProdReference}`;
+    let matchingOption = $('select#glassRun option').filter(function() {
+        return $(this).val() === valueString;
+    });
     switch (formState) {
         case '2':
+            if ($('select#glassRun').val() === '') { // manual record entry without glassRun selection
+                if (matchingOption.data('id') === null) {
+                    // record exist in original ERP tbmkno only
+                    // heading data comes from the erp production planning system (Z_DB_U105.dbo.tbmkno)
+                    // generate a UUID and write to isProdData only
+                    // reinitialize with the new record
+                    $.ajax({
+                        url: isProdDataInsertUrl + generatedUuid,
+                        type: 'post',
+                        data: new FormData($('form#isProdDataForm')[0]),
+                        processData: false,
+                        contentType: false
+                    }).done(function(response) {
+                        // change glassRun to the existing selection and make it existing, then reinitialize
+                        alert('資料新增成功');
+                        $('select#glassRun').val(response.value);
+                        $('select#glassRun option:selected').data('existingIsProdDataRecord', 1);
+                        reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
+                    }).fail(function(error) {
+                        alert('資料新增失敗，請聯繫IT檢視\ncase \'2\': if (matchingOption.data(\'id\') === null)');
+                        console.log(error);
+                    });
+                } else {
+                    // record exists in both orig erp tbmkno and productionHistory.dbo.productionHistory
+                    // use the existing uuid and write to isProdData Only
+                    // reinitialize with the new record
+                    if (matchingOption.data('source') === 'generated') {
+                        $.ajax({
+                            url: isProdDataInsertUrl + matchingOption.data('id'),
+                            type: 'post',
+                            data: new FormData($('form#isProdDataForm')[0]),
+                            processData: false,
+                            contentType: false
+                        }).done(function(response) {
+                            // change glassRun to the existing selection and make it existing, then reinitialize
+                            alert('資料新增成功');
+                            $('select#glassRun').val(response.value);
+                            $('select#glassRun option:selected').data('existingIsProdDataRecord', 1);
+                            reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
+                        }).fail(function(error) {
+                            alert('資料新增失敗，請聯繫IT檢視\ncase \'2\': if (matchingOption.data(\'source\') === \'generated\')');
+                            console.log(error);
+                        });
+                    } else {
+                        alert('資料新增失敗，請聯繫IT檢視\ncase \'2\': unhandled portion after if (matchingOption.data(\'source\') === \'generated\')');
+                    }
+                }
+            } else { // record entry with a glassRun selection selected
+                console.log('record entry with a glassRun selection selected');
+            }
+            /*
             // check if the new data matches existing entry in the glassRun list
             if (matchingGlassRunOption.val() !== undefined) { // if match is found
+                alert('a'); // ////////////////////////////////////////////////////////////////////
                 // heading data comes from another form
                 // use the id already presented and write to isProdData only
                 // reinitialize with the new record
@@ -356,7 +400,7 @@ function submitButtonHandler(formState) {
                         contentType: false,
                         success: function(data, textStatus, jqXHR) {
                             // change glassRun to the existing selection and make it existing, then reinitialize
-                            alert('資料新增成功');
+                            alert('a資料新增成功');
                             $('select#glassRun').val(data.value);
                             $('select#glassRun option:selected').data('existingIsProdDataRecord', 1);
                             reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
@@ -368,6 +412,7 @@ function submitButtonHandler(formState) {
                     });
                 } else if ((matchingGlassRunOption.data('existingIsProdDataRecord') === 0) &&
                     (matchingGlassRunOption.data('source') === 'tbmkno')) {
+                    alert('b'); // /////////////////////////////////////////////////////////////////////////////
                     // heading data comes from the erp production planning system (Z_DB_U105.dbo.tbmkno)
                     // generate a UUID and write to both isProdData and productionHistory.dbo.tbmkno
                     // reinitialize with the new record
@@ -393,7 +438,7 @@ function submitButtonHandler(formState) {
                     });
                     $.when(tbmknoInsert, isProdDataInsert).done(function(response1, response2) {
                         // change glassRun to the existing selection and make it existing, then reinitialize
-                        alert('資料新增成功');
+                        alert('b資料新增成功');
                         $('select#glassRun').val(response2[0].value);
                         $('select#glassRun option:selected').data('existingIsProdDataRecord', 1);
                         reinitializeWithData($('select#glassRun option:selected'), $('select#glassRun').val());
@@ -402,9 +447,10 @@ function submitButtonHandler(formState) {
                         console.log(error);
                     });
                 } else if (matchingGlassRunOption.data('existingIsProdDataRecord') === 1) {
+                    alert('c'); // /////////////////////////////////////////////////////////////////////////////
                     // heading data matches and an existing record is found
                     // do not write and reinitialize with the existing record
-                    alert('新輸入資料與歷史資料發現有重複狀況，頁面將轉至該筆歷史資料');
+                    alert('c新輸入資料與歷史資料發現有重複狀況，頁面將轉至該筆歷史資料');
                     $('select#glassRun').val(matchingGlassRunOption.val());
                     let newSelection = $('select#glassRun option:selected');
                     let newSelectionValue = matchingGlassRunOption.val();
@@ -416,6 +462,7 @@ function submitButtonHandler(formState) {
                     return false;
                 }
             } else {
+                alert('d'); // /////////////////////////////////////////////////////////////////////////////
                 // no matches found either in ERP tbmkno or generated tbmkno
                 // generate an UUID and write to both productionHistory.dbo.tbmkno and isProdData table
                 // reinitialize to the new record
@@ -441,7 +488,7 @@ function submitButtonHandler(formState) {
                 });
                 $.when(tbmknoInsert, isProdDataInsert).done(function(response1, response2) {
                     // make a temporary selection option on glassRun, then reinitialize
-                    alert('資料新增成功');
+                    alert('d資料新增成功');
                     $('select#glassRun').append(`<option class="glassRun newRecord" value="${response2[0].value}">${response2[0].value}</option>`);
                     $('select#glassRun option.newRecord').data('id', response2[0].id).data('existingIsProdDataRecord', 1);
                     $('select#glassRun').val(response2[0].value);
@@ -451,6 +498,7 @@ function submitButtonHandler(formState) {
                     console.log(error);
                 });
             }
+            */
             break;
         case '4':
             $.ajax({

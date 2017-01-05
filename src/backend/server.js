@@ -243,6 +243,7 @@ app.get('/productionHistory/isProdDataForm/recordID/:recordID', function(request
 
 app.delete('/productionHistory/isProdDataForm/recordID/:recordID', function(request, response) {
     // delete from isProdData table
+    console.log(queryString.deleteIsProdDataRecord(request.params.recordID));
     database.executeQuery(queryString.deleteIsProdDataRecord(request.params.recordID), function(error) {
         if (error) {
             return response.status(500).send('error deleting isProdData record: ' + error).end();
@@ -252,7 +253,7 @@ app.delete('/productionHistory/isProdDataForm/recordID/:recordID', function(requ
                 console.log('error removing photos...');
             }
         });
-        // delete the record from tbmkno where id is in the parameter is not found in 'productionHistory.dbo.productionHistory'
+        // delete the record from tbmkno where id in the parameter is not found in 'productionHistory.dbo.productionHistory'
         database.executeQuery(queryString.deleteTbmknoRecord(request.params.recordID), function(error) {
             if (error) {
                 return response.status(500).send('error deleting tbmkno record: ' + error).end();
