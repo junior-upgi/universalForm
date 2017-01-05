@@ -11,7 +11,7 @@ export function configureFormControlElement(formControlOptionData) { // form con
                     optionDataArray.forEach(function(optionData) { // loop through the attached option list
                         // check if the option should/shouldn't be displayed for use
                         if (optionData.displayFlag === undefined || optionData.displayFlag === true) {
-                            selectControlElement.append('<option class="current glassRun" value="' + optionData.value + '">' + optionData.text + '</option>');
+                            selectControlElement.append('<option class="current" value="' + optionData.value + '">' + optionData.text + '</option>');
                             if (attribute === true) { // if the record has an 'attribute' true property
                                 // remove properties that's not needed
                                 delete optionData.value;
