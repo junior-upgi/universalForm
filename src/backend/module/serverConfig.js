@@ -17,6 +17,7 @@ module.exports = {
     systemReference: systemReference,
     development: development,
     serverHost: serverHost,
+    logDir: 'log',
     serverPort: serverPort,
     serverUrl: serverHost + ':' + serverPort,
     publicServerUrl: 'http://upgi.ddns.net:' + serverPort, // production
