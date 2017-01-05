@@ -39,6 +39,9 @@ const selectOptionListArray = [{
         value: 'NO.6 SG',
         text: 'NO.6 SG'
     }, {
+        value: 'NO.7 SG',
+        text: 'NO.7 SG'
+    }, {
         value: 'NO.8 SG',
         text: 'NO.8 SG'
     }, {
@@ -137,6 +140,9 @@ const selectOptionListArray = [{
     }, {
         value: 'NO.6 SG',
         text: 'NO.6 SG'
+    }, {
+        value: 'NO.7 SG',
+        text: 'NO.7 SG'
     }, {
         value: 'NO.8 SG',
         text: 'NO.8 SG'
@@ -1222,8 +1228,16 @@ const selectOptionListArray = [{
         text: '81-3928',
         displayFlag: true
     }, {
+        value: '81-3928(研磨)',
+        text: '81-3928(研磨)',
+        displayFlag: true
+    }, {
         value: '81-3929',
         text: '81-3929',
+        displayFlag: true
+    }, {
+        value: '81-3929(研磨)',
+        text: '81-3929(研磨)',
         displayFlag: true
     }]
 }, {

@@ -10,3 +10,5 @@
 {"level":"error","message":"universalForm reporting mechanism failure RequestError: Error: Invalid protocol: undefined287236637:","timestamp":"2017-01-05 13:30:00"}
 {"level":"info","message":"universalForm reporting mechanism triggered","timestamp":"2017-01-05 14:00:00"}
 {"level":"error","message":"universalForm reporting mechanism failure RequestError: Error: Invalid protocol: undefined287236637:","timestamp":"2017-01-05 14:00:00"}
+{"level":"info","message":"universalForm reporting mechanism triggered","timestamp":"2017-01-05 14:30:00"}
+{"level":"error","message":"universalForm reporting mechanism failure RequestError: Error: Invalid protocol: undefined287236637:","timestamp":"2017-01-05 14:30:00"}
