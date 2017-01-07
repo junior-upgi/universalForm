@@ -8,62 +8,13 @@ const $ = require('gulp-load-plugins')({
 });
 
 const serverConfig = require('./src/backend/module/serverConfig.js');
+const utility = require('./gulpTask/utility.js');
 
 requireDir('./gulpTask');
 
 gulp.task('help', $.taskListing);
 
-gulp.task('scriptTransfer', function() {
-    let source = './src/frontend/js/**/*.js';
-    let destDir = './public/js';
-    return gulp.src(source).pipe(gulp.dest(destDir));
-});
-
-gulp.task('staticHtml', function() {
-    log('processing static HTML files');
-    let destDir = './public';
-    return gulp.src('./src/frontend/*.html').pipe(gulp.dest(destDir));
-});
-
-gulp.task('staticView', function() {
-    log('processing static HTML files');
-    let destDir = './public/view';
-    return gulp.src('./src/frontend/view/**/*.html').pipe(gulp.dest(destDir));
-});
-
-gulp.task('staticCss', function() {
-    log('processing static CSS files');
-    let destDir = './public/css';
-    return gulp.src('./src/frontend/css/*.css').pipe(gulp.dest(destDir));
-});
-
-gulp.task('favicon', function() {
-    log('processing the favicon');
-    let destDir = './public';
-    return gulp.src('./src/frontend/*.png').pipe(gulp.dest(destDir));
-});
-
-gulp.task('staticFrontendFiles', ['staticCss', 'processTemplate', 'staticView', 'staticHtml', 'favicon'], function() {
-    return;
-});
-
-gulp.task('startWatcher', ['staticFrontendFiles', 'transpile'], function() {
-    let watchList = {
-        frontendFileList: ['./src/frontend/**/*.js'],
-        staticFrontendFileList: ['./src/frontend/**/*.html', './src/frontend/**/*.css']
-    };
-    gulp.watch(watchList.frontendFileList, ['transpile']);
-    gulp.watch(watchList.staticFrontendFileList, ['staticFrontendFiles']);
-});
-
-gulp.task('buildBackend', function() {
-    log('building backend server files...');
-    return gulp
-        .src('./src/backend/**/*.js')
-        .pipe(gulp.dest('./build'));
-});
-
-gulp.task('startServer', ['clear4Rebuild', 'buildBackend', 'startWatcher'], function() {
+gulp.task('startServer', ['preRebuild', 'lint', 'buildBackend'], function() {
     let nodemonOption = {
         script: './build/server.js',
         delayTime: 1,
@@ -72,17 +23,72 @@ gulp.task('startServer', ['clear4Rebuild', 'buildBackend', 'startWatcher'], func
             'NODE_ENV': serverConfig.development ? 'development' : 'production'
         },
         verbose: false,
-        watch: ['./src/backend'],
-        tasks: ['removeBuild', 'buildBackend']
+        ext: 'html js mustache',
+        watch: ['./src/backend/'],
+        tasks: ['preRebuild', 'lint', 'buildBackend']
     };
     return $.nodemon(nodemonOption)
         .on('start', function() {
-            log('*** server started on: ' + serverConfig.serverUrl);
+            utility.log('*** server started on: ' + serverConfig.serverUrl);
+        })
+        .on('restart', function(event) {
+            utility.log('*** server restarted and operating on: ' + serverConfig.serverUrl);
+            utility.log('files triggered the restart:\n' + event);
+        })
+        .on('crash', function() {
+            utility.log('*** server had crashed...');
+        })
+        .on('shutdown', function() {
+            utility.log('*** server had been shutdown...');
+        });
+});
+
+gulp.task('frontendMonitor', function() {
+    let watchList = {
+        scriptList: ['./src/frontend/**/*.js'],
+        staticFileList: ['./src/frontend/**/*.html', './src/frontend/**/*.css']
+    };
+    gulp.watch(watchList.scriptList, ['transpile']).on('change', function(event) {
+        setTimeout(function() {
+            utility.log('File ' + event.path + ' was ' + event.type);
+            browserSync.notify('伺服器重新啟動，頁面即將同步重置...');
+            browserSync.reload({
+                stream: false
+            });
+        }, 5000);
+    });
+    gulp.watch(watchList.staticFileList, ['favicon', 'html', 'partialHtml', 'css']).on('change', function(event) {
+        setTimeout(function() {
+            utility.log('File ' + event.path + ' was ' + event.type);
+            browserSync.notify('伺服器重新啟動，頁面即將同步重置...');
+            browserSync.reload({
+                stream: false
+            });
+        }, 5000);
+    });
+});
+
+gulp.task('startDevelopmentServer', ['preRebuild', 'lint', 'buildBackend', 'buildFrontend', 'frontendMonitor'], function() {
+    let nodemonOption = {
+        script: './build/server.js',
+        delayTime: 1,
+        env: {
+            'PORT': serverConfig.serverPort,
+            'NODE_ENV': serverConfig.development ? 'development' : 'production'
+        },
+        verbose: false,
+        ext: 'html js handlebars',
+        watch: ['./src/backend/'],
+        tasks: ['preRebuild', 'lint', 'buildBackend', 'buildFrontend']
+    };
+    return $.nodemon(nodemonOption)
+        .on('start', function() {
+            utility.log('*** server started on: ' + serverConfig.serverUrl);
             startBrowserSync();
         })
         .on('restart', function(event) {
-            log('*** server restarted and operating on: ' + serverConfig.serverUrl);
-            log('files triggered the restart:\n' + event);
+            utility.log('*** server restarted and operating on: ' + serverConfig.serverUrl);
+            utility.log('files triggered the restart:\n' + event);
             setTimeout(function() {
                 browserSync.notify('伺服器重新啟動，頁面即將同步重置...');
                 browserSync.reload({
@@ -91,10 +97,10 @@ gulp.task('startServer', ['clear4Rebuild', 'buildBackend', 'startWatcher'], func
             }, 5000);
         })
         .on('crash', function() {
-            log('*** server had crashed...');
+            utility.log('*** server had crashed...');
         })
         .on('shutdown', function() {
-            log('*** server had been shutdown...');
+            utility.log('*** server had been shutdown...');
         });
 });
 
@@ -103,9 +109,9 @@ function startBrowserSync() {
         return;
     }
     let option = {
-        proxy: 'http://localhost:' + serverConfig.serverPort + '/productionHistory/isProdDataForm/index.html?formReference=isProdData',
-        port: 9999,
-        files: ['./src/frontend/**/*.*'],
+        proxy: `${serverConfig.serverUrl}/${serverConfig.systemReference}/index.html`,
+        port: serverConfig.browserSyncPort,
+        files: ['./src/frontend/** /*.*'],
         ghostMode: {
             clicks: true,
             location: false,
@@ -120,17 +126,5 @@ function startBrowserSync() {
         reloadDelay: 1000
     };
     browserSync(option);
-    log('start browserSync on port: ' + serverConfig.serverPort);
-}
-
-function log(msg) {
-    if (typeof(msg) === 'object') {
-        for (let item in msg) {
-            if (msg.hasOwnProperty(item)) {
-                $.util.log($.util.colors.blue(msg[item]));
-            }
-        }
-    } else {
-        $.util.log($.util.colors.blue(msg));
-    }
+    utility.log('start browserSync on port: ' + serverConfig.serverPort);
 }

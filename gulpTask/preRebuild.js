@@ -25,6 +25,6 @@ gulp.task('removeTemp', function() {
     return del.sync(dir);
 });
 
-gulp.task('clear4Rebuild', ['removePublic', 'removeBuild', 'removeTemp'], function() {
+gulp.task('preRebuild', ['removePublic', 'removeBuild', 'removeTemp'], function() {
     return;
 });

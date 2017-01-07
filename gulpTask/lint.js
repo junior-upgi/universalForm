@@ -9,8 +9,9 @@ const utility = require('./utility.js');
 
 gulp.task('lint', function() {
     utility.log('code evaluation with Eslint and JSCS');
-    fileList = [
+    let fileList = [
         './src/**/*.js',
+        './gulpTask/**/*.js',
         './*.js'
     ];
     return gulp
