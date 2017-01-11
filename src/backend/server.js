@@ -1,6 +1,8 @@
 const cors = require('cors');
 const express = require('express');
+const fs = require('fs');
 const morgan = require('morgan');
+const multer = require('multer');
 const path = require('path');
 const favicon = require('serve-favicon');
 
@@ -18,6 +20,26 @@ main.use(favicon(path.join(__dirname + '/../public/upgiLogo.png'))); // middlewa
 main.use('/', express.static(path.join(__dirname + '/../public'))); // serve static files
 main.use('/bower_components', express.static(path.join(__dirname + '/../bower_components'))); // serve static files
 
+// initialize image directory
+const imageDirData = { isProdDataForm: require('./model/isProdDataForm/imageDir.js') };
+let fileStructureValidated = false;
+if (fileStructureValidated !== true) {
+    for (let objectIndex in imageDirData) {
+        imageDirData[objectIndex].configuration.upload = multer({
+            dest: imageDirData[objectIndex].configuration.multerUploadDest
+        });
+        imageDirData[objectIndex].configuration.pathList.forEach(function(indexedPath) {
+            if (!fs.existsSync(indexedPath)) {
+                fs.mkdirSync(indexedPath);
+            }
+            // serve static image files
+            main.use(`/${indexedPath}`, express.static(path.join(__dirname + `/../${indexedPath}`)));
+        });
+        utility.logger.info('directory processed for: ' + imageDirData[objectIndex].configuration.id);
+    }
+    fileStructureValidated = true;
+}
+
 main.use('/', require('./route/status.js')); // serve system status
 main.use('/', require('./route/login.js')); // handles login requests
 main.use('/', require('./route/validate.js')); // handles page entry jwt validation
@@ -25,6 +47,7 @@ main.use('/', require('./route/systemList.js')); // serve information on forms a
 
 upgiSystem.list.forEach(function(system) { // serve subsystem related routes
     main.use('/', require(`./route/${system.reference}/formConfigData.js`)); // serve form control configuration data
+    main.use('/', require(`./route/${system.reference}/getRecordData.js`)); // specific record query
 });
 
 app.listen(serverConfig.serverPort, function(error) { // start backend server

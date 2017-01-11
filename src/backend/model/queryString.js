@@ -95,10 +95,6 @@ const insertTbmknoRecord = function(primaryKey, requestData) {
     return `INSERT INTO productionHistory.dbo.tbmkno (${fieldString}) VALUES(${valueString});`;
 };
 
-const getExistingIsProdDataRecord = function(recordID) {
-    return `SELECT a.*,b.orderQty,c.PRDT_SNM AS mockProdReference FROM productionHistory.dbo.isProdData a LEFT JOIN productionHistory.dbo.tbmkno b ON a.id=b.id LEFT JOIN productionHistory.dbo.isProdDataGlassRun c ON a.id=c.id WHERE a.id='${recordID}';`;
-};
-
 const getISProdDataRecord = function(recordID) {
     return 'SELECT * FROM productionHistory.dbo.isProdData WHERE id=\'' + recordID + '\';';
 };
@@ -128,7 +124,6 @@ module.exports = {
     deleteIsProdDataRecord: deleteIsProdDataRecord,
     deleteTbmknoRecord: deleteTbmknoRecord,
     deleteIsProdDataPhoto: deleteIsProdDataPhoto,
-    getExistingIsProdDataRecord: getExistingIsProdDataRecord,
     getISProdDataRecord: getISProdDataRecord,
     getTbmknoRecord: getTbmknoRecord,
     insertIsProdDataRecord: insertIsProdDataRecord,

@@ -1,7 +1,7 @@
 import { serverUrl, viewUrl } from './config.js';
 import { displayLoginForm } from './login.js';
 import { getAllUrlParams } from './utility.js';
-import { initializeNewForm } from './appControl.js';
+import { initializeBlankForm } from './appControl.js';
 import { changeFormState } from './isProdDataForm/formControl.js';
 import { configForm } from './formProcessing.js';
 import { preventEnterSubmit } from './disableEnterSubmit.js';
@@ -13,11 +13,10 @@ $('document').ready(function() {
         displayLoginForm();
     } else {
         $('body').empty().load(`${viewUrl}/${formReference}/formBody.html`, function() {
-            initializeNewForm()
+            initializeBlankForm()
                 .then(function(formConfigDataset) {
                     configForm(formConfigDataset); // setup the form controls according to data received
-                    changeFormState('1');
-                    // change state must be set first (breaks either formState monitor/multiselection check)
+                    changeFormState('1'); // change state must be set first (breaks either formState monitor/multiselection check)
                     preventEnterSubmit();
                 }).catch(function(error) {
                     alert(`發生錯誤: ${error}\n返回系統登入頁面`);

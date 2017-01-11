@@ -1,7 +1,7 @@
 import { getAllUrlParams } from './utility.js';
 import { serverUrl, viewUrl } from './config.js';
 
-export let initializeNewForm = function() {
+export let initializeBlankForm = function() {
     let promise = new Promise(function(resolve, reject) {
         let formReference = getAllUrlParams().formReference;
         if ((formReference !== null) && (formReference !== undefined) && (formReference !== '')) {
@@ -10,23 +10,39 @@ export let initializeNewForm = function() {
                     $('body').empty().append(formBody);
                     return $.ajax({
                         method: 'get',
-                        url: `${serverUrl}/formConfigData/${formReference}`,
+                        url: `${serverUrl}/${formReference}/formConfigData`,
                         headers: { 'x-access-token': sessionStorage.token }
                     });
                 }).then(function(formConfigDataset) {
                     resolve(formConfigDataset);
                 }).catch(function(error) {
-                    reject({ error: `${error.status}: ${error.statusText}` });
+                    reject(`${error.status}: ${error.statusText}`);
                 });
         } else {
-            reject({ error: 'url does not have proper \'formReference\' value' });
+            reject('url does not have proper \'formReference\' value');
         }
     });
     return promise;
 };
 
 /*
-export let initializeFormWithData=function(){
-
+function reinitializeWithoutData(selectedOption, selectionValue) {
+    // wrap initialize with promise
+    let reinitialize = function() {
+        let deferred = new $.Deferred();
+        initialize({
+            deferred: deferred
+        });
+        return deferred.promise();
+    };
+    // call initialize using promise to get execution sequenced correctly
+    reinitialize()
+        .done(function() {
+            $('select#glassRun').val(selectedValue);
+            changeFormState('1');
+        })
+        .fail(function(error) {
+            alert('歷史資料頁面建立失敗: ' + error);
+        });
 }
 */
