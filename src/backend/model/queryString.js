@@ -1,9 +1,5 @@
 const moment = require('moment-timezone');
 
-const erpPrdt = function(searchString) {
-    return `SELECT SNM AS label,PRD_NO AS value FROM DB_U105.dbo.PRDT WHERE PRD_NO LIKE 'B[0-9][0-9][0-9][0-9][0-9]__' AND PRD_NO LIKE 'B${searchString}%';`;
-};
-
 let updateIsProdDataRecord = function(primaryKeyString, requestData, uploadPathObject) {
     let updateString = 'UPDATE productionHistory.dbo.isProdData ';
     let setString = 'SET ';
@@ -132,9 +128,7 @@ module.exports = {
     deleteIsProdDataRecord: deleteIsProdDataRecord,
     deleteTbmknoRecord: deleteTbmknoRecord,
     deleteIsProdDataPhoto: deleteIsProdDataPhoto,
-    erpPrdt: erpPrdt,
     getExistingIsProdDataRecord: getExistingIsProdDataRecord,
-    getGlassRunRecordset: 'SELECT * FROM productionHistory.dbo.isProdDataGlassRun ORDER BY schedate DESC,PRDT_SNM;',
     getISProdDataRecord: getISProdDataRecord,
     getTbmknoRecord: getTbmknoRecord,
     insertIsProdDataRecord: insertIsProdDataRecord,

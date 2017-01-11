@@ -6,6 +6,12 @@ const list = [{
     cReference: '生產條件記錄表',
     frontendUrl: `${serverConfig.publicServerUrl}/index.html?formReference=isProdDataForm`,
     hide: false
+}, {
+    id: 1,
+    reference: 'mockForm',
+    cReference: '測試記錄表',
+    frontendUrl: `${serverConfig.publicServerUrl}/index.html?formReference=mockForm`,
+    hide: false
 }];
 
 module.exports = {
