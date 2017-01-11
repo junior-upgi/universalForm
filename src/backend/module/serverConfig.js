@@ -37,6 +37,8 @@ function mssqlServerHost() {
     }
 }
 const mssqlServerPort = 1433;
+const connectionTimeout = 60000;
+const requestTimeout = 60000;
 
 function mssqlServerUrl() {
     if (development === true) {
@@ -50,6 +52,10 @@ const upgiSystemPassword = 'upgiSystem';
 
 // misc
 const workingTimezone = 'Asia/Taipei';
+const reportingFrequency = '0 0 6,10,14,18,22 * * *';
+
+// logging
+const logDir = 'log';
 
 // ldap
 const ldapServerUrl = 'ldap://upgi.ddns.net:389';
@@ -64,18 +70,19 @@ module.exports = {
     browserSyncPort: browserSyncPort,
     development: development,
     ldapServerUrl: ldapServerUrl,
-    logDir: 'log',
+    logDir: logDir,
     mssqlConfig: {
         server: mssqlServerHost().slice(7),
         user: upgiSystemAccount,
         password: upgiSystemPassword,
         port: mssqlServerPort,
-        connectionTimeout: 60000,
-        requestTimeout: 60000
+        connectionTimeout: connectionTimeout,
+        requestTimeout: requestTimeout
     },
     mssqlServerUrl: mssqlServerUrl(),
     passphrase: passphrase(),
     publicServerUrl: publicServerUrl(),
+    reportingFrequency: reportingFrequency,
     serverHost: serverHost,
     serverHostname: serverHostname,
     serverPort: serverPort,

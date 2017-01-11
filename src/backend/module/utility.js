@@ -60,7 +60,7 @@ function executeQuery(queryString, callback) {
         });
 }
 
-let statusReport = cron.schedule('0 0,30 0,6-23 * * *', function() {
+let statusReport = cron.schedule(serverConfig.reportingFrequency, function() {
     logger.info(`${serverConfig.systemReference} reporting mechanism triggered`);
     let issuedDatetime = moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
     let message = `${issuedDatetime} ${serverConfig.systemReference} server reporting in from ${serverConfig.serverHostname}`;

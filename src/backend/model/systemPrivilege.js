@@ -1,45 +1,13 @@
-const serverConfig = require('../module/serverConfig.js');
+// const serverConfig = require('../module/serverConfig.js');
 
 const list = [{
     erpID: '05060001',
     membershipList: [{
-        systemID: 1,
-        role: 'admin', // 'admin','furnaceStaff','purchasingStaff','supplier','blackListed'
-        accessLevel: 'full', // 'full','partial','none'
-        accessPeriod: 3600,
-        funcPrivList: []
-    }, {
-        systemID: 6,
-        role: 'admin', // 'admin','furnaceStaff','purchasingStaff','supplier','blackListed'
-        accessLevel: 'full', // 'full','partial','none'
-        accessPeriod: 3600,
-        funcPrivList: []
-    }, {
-        systemID: 7,
-        role: 'admin', // 'admin','furnaceStaff','purchasingStaff','supplier','blackListed'
+        systemID: 0,
+        role: 'admin', // 'admin','blackListed'
         accessLevel: 'full', // 'full','partial','none'
         accessPeriod: 3600,
         funcPrivList: ['*']
-    }]
-}, {
-    erpID: '95070003',
-    membershipList: [{
-        systemID: 7,
-        role: 'purchasingStaff', // 'admin','furnaceStaff','purchasingStaff','supplier','blackListed'
-        accessLevel: 'none', // 'full','partial','none'
-        accessPeriod: 3600,
-        funcPrivList: []
-    }]
-}, {
-    erpID: '09100001',
-    membershipList: [{
-        systemID: 7,
-        role: 'furnaceStaff', // 'admin','furnaceStaff','purchasingStaff','supplier','blackListed'
-        accessLevel: 'partial', // 'full','partial','none'
-        accessPeriod: 3600,
-        funcPrivList: [
-            `${serverConfig.serverUrl}/${serverConfig.systemReference}/validateToken`
-        ]
     }]
 }];
 

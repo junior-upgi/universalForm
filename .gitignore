@@ -1,7 +1,8 @@
-node_modules
 bower_components
 build
-public
-npm-debug.log
-log
+deprecated
 isProdDataForm
+log
+node_modules
+npm-debug.log
+public

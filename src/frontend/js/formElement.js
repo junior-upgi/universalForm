@@ -1,4 +1,4 @@
-export function configureFormControlElement(formControlOptionData) { // form control setup
+export function configForm(formControlOptionData) { // form control setup
     for (let objectIndex in formControlOptionData) { // loop through the data set
         switch (objectIndex) { // check index'ed data's type
             case 'selectOptionListArray': // <select> with an option list
