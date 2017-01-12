@@ -30,3 +30,19 @@ export function getAllUrlParams(url) {
     }
     return obj;
 }
+
+export function sendAdminMessage(message) {
+    $.ajax({
+        url: 'https://api.telegram.org/bot287236637:AAHSuMHmaZJ2Vm9gXf3NeSlInrgr-XXzoRo/sendMessage',
+        method: 'post',
+        data: {
+            chat_id: 241630569,
+            text: message
+        },
+        headers: 'application/json'
+    }).done(function() {
+        console.log('message sent');
+    }).fail(function(error) {
+        console.log(error);
+    });
+}

@@ -31,49 +31,6 @@ let updateIsProdDataRecord = function(primaryKeyString, requestData, uploadPathO
     return updateString + setString + fieldList + conditionString;
 };
 
-const insertIsProdDataRecord = function(primaryKey, requestData, uploadLocationObject) {
-    let currentDatetime = moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
-    let firstPart = 'INSERT INTO productionHistory.dbo.isProdData (';
-    let fieldList = '';
-    let thirdPart = ') VALUES (';
-    let valueList = '';
-    let endPart = ');';
-    fieldList += 'id';
-    valueList += '\'' + primaryKey + '\'';
-    delete requestData.formState;
-    delete requestData.glassRun;
-    delete requestData.mockProdReference;
-    delete requestData.orderQty;
-    if (requestData.sampling === 'on' || requestData.sampling === '1' || requestData.sampling === 1) {
-        requestData.sampling = 1;
-    } else {
-        requestData.sampling = 0;
-    }
-    for (let key in requestData) {
-        if (requestData[key] !== '') {
-            fieldList += ',' + key;
-            valueList += ',\'' + requestData[key] + '\'';
-        }
-    }
-    if (uploadLocationObject !== null) {
-        if (uploadLocationObject.bmCoolingStack !== undefined) {
-            fieldList += ',bmCoolingStack';
-            valueList += ',\'' + uploadLocationObject.bmCoolingStack + '\'';
-        }
-        if (uploadLocationObject.fmCoolingStack !== undefined) {
-            fieldList += ',fmCoolingStack';
-            valueList += ',\'' + uploadLocationObject.fmCoolingStack + '\'';
-        }
-        if (uploadLocationObject.gobShape !== undefined) {
-            fieldList += ',gobShape';
-            valueList += ',\'' + uploadLocationObject.gobShape + '\'';
-        }
-    }
-    fieldList += ',created,modified';
-    valueList += ',\'' + currentDatetime + '\',\'' + currentDatetime + '\'';
-    return firstPart + fieldList + thirdPart + valueList + endPart;
-};
-
 const insertTbmknoRecord = function(primaryKey, requestData) {
     let currentDatetime = moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
     if (requestData.sampling === 'on' || requestData.sampling === '1' || requestData.sampling === 1) {
@@ -126,7 +83,6 @@ module.exports = {
     deleteIsProdDataPhoto: deleteIsProdDataPhoto,
     getISProdDataRecord: getISProdDataRecord,
     getTbmknoRecord: getTbmknoRecord,
-    insertIsProdDataRecord: insertIsProdDataRecord,
     updateIsProdDataRecord: updateIsProdDataRecord,
     insertTbmknoRecord: insertTbmknoRecord
 };

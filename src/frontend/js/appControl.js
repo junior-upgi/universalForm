@@ -24,25 +24,3 @@ export let initializeBlankForm = function() {
     });
     return promise;
 };
-
-/*
-function reinitializeWithoutData(selectedOption, selectionValue) {
-    // wrap initialize with promise
-    let reinitialize = function() {
-        let deferred = new $.Deferred();
-        initialize({
-            deferred: deferred
-        });
-        return deferred.promise();
-    };
-    // call initialize using promise to get execution sequenced correctly
-    reinitialize()
-        .done(function() {
-            $('select#glassRun').val(selectedValue);
-            changeFormState('1');
-        })
-        .fail(function(error) {
-            alert('歷史資料頁面建立失敗: ' + error);
-        });
-}
-*/
