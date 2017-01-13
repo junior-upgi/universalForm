@@ -1,6 +1,6 @@
 const systemReference = 'universalForm';
 const development = false;
-const serverHostname = 'upgilinuxvm';
+const serverHostname = 'upgilinuxvm1';
 
 // broadcasting configuration
 const botAPIUrl = 'https://api.telegram.org/bot';
