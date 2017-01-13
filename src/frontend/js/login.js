@@ -1,4 +1,4 @@
-import { viewUrl, loginUrl, serverUrl } from './config.js';
+import { viewUrl, serverUrl } from './config.js';
 import { decode } from 'jsonwebtoken';
 
 export function displayLoginForm() {
@@ -14,14 +14,14 @@ export function displayLoginForm() {
     });
 }
 
-const countDownArray = ['五', '四', '三', '二', '一', '零'];
+const countDownArray = ['二', '一', '零'];
 
 function submitHandler() {
     $('form#loginForm').submit(function(event) {
         if ($(this)[0].checkValidity()) {
             event.preventDefault();
             $.ajax({
-                url: loginUrl,
+                url: `${serverUrl}/login`,
                 type: 'post',
                 contentType: 'application/x-www-form-urlencoded',
                 data: {
@@ -44,7 +44,7 @@ function submitHandler() {
                     setInterval(function() {
                         $('div#statusMessage').empty().text(`${countDownArray[counter]}秒後將轉移至${$('select#systemID option:selected').text()}頁面`);
                         counter += 1;
-                        if (counter === 5) {
+                        if (counter === 2) {
                             window.location.replace(response.redirectUrl);
                         }
                     }, 1000);

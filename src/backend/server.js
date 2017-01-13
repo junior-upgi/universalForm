@@ -43,10 +43,9 @@ main.use('/', require('./route/login.js')); // handles login requests
 main.use('/', require('./route/validate.js')); // handles page entry jwt validation
 main.use('/', require('./route/systemList.js')); // serve information on forms available on the system
 
+main.use('/', require('./route/isProdDataForm/isProdData.js')); // CRUD routes on productionHistory.dbo.isProdData
+main.use('/', require('./route/isProdDataForm/tbmkno.js')); // CRUD routes on productionHistory.dbo.tbmkno
 main.use('/', require('./route/isProdDataForm/formConfigData.js')); // serve form control configuration data
-main.use('/', require('./route/isProdDataForm/getRecordData.js')); // specific record query
-main.use('/', require('./route/isProdDataForm/isProdDataInsert.js')); // insert new record into productionHistory.dbo.isProdData
-main.use('/', require('./route/isProdDataForm/deleteRecord.js')); // delete record
 main.use('/', require('./route/isProdDataForm/deletePhoto.js')); // delete photo
 
 app.listen(serverConfig.serverPort, function(error) { // start backend server

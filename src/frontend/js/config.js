@@ -21,6 +21,5 @@ function constructServerUrl() {
 
 export const portalUrl = 'http://upgi.ddns.net';
 export const serverUrl = constructServerUrl();
-export const loginUrl = `${serverUrl}/login`;
 export const validateUrl = `${serverUrl}/validate`;
 export const viewUrl = `${serverUrl}/view`;
