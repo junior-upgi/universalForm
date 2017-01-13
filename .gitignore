@@ -1,8 +1,10 @@
 bower_components
 build
 deprecated
-isProdDataForm
+image
 log
 node_modules
-npm-debug.log
 public
+
+debug.log
+npm-debug.log
