@@ -1,5 +1,5 @@
 export const systemReference = 'universalForm';
-const development = true;
+const development = false;
 
 function serverHost() {
     if (development === true) {
