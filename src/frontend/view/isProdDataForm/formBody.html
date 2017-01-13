@@ -9,9 +9,9 @@
             <div class="col-xs-12">
                 <span>製令單號</span>&nbsp;
                 <select id="glassRun" name="glassRun" tabindex=""></select>
-                <input id="machno" name="machno" class="restoreData" type="text" size="10" tabindex="" />
-                <input id="prd_no" name="prd_no" class="restoreData" type="text" size="10" tabindex="" />
-                <select id="formState" name="formState" disabled tabindex=""></select>
+                <input id="machno" name="machno" class="restoreData" type="text" size="10" style="display:none;" tabindex="" />
+                <input id="prd_no" name="prd_no" class="restoreData" type="text" size="10" style="display:none;" tabindex="" />
+                <select id="formState" name="formState" style="display:none;" disabled tabindex=""></select>
             </div>
         </div>
         <br class="hideWhenPrint">
@@ -292,6 +292,8 @@
                 <input id="submitRecord" type="submit" value="新增記錄" tabindex="" disabled /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <button id="printRecordButton" type="button" tabindex="" disabled>列印文件</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <button id="deleteRecordButton" type="button" tabindex="" disabled>刪除記錄</button>
+                <br>
+                <br>
             </div>
             <div class="col-xs-2">
                 <button type="button" tabindex="" onclick="returnToProductionHistorySite()">返回生產履歷網頁</button>
