@@ -2,13 +2,16 @@
 
 const list = [{
     erpID: '05060001',
-    membershipList: [{
-        systemID: 0,
-        role: 'admin', // 'admin','blackListed'
-        accessLevel: 'full', // 'full','partial','none'
-        accessPeriod: 3600,
-        funcPrivList: ['*']
-    }]
+    membershipList: [{ systemID: 0, role: 'admin', accessLevel: 'full', accessPeriod: 21600, funcPrivList: ['*'] }]
+}, {
+    erpID: '10110003', // 李維展
+    membershipList: [{ systemID: 0, role: 'user', accessLevel: 'full', accessPeriod: 21600, funcPrivList: ['*'] }]
+}, {
+    erpID: '99040008', // 陳志如
+    membershipList: [{ systemID: 0, role: 'user', accessLevel: 'full', accessPeriod: 21600, funcPrivList: ['*'] }]
+}, {
+    erpID: '02050006', // 王慶瑞
+    membershipList: [{ systemID: 0, role: 'user', accessLevel: 'full', accessPeriod: 21600, funcPrivList: ['*'] }]
 }];
 
 function checkRoutePriv(erpID, systemID, requestRoute) {

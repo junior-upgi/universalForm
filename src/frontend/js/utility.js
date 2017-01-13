@@ -46,3 +46,9 @@ export function sendAdminMessage(message) {
         console.log(error);
     });
 }
+
+export function errorHandler(errorMessage, redirectUrl) {
+    alert(errorMessage);
+    sessionStorage.clear();
+    window.location.replace(redirectUrl);
+}
