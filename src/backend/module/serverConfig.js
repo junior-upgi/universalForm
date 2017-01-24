@@ -52,7 +52,7 @@ const upgiSystemPassword = 'upgiSystem';
 
 // misc
 const workingTimezone = 'Asia/Taipei';
-const reportingFrequency = '0 0 6,10,14,18,22 * * *';
+const reportingFrequency = '0 0 8,22 * * *';
 
 // logging
 const logDir = 'log';
