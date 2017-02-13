@@ -12,6 +12,12 @@ const list = [{
 }, {
     erpID: '02050006', // 王慶瑞
     membershipList: [{ systemID: 0, role: 'user', accessLevel: 'full', accessPeriod: 21600, funcPrivList: ['*'] }]
+}, {
+    erpID: '02030001', // 林明崑
+    membershipList: [{ systemID: 0, role: 'user', accessLevel: 'full', accessPeriod: 21600, funcPrivList: ['*'] }]
+}, {
+    erpID: '16060003', // 黃奕翔
+    membershipList: [{ systemID: 0, role: 'user', accessLevel: 'full', accessPeriod: 21600, funcPrivList: ['*'] }]
 }];
 
 function checkRoutePriv(erpID, systemID, requestRoute) {
