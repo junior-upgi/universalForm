@@ -25,7 +25,7 @@ router.post('/login', function(request, response) {
         ldapClient.unbind(function(error) {
             if (error) {
                 utility.logger.error(`LDAP server separation failure: ${error.lde_message}`);
-                utility.sendMessage([telegramUser.getUserID('蔡佳佑')], [`LDAP server separation failure: ${error.lde_message}`]);
+                utility.sendMessage([telegramUser.getUserID('資訊課統義玻璃')], [`LDAP server separation failure: ${error.lde_message}`]);
             }
             utility.logger.info(`${request.body.loginID} account info validated, checking access rights`);
             // continue to check if user has rights to access the website of the system selected

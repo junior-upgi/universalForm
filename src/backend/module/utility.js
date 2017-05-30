@@ -66,11 +66,11 @@ let statusReport = cron.schedule(serverConfig.reportingFrequency, function() {
     let message = `${issuedDatetime} ${serverConfig.systemReference} server reporting in from ${serverConfig.serverHostname}`;
     httpRequest({
         method: 'post',
-        uri: serverConfig.botAPIUrl + telegramBot.getToken('upgiITBot') + '/sendMessage',
+        uri: serverConfig.botAPIUrl + telegramBot.getToken('upgiItBot') + '/sendMessage',
         body: {
-            chat_id: telegramUser.getUserID('蔡佳佑'),
+            chat_id: telegramUser.getUserID('資訊課統義玻璃'),
             text: `${message}`,
-            token: telegramBot.getToken('upgiITBot')
+            token: telegramBot.getToken('upgiItBot')
         },
         json: true
     }).then(function(response) {
@@ -86,21 +86,21 @@ function alertSystemError(functionRef, message) {
     let currentDatetime = moment(moment(), 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
     httpRequest({ // broadcast alert when error encountered
         method: 'post',
-        uri: serverConfig.botAPIUrl + telegramBot.getToken('upgiITBot') + '/sendMessage',
+        uri: serverConfig.botAPIUrl + telegramBot.getToken('upgiItBot') + '/sendMessage',
         body: {
-            chat_id: telegramUser.getUserID('蔡佳佑'),
+            chat_id: telegramUser.getUserID('資訊課統義玻璃'),
             text: `error encountered while executing [${serverConfig.systemReference}][${functionRef}] @ ${currentDatetime}`,
-            token: telegramBot.getToken('upgiITBot')
+            token: telegramBot.getToken('upgiItBot')
         },
         json: true
     }).then(function(response) {
         httpRequest({
             method: 'post',
-            uri: serverConfig.botAPIUrl + telegramBot.getToken('upgiITBot') + '/sendMessage',
+            uri: serverConfig.botAPIUrl + telegramBot.getToken('upgiItBot') + '/sendMessage',
             form: {
-                chat_id: telegramUser.getUserID('蔡佳佑'),
+                chat_id: telegramUser.getUserID('資訊課統義玻璃'),
                 text: `error message: ${message}`,
-                token: telegramBot.getToken('upgiITBot')
+                token: telegramBot.getToken('upgiItBot')
             }
         }).then(function(response) {
             return logger.info(`${serverConfig.systemReference} ${functionRef} alert sent`);
@@ -133,11 +133,11 @@ function sendMessage(recipientIDList, messageList) {
         messageList.forEach(function(message) {
             httpRequest({
                 method: 'post',
-                uri: serverConfig.botAPIUrl + telegramBot.getToken('upgiITBot') + '/sendMessage',
+                uri: serverConfig.botAPIUrl + telegramBot.getToken('upgiItBot') + '/sendMessage',
                 form: {
                     chat_id: recipientID,
                     text: message,
-                    token: telegramBot.getToken('upgiITBot')
+                    token: telegramBot.getToken('upgiItBot')
                 }
             }).then(function(response) {
                 logger.info(`message sent to ${telegramUser.getUserName(parseInt(recipientID))}`);
